@@ -1,0 +1,160 @@
+{
+    "_comment": "This is a copy of the test CDD JSON file before any edits ahve been made. Use it to reset changes to cdd.json",
+    "nodes": [
+        {
+            "x": 316,
+            "y": 595,
+            "id": "1",
+            "connections": [],
+            "label": "<b><i>INTERMEDIATE:</i></b> Create a compelling value proposition",
+            "fixed": true,
+            "elementtype": "Intermediate",
+            "elementname": "Create a compelling value proposition",
+            "font": {
+                "multi": "html",
+                "size": 18,
+                "boldital": {
+                    "color": "darkblue"
+                }
+            }
+        },
+        {
+            "x": 461,
+            "y": 0,
+            "id": "2",
+            "connections": [
+                3,
+                4,
+                2
+            ],
+            "label": "<b><i>External:</i></b> Promote services and mentorship program",
+            "fixed": true,
+            "elementtype": "External",
+            "elementname": "Promote services and mentorship program",
+            "font": {
+                "multi": "html",
+                "size": 18,
+                "boldital": {
+                    "color": "darkblue"
+                }
+            }
+        },
+        {
+            "x": 332,
+            "y": 479,
+            "id": "3",
+            "connections": [
+                5,
+                1,
+                3,
+                4
+            ],
+            "label": "<b><i>INTERMEDIATE:</i></b> Gain exposure",
+            "fixed": true,
+            "elementtype": "Intermediate",
+            "elementname": "Gain exposure",
+            "font": {
+                "multi": "html",
+                "size": 18,
+                "boldital": {
+                    "color": "darkblue"
+                }
+            }
+        },
+        {
+            "x": 0,
+            "y": 454,
+            "id": "4",
+            "connections": [
+                1,
+                2
+            ],
+            "label": "<b><i>Action:</i></b> Reach out to professional networks and organizations",
+            "fixed": true,
+            "elementtype": "Action",
+            "elementname": "Reach out to professional networks and organizations",
+            "font": {
+                "multi": "html",
+                "size": 18,
+                "boldital": {
+                    "color": "darkblue"
+                }
+            }
+        },
+        {
+            "x": 707,
+            "y": 667,
+            "id": "5",
+            "connections": [
+                1,
+                2,
+                6
+            ],
+            "label": "<b><i>Outcome:</i></b> Increase your network",
+            "fixed": true,
+            "elementtype": "Outcome",
+            "elementname": "Increase your network",
+            "font": {
+                "multi": "html",
+                "size": 18,
+                "boldital": {
+                    "color": "darkblue"
+                }
+            }
+        },
+        {
+            "x": 0,
+            "y": 11,
+            "id": "6",
+            "connections": [
+                2
+            ],
+            "label": "<b><i>INTERMEDIATE:</i></b> my happiness",
+            "fixed": true,
+            "elementtype": "Intermediate",
+            "elementname": "my happiness"
+        }
+    ],
+    "edges": [
+        {
+            "from": 1,
+            "to": 3,
+            "id": "7"
+        },
+        {
+            "from": 1,
+            "to": 2,
+            "id": "8"
+        },
+        {
+            "from": 2,
+            "to": 5,
+            "id": "9"
+        },
+        {
+            "from": 3,
+            "to": 2,
+            "id": "10"
+        },
+        {
+            "from": 4,
+            "to": 1,
+            "id": "11"
+        },
+        {
+            "from": 2,
+            "to": 4,
+            "id": "12"
+        },
+        {
+            "from": 1,
+            "to": 3,
+            "id": "13"
+        },
+        {
+            "from": 4,
+            "to": 6,
+            "id": "14"
+        }
+    ]
+}
