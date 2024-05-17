@@ -1,5 +1,5 @@
 import * as joint from "@joint/core/dist/joint.js"
-import graphData from './cdd.json' assert {type: 'json'}
+import graphData from './schema-compliant-cdd.json' assert {type: 'json'}
 import * as fileIO from "./fileIO.js"
 import {DecisionElementArea} from "./decisionElementArea.js"
 
@@ -38,7 +38,7 @@ var paper = new joint.dia.Paper({
 
 //Lay out background areas
 const graphAreas = new Array(
-    new DecisionElementArea(0, 0.25, 0, 0.75, "#d6ffe1", "Action"),
+    new DecisionElementArea(0, 0.25, 0, 0.75, "#d6ffe1", "Lever"),
     new DecisionElementArea(0, 1, 0.75, 1, "#ffffd6", "External"),
     new DecisionElementArea(0.25, 0.75, 0, 0.75, "#d3e8eb", "Intermediate"),
     new DecisionElementArea(0.75, 1, 0, 0.75, "#e3d5ed", "Outcome")
@@ -50,7 +50,7 @@ for (const area of graphAreas)
 }
 
 //Read graph rectangle data from JSON
-const graphRectsJSON = graphData.nodes;
+const graphRectsJSON = graphData.elements;
 
 //Dictionary for storing runtime Rectangle objects
 //Key: Rectangle ID from JSON (string)
@@ -62,7 +62,7 @@ graphRectsJSON.forEach((rectData) => graphRects[rectData.id] = addRectToGraph(re
 
 
 //Read graph link data from JSON
-const graphLinksJSON = graphData.edges;
+const graphLinksJSON = graphData.dependencies;
 
 //Dictionary for storing runtime Link objects
 //Key: Link ID from JSON (string)
@@ -139,9 +139,12 @@ function addRectToGraph(rectJSON, graph, rectWidth = defaultRectWidth, rectHeigh
 {
     var rectToAdd = new joint.shapes.standard.Rectangle();
 
+    const rectDiagram = rectJSON.diagram;
+    const rectType = rectJSON.type;
+
     //Basic attributes
-    rectToAdd.position(rectJSON.x, rectJSON.y);
-    rectToAdd.resize(rectWidth, rectHeight);
+    rectToAdd.position(rectDiagram.position.x, rectDiagram.position.y);
+    rectToAdd.resize(rectDiagram.boundingBoxSize.width, rectDiagram.boundingBoxSize.height);
 
     //Hard-code some other attributes for now
     rectToAdd.attr({
@@ -149,7 +152,7 @@ function addRectToGraph(rectJSON, graph, rectWidth = defaultRectWidth, rectHeigh
             fill: 'blue'
         },
         label: {
-            text: rectJSON.elementtype,
+            text: rectType,
             fill: 'white'
         }
     });
@@ -164,7 +167,7 @@ function addRectToGraph(rectJSON, graph, rectWidth = defaultRectWidth, rectHeigh
      * elementType (string) - Used to store the type of Decision Element contained in this area
      */
     rectToAdd.set('id', rectJSON.id);
-    rectToAdd.set('elementType', rectJSON.elementtype)
+    rectToAdd.set('elementType', rectType)
 
     rectToAdd.addTo(graph);
     return rectToAdd; //For storing the runtime rect object
@@ -184,9 +187,9 @@ function addLinkToGraph(linkJSON, graph, rectsInGraph)
     var linkToAdd = new joint.shapes.standard.Link();
 
     //Find source by the id given in JSON data
-    linkToAdd.source(rectsInGraph["" + linkJSON.from]);
+    linkToAdd.source(rectsInGraph["" + linkJSON.source]);
     //Find target by the id given in JSON data
-    linkToAdd.target(rectsInGraph["" + linkJSON.to]);
+    linkToAdd.target(rectsInGraph["" + linkJSON.target]);
 
     linkToAdd.addTo(graph);
     return linkToAdd; //For storing the runtime link object

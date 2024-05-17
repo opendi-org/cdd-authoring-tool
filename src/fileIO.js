@@ -12,14 +12,14 @@ export function saveGraphJSON(originalJSON, rects, links, fileName = "cdd.json")
     console.log("SAVING...");
     
     const newNodes = new Array();
-    originalJSON.nodes.forEach((node) => {
+    originalJSON.elements.forEach((node) => {
         const rectFromGraph = rects[node.id];
         if(rectFromGraph !== null)
         {
             const nodePosition = rectFromGraph.get('position');
-            node.x = nodePosition.x;
-            node.y = nodePosition.y;
-            node.elementtype = rectFromGraph.get('elementType');
+            node.diagram.position.x = nodePosition.x;
+            node.diagram.position.y = nodePosition.y;
+            node.type = rectFromGraph.get('elementType');
         }
         newNodes.push(node);
     });

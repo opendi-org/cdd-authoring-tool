@@ -1,0 +1,263 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "base",
+    "title": "Causal Decision Model",
+    "description": "(DRAFT) - Represents a Causal Decision Model for OpenDI-compliant services.",
+    "allOf": [
+
+        {
+            "$comment": "id*, name, summary, documentation -- (*required)",
+            "$ref": "#/$defs/baseAsset"
+        },
+        {
+            "$comment": "Model-specific properties",
+            "properties": {
+                "status": {
+                    "description": "Draft/version status of the model.",
+                    "enum": ["Draft", "Simulation-Ready", "Custom"],
+                    "default": "Draft"
+                },
+                "customStatus": {
+                    "description": "If 'type' is set to 'Custom', use this to specify the custom status name.",
+                    "type": "string"
+                },
+                "version": {
+                    "description": "Version number for the model.",
+                    "type": "string"
+                },
+                "partialRetrieval": {
+                    "description": "When retrieving this CDM, tells what kind of partial data was retrieved. null means full model was retrieved.",
+                    "enum": ["Evaluation-Only", "Diagram-Only", null],
+                    "default": null
+                },
+        
+                "elements": {
+                    "description": "The decision elements that make up the decision model.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/decisionElement"
+                    }
+                },
+
+                "dependencies": {
+                    "description": "The dependency links between decision elements. These are the arrows in the model's CDD.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/dependency"
+                    }
+                },
+
+                "modelAssets": {
+                    "description": "Holds full data for all assets associated with elements/dependencies in this model.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/decisionAsset"
+                    }
+                }
+
+            }
+        }
+
+    ],
+    "$comment": "Required: id -- Inherited from baseAsset",
+    "required": ["name", "summary", "status", "version", "partialRetrieval", "elements", "dependencies", "modelAssets"],
+
+
+
+    "$defs": {
+
+
+        "baseAsset": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "Unique identifier for this asset.",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "The human-readable name for this asset.",
+                    "type": "string"
+                },
+                "summary": {
+                    "description": "Longer description of the asset.",
+                    "type": "string"
+                },
+                "documentation": {
+                    "description": "Full documentation for the asset/element/model.",
+                    "type": "object",
+                    "properties": {
+                        "content": {"type": "string"},
+                        "MIMEType": {"type": "string"}
+                    },
+                    "required": ["content", "MIMEType"]
+                }
+            },
+            "required": ["id"]
+        },
+
+
+        "decisionElement": {
+            "title": "Decision Element",
+            "description": "Holds evaluation and visual data for a decision element.",
+
+            "allOf": [
+                {
+                    "$comment": "id*, name, summary, documentation -- (*required)",
+                    "$ref": "#/$defs/baseAsset"        
+                },
+                {
+                    "$comment": "Decision element-specific properties",
+                    "properties": {
+
+                        "type": {
+                            "description": "The type/role of the decision element.",
+                            "enum": ["Lever", "Intermediate", "Outcome", "External", "Goal", "Custom"],
+                            "default": "Custom"
+                        },
+                        "customType": {
+                            "description": "If 'type' is set to 'Custom', use this to specify the custom type name.",
+                            "type": "string"
+                        },
+
+                        "evaluation": {
+                            "description": "Evaluation data for simulating the decision element.",
+                            "type": "object",
+                            "properties": {
+
+                                "valueExpression": {"type": "string"},
+                                "defaultValue": {}
+
+                            },
+                            "required": ["defaultValue"]
+                        },
+
+                        "diagram": {
+                            "description": "Diagram data for rendering the decision element.",
+                            "type": "object",
+                            "properties": {
+
+                                "position": {
+                                    "type": "object",
+                                    "properties": {
+
+                                        "x": {"type": "number", "default": 0},
+                                        "y": {"type": "number", "default": 0}
+
+                                    },
+                                    "required": ["x", "y"]
+                                },
+                                "boundingBoxSize": {
+                                    "type": "object",
+                                    "properties": {
+
+                                        "width": {"type": "number", "default": 400},
+                                        "height": {"type": "number", "default": 300}
+
+                                    },
+                                    "required": ["width", "height"]
+                                }
+
+                            },
+                            "required": ["position", "boundingBoxSize"]
+                        },
+
+                        "assets": {
+                            "description": "List of references (by ID) of decision assets associated with this decision element.",
+                            "type": "array",
+                            "items": {
+                                "description": "Unique ID of the decision asset associated with this causal dependency.",
+                                "$comment": "(Full asset data stored in separate list)",
+                                "type": "string"
+                            }
+                        }
+
+                    }
+                }
+            ],
+
+            "$comment": "Required: id -- inherited from baseAsset",
+            "required": ["name", "type", "assets"],
+            "anyOf": [
+                { "required": ["evaluation"] },
+                { "required": ["diagram"] }
+            ],
+
+            "if": {
+                "properties": {
+                    "type": {"const": "Custom"}
+                }
+            },
+            "then": {
+                "required": ["customType"]
+            }
+
+        },
+
+
+        "dependency": {
+            "title": "Causal Dependency",
+            "description": "Holds references (by ID) to a directed link between two decision elements.",
+            "allOf": [
+
+                {
+                    "$comment": "id*, name, summary, documentation -- (*required)",
+                    "$ref": "#/$defs/baseAsset"
+                },
+                {
+                    "$comment": "Dependency-specific properties",
+                    "properties": {
+
+                        "source": {
+                            "description": "ID of the source element.",
+                            "type": "string"
+                        },
+                        "target": {
+                            "description": "ID of the target element.",
+                            "type": "string"
+                        },
+                        "assets": {
+                            "description": "List of references (by ID) of decision assets associated with this causal dependency.",
+                            "$comment": "(Full asset data stored in separate list)",
+                            "type": "array",
+                            "items": {
+                                "description": "Unique ID of the decision asset associated with this causal dependency.",
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            ],
+
+            "$comment": "Required: id -- inherited from baseAsset",
+            "required": ["source", "target", "assets"]
+
+        },
+
+        
+        "decisionAsset": {
+            "title": "Decision Asset",
+            "description": "Holds data for a decision asset, likely retrieved separately by ID.",
+            "allOf": [
+
+                {
+                    "$comment": "id*, name, summary, documentation -- (*required)",
+                    "$ref": "#/$defs/baseAsset"
+                },
+                {
+                    "$comment": "Decision Asset-specific properties",
+                    "properties": {
+                        "assetData": {
+                            "description": "Data associated with this decision asset.",
+                            "type": "object"
+                        }
+                    }
+                }
+
+            ],
+
+            "$comment": "Required: id -- inherited from baseAsset",
+            "required": ["name", "assetData"]
+        }
+    }
+
+}
