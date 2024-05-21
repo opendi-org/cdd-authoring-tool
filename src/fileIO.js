@@ -11,9 +11,9 @@ export function saveGraphJSON(originalJSON, rects, links, fileName = "cdd.json")
 {
     console.log("SAVING...");
     
-    const newNodes = new Array();
+    const newElements = new Array();
     originalJSON.elements.forEach((node) => {
-        const rectFromGraph = rects[node.id];
+        const rectFromGraph = rects[node.uuid];
         if(rectFromGraph !== null)
         {
             const nodePosition = rectFromGraph.get('position');
@@ -21,10 +21,10 @@ export function saveGraphJSON(originalJSON, rects, links, fileName = "cdd.json")
             node.diagram.position.y = nodePosition.y;
             node.type = rectFromGraph.get('elementType');
         }
-        newNodes.push(node);
+        newElements.push(node);
     });
 
-    const jsonOut = {"nodes": newNodes, "edges": originalJSON.edges}
+    const jsonOut = {"elements": newElements, "dependencies": originalJSON.dependencies}
 
     console.log(JSON.stringify(jsonOut));
 
