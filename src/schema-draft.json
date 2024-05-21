@@ -1,16 +1,17 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "$id": "base",
+    "$id": "base-v0.0-alpha",
     "title": "Causal Decision Model",
     "description": "(DRAFT) - Represents a Causal Decision Model for OpenDI-compliant services.",
     "allOf": [
 
         {
             "$comment": "id*, name, summary, documentation -- (*required)",
+            "title": "Base Asset Properties",
             "$ref": "#/$defs/baseAsset"
         },
         {
-            "$comment": "Model-specific properties",
+            "title": "CDM Properties",
             "properties": {
                 "status": {
                     "description": "Draft/version status of the model.",
@@ -35,7 +36,8 @@
                     "description": "The decision elements that make up the decision model.",
                     "type": "array",
                     "items": {
-                        "$ref": "#/$defs/decisionElement"
+                        "$ref": "#/$defs/decisionElement",
+                        "title": "Decision Element"
                     }
                 },
 
@@ -43,7 +45,8 @@
                     "description": "The dependency links between decision elements. These are the arrows in the model's CDD.",
                     "type": "array",
                     "items": {
-                        "$ref": "#/$defs/dependency"
+                        "$ref": "#/$defs/dependency",
+                        "title": "Causal Dependency"
                     }
                 },
 
@@ -51,7 +54,8 @@
                     "description": "Holds full data for all assets associated with elements/dependencies in this model.",
                     "type": "array",
                     "items": {
-                        "$ref": "#/$defs/decisionAsset"
+                        "$ref": "#/$defs/decisionAsset",
+                        "title": "Decision Asset"
                     }
                 }
 
@@ -61,18 +65,33 @@
     ],
     "$comment": "Required: id -- Inherited from baseAsset",
     "required": ["name", "summary", "status", "version", "partialRetrieval", "elements", "dependencies", "modelAssets"],
+    "if": {
+        "properties": {
+            "status": {"const": "Custom"}
+        }
+    },
+    "then": {
+        "required": ["customStatus"]
+    },
 
 
 
     "$defs": {
 
+        "uuid": {
+            "$comment": "Ensures UUID validation is consistent.",
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
 
         "baseAsset": {
+            "$comment": "Defines shared properties across all types of assets.",
             "type": "object",
             "properties": {
-                "id": {
+                "uuid": {
                     "description": "Unique identifier for this asset.",
-                    "type": "string"
+                    "$ref": "#/$defs/uuid"
                 },
                 "name": {
                     "description": "The human-readable name for this asset.",
@@ -92,7 +111,7 @@
                     "required": ["content", "MIMEType"]
                 }
             },
-            "required": ["id"]
+            "required": ["uuid"]
         },
 
 
@@ -103,10 +122,11 @@
             "allOf": [
                 {
                     "$comment": "id*, name, summary, documentation -- (*required)",
-                    "$ref": "#/$defs/baseAsset"        
+                    "$ref": "#/$defs/baseAsset",
+                    "title": "Base Asset Properties"
                 },
                 {
-                    "$comment": "Decision element-specific properties",
+                    "title": "Decision Element Properties",
                     "properties": {
 
                         "type": {
@@ -124,8 +144,43 @@
                             "type": "object",
                             "properties": {
 
-                                "valueExpression": {"type": "string"},
-                                "defaultValue": {}
+                                "evaluatable": {
+                                    "defaultValue": {},
+                                    "oneOf": [
+                                        {
+                                            "title": "Script",
+                                            "description": "Script attached to a decision element, runs during simulation",
+                                            "properties": {
+                                                "evalType": {"const": "Script"},
+                                                "content": {"type": "string"},
+                                                "language": {"enum": ["lang1", "lang2", "lang3"]}
+                                            }
+                                        },
+                                        {
+                                            "title": "API URL",
+                                            "description": "URL for an API endpoint, called during simulation/",
+                                            "properties": {
+                                                "evalType": {"const": "API URL"},
+                                                "content": {
+                                                    "type": "string",
+                                                    "format": "uri",
+                                                    "pattern": "((http|https)://)(www.)?[a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)",
+                                                    "$comment": "Pattern found here: https://www.geeksforgeeks.org/check-if-an-url-is-valid-or-not-using-regular-expression/"
+                                                },
+                                                "payload": { "type": "object" }
+                                            }
+                                        },
+                                        {
+                                            "title": "Binary Base64",
+                                            "description": "Binary object encoded in Base64",
+                                            "properties": {
+                                                "evalType": {"const": "Binary Base64"},
+                                                "content": {"type": "string"}
+                                            }
+                                        }
+                                    ],
+                                    "required": ["evalType", "content"]
+                                }
 
                             },
                             "required": ["defaultValue"]
@@ -162,12 +217,12 @@
                         },
 
                         "assets": {
-                            "description": "List of references (by ID) of decision assets associated with this decision element.",
+                            "description": "List of references (by UUID) of decision assets associated with this decision element.",
                             "type": "array",
                             "items": {
-                                "description": "Unique ID of the decision asset associated with this causal dependency.",
+                                "description": "UUID of the decision asset associated with this causal dependency.",
                                 "$comment": "(Full asset data stored in separate list)",
-                                "type": "string"
+                                "$ref": "#/$defs/uuid"
                             }
                         }
 
@@ -176,10 +231,18 @@
             ],
 
             "$comment": "Required: id -- inherited from baseAsset",
-            "required": ["name", "type", "assets"],
+            "required": ["name", "type"],
             "anyOf": [
-                { "required": ["evaluation"] },
-                { "required": ["diagram"] }
+                { 
+                    "title": "Eval",
+                    "description": "Element must have evaluation or diagram data, or both.",
+                    "required": ["evaluation"]
+                },
+                {
+                    "title": "Dia",
+                    "description": "Element must have evaluation or diagram data, or both.",
+                    "required": ["diagram"]
+                }
             ],
 
             "if": {
@@ -196,32 +259,33 @@
 
         "dependency": {
             "title": "Causal Dependency",
-            "description": "Holds references (by ID) to a directed link between two decision elements.",
+            "description": "Holds references (by UUID) to a directed causal link between two decision elements.",
             "allOf": [
 
                 {
                     "$comment": "id*, name, summary, documentation -- (*required)",
-                    "$ref": "#/$defs/baseAsset"
+                    "$ref": "#/$defs/baseAsset",
+                    "title": "Base Asset Properties"
                 },
                 {
-                    "$comment": "Dependency-specific properties",
+                    "title": "Causal Dependency Properties",
                     "properties": {
 
                         "source": {
-                            "description": "ID of the source element.",
-                            "type": "string"
+                            "description": "UUID of the source element.",
+                            "$ref": "#/$defs/uuid"
                         },
                         "target": {
-                            "description": "ID of the target element.",
-                            "type": "string"
+                            "description": "UUID of the target element.",
+                            "$ref": "#/$defs/uuid"
                         },
                         "assets": {
-                            "description": "List of references (by ID) of decision assets associated with this causal dependency.",
+                            "description": "List of references (by UUID) of decision assets associated with this causal dependency.",
                             "$comment": "(Full asset data stored in separate list)",
                             "type": "array",
                             "items": {
-                                "description": "Unique ID of the decision asset associated with this causal dependency.",
-                                "type": "string"
+                                "description": "UUID of the decision asset associated with this causal dependency.",
+                                "$ref": "#/$defs/uuid"
                             }
                         }
                     }
@@ -229,22 +293,23 @@
             ],
 
             "$comment": "Required: id -- inherited from baseAsset",
-            "required": ["source", "target", "assets"]
+            "required": ["source", "target"]
 
         },
 
         
         "decisionAsset": {
             "title": "Decision Asset",
-            "description": "Holds data for a decision asset, likely retrieved separately by ID.",
+            "description": "Holds data for a decision asset, likely retrieved separately by UUID.",
             "allOf": [
 
                 {
                     "$comment": "id*, name, summary, documentation -- (*required)",
-                    "$ref": "#/$defs/baseAsset"
+                    "$ref": "#/$defs/baseAsset",
+                    "title": "Base Asset Properties"
                 },
                 {
-                    "$comment": "Decision Asset-specific properties",
+                    "title": "Decision Asset Properties",
                     "properties": {
                         "assetData": {
                             "description": "Data associated with this decision asset.",

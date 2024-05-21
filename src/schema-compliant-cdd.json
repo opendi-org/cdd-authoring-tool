@@ -1,6 +1,6 @@
 {
     "$schema": "./schema-draft.json",
-    "id": "test-cdd-for-authoring-frontend",
+    "uuid": "cb6e9075-cffb-4dae-887a-e00ac473b07c",
     "name": "Test CDD: demo for model authoring prototype",
     "status": "Draft",
     "summary": "TODO: Decision objective statement",
@@ -9,7 +9,7 @@
 
     "elements": [
         {
-            "id": "action1",
+            "uuid": "166eda84-02dc-4dcd-8d47-2da3cdf16154",
             "name": "Reach out to professional networks and organizations",
             "type": "Lever",
             "diagram": {
@@ -21,11 +21,10 @@
                     "width": 100,
                     "height": 40
                 }
-            },
-            "assets": []
+            }
         },
         {
-            "id": "intermediate1",
+            "uuid": "2a812262-c02d-4e07-86d6-f5a984f994e4",
             "name": "Create a compelling value proposition",
             "type": "Intermediate",
             "diagram": {
@@ -37,11 +36,10 @@
                     "width": 100,
                     "height": 40
                 }
-            },
-            "assets": []
+            }
         },
         {
-            "id": "intermediate2",
+            "uuid": "330b0a2d-14a2-475e-ab1a-b3bc1ab08423",
             "name": "Gain exposure",
             "type": "Intermediate",
             "diagram": {
@@ -53,11 +51,10 @@
                     "width": 100,
                     "height": 40
                 }
-            },
-            "assets": []
+            }
         },
         {
-            "id": "external1",
+            "uuid": "33b5e885-662c-4d6f-a26b-0d49b6aec5a4",
             "name": "Promote services and mentorship program",
             "type": "External",
             "diagram": {
@@ -69,11 +66,10 @@
                     "width": 100,
                     "height": 40
                 }
-            },
-            "assets": []
+            }
         },
         {
-            "id": "outcome1",
+            "uuid": "659f060b-413c-4d9d-a5bf-369922c5d506",
             "name": "Increase your network",
             "type": "Outcome",
             "diagram": {
@@ -85,11 +81,10 @@
                     "width": 100,
                     "height": 40
                 }
-            },
-            "assets": []
+            }
         },
         {
-            "id": "outcome2",
+            "uuid": "63fd35b4-33ac-48ce-9677-d9945c981655",
             "name": "My happiness",
             "type": "Outcome",
             "diagram": {
@@ -101,59 +96,50 @@
                     "width": 100,
                     "height": 40
                 }
-            },
-            "assets": []
+            }
         }
     ],
 
     "dependencies": [
         {
-            "id": "dep1",
-            "source": "intermediate1",
-            "target": "intermediate2",
-            "assets": []
+            "uuid": "0883a19a-4753-46ed-a0d1-daaa3532586c",
+            "source": "2a812262-c02d-4e07-86d6-f5a984f994e4",
+            "target": "330b0a2d-14a2-475e-ab1a-b3bc1ab08423"
         },
         {
-            "id": "dep2",
-            "source": "intermediate1",
-            "target": "external1",
-            "assets": []
+            "uuid": "9a2facc2-be5b-4ae2-bd35-fcfeb2adc670",
+            "source": "2a812262-c02d-4e07-86d6-f5a984f994e4",
+            "target": "33b5e885-662c-4d6f-a26b-0d49b6aec5a4"
         },
         {
-            "id": "dep3",
-            "source": "external1",
-            "target": "outcome1",
-            "assets": []
+            "uuid": "599a201c-043b-4887-ae62-63c500503727",
+            "source": "33b5e885-662c-4d6f-a26b-0d49b6aec5a4",
+            "target": "659f060b-413c-4d9d-a5bf-369922c5d506"
         },
         {
-            "id": "dep4",
-            "source": "intermediate2",
-            "target": "external1",
-            "assets": []
+            "uuid": "5604f345-fd1a-4b08-941f-3ce818cf4513",
+            "source": "330b0a2d-14a2-475e-ab1a-b3bc1ab08423",
+            "target": "33b5e885-662c-4d6f-a26b-0d49b6aec5a4"
         },
         {
-            "id": "dep5",
-            "source": "action1",
-            "target": "intermediate1",
-            "assets": []
+            "uuid": "c1d0eec4-6dfb-4397-9c71-2c9af8817e98",
+            "source": "166eda84-02dc-4dcd-8d47-2da3cdf16154",
+            "target": "2a812262-c02d-4e07-86d6-f5a984f994e4"
         },
         {
-            "id": "dep6",
-            "source": "external1",
-            "target": "action1",
-            "assets": []
+            "uuid": "d99c43fb-02a0-4c0a-aa84-52fd94a1eb03",
+            "source": "33b5e885-662c-4d6f-a26b-0d49b6aec5a4",
+            "target": "166eda84-02dc-4dcd-8d47-2da3cdf16154"
         },
         {
-            "id": "dep7",
-            "source": "intermediate1",
-            "target": "intermediate2",
-            "assets": []
+            "uuid": "c87cea02-b428-4deb-bce7-ddcc2e134caf",
+            "source": "2a812262-c02d-4e07-86d6-f5a984f994e4",
+            "target": "330b0a2d-14a2-475e-ab1a-b3bc1ab08423"
         },
         {
-            "id": "dep8",
-            "source": "action1",
-            "target": "outcome2",
-            "assets": []
+            "uuid": "a2ef3850-aded-408f-8a4c-8bdd02082d24",
+            "source": "166eda84-02dc-4dcd-8d47-2da3cdf16154",
+            "target": "63fd35b4-33ac-48ce-9677-d9945c981655"
         }
     ],
 
