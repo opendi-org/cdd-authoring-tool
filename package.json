@@ -10,7 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@joint/core": "^4.0.2"
+    "@joint/core": "^4.0.2",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "webpack": "^5.91.0",
