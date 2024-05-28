@@ -51,7 +51,8 @@ export class FunctionButton {
         this.JointRect.attr({
             body: {
                 fill: "#EEEEEE",
-                cursor: "pointer"
+                cursor: "pointer",
+                strokeWidth: 1
             },
             label: {
                 cursor: "pointer",
