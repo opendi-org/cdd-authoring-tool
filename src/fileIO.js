@@ -24,7 +24,9 @@ export function saveGraphJSON(originalJSON, rects, links, fileName = "cdd.json")
         newElements.push(node);
     });
 
-    const jsonOut = {"elements": newElements, "dependencies": originalJSON.dependencies}
+    const jsonOut = originalJSON; //Preserve any existing metadata
+    jsonOut.elements = newElements; //Overwrite element information
+    jsonOut.dependencies = originalJSON.dependencies; //Later this will be set to something similar to newElements
 
     console.log(JSON.stringify(jsonOut));
 
@@ -44,7 +46,7 @@ export function saveGraphJSON(originalJSON, rects, links, fileName = "cdd.json")
 export function downloadTextFile(textContent, fileName)
 {
     var elem = document.createElement('a');
-    elem.setAttribute("href", "data:application/octet-stream;charset=utf-8," + textContent);
+    elem.setAttribute("href", "data:application/octet-stream;charset=utf-8," + textContent); //HREF with raw URI of the file contents
     elem.setAttribute("download", fileName);
     document.body.appendChild(elem);
     elem.click();
