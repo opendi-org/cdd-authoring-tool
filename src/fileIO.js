@@ -11,20 +11,22 @@ export function saveGraphJSON(originalJSON, rects, links, fileName = "cdd.json")
 {
     console.log("SAVING...");
     
-    const newNodes = new Array();
-    originalJSON.nodes.forEach((node) => {
-        const rectFromGraph = rects[node.id];
+    const newElements = new Array();
+    originalJSON.elements.forEach((node) => {
+        const rectFromGraph = rects[node.uuid];
         if(rectFromGraph !== null)
         {
             const nodePosition = rectFromGraph.get('position');
-            node.x = nodePosition.x;
-            node.y = nodePosition.y;
-            node.elementtype = rectFromGraph.get('elementType');
+            node.diagram.position.x = nodePosition.x;
+            node.diagram.position.y = nodePosition.y;
+            node.type = rectFromGraph.get('elementType');
         }
-        newNodes.push(node);
+        newElements.push(node);
     });
 
-    const jsonOut = {"nodes": newNodes, "edges": originalJSON.edges}
+    const jsonOut = originalJSON; //Preserve any existing metadata
+    jsonOut.elements = newElements; //Overwrite element information
+    jsonOut.dependencies = originalJSON.dependencies; //Later this will be set to something similar to newElements
 
     console.log(JSON.stringify(jsonOut));
 
@@ -44,7 +46,7 @@ export function saveGraphJSON(originalJSON, rects, links, fileName = "cdd.json")
 export function downloadTextFile(textContent, fileName)
 {
     var elem = document.createElement('a');
-    elem.setAttribute("href", "data:application/octet-stream;charset=utf-8," + textContent);
+    elem.setAttribute("href", "data:application/octet-stream;charset=utf-8," + textContent); //HREF with raw URI of the file contents
     elem.setAttribute("download", fileName);
     document.body.appendChild(elem);
     elem.click();
