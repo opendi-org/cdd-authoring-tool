@@ -1,18 +1,8 @@
 import * as joint from "@joint/core/dist/joint.js"
 import graphData from './schema-compliant-cdd.json' assert {type: 'json'}
 import {SaveButton} from "./uiButtons.js"
-import { HTMLNode, HTMLNodeView } from "./htmlNode.js"
-
-// --- CONFIG ---
-
-const paperWidth = 2000;
-const paperHeight = 2000;
-
-//Used for text-based resizing
-const minElementWidth = 120;
-const maxElementWidth = 200;
-const minElementHeight = 60;
-//Do not limit height, so text can fully render
+import { HTMLNode, HTMLNodeView, HTMLNodeEditTool } from "./htmlNode.js"
+import {Config} from "./config.js"
 
 // --- MAIN GRAPH SETUP ---
 var namespace = {
@@ -27,8 +17,8 @@ var graph = new joint.dia.Graph({}, { cellNamespace: namespace });
 var paper = new joint.dia.Paper({
     el: document.getElementById('myholder'), //div in static/index.html
     model: graph,
-    width: paperWidth,
-    height: paperHeight,
+    width: Config.paperWidth,
+    height: Config.paperHeight,
     background: {
         color: "#888888"
     },
@@ -97,6 +87,20 @@ paper.on('element:pointerclick', function (cell) {
     }
 });
 
+/**
+ * Mouse hover events - mouse enter
+ */
+paper.on('element:mouseenter', function(view) {
+    view.showTools(); //Show edit button
+});
+
+/**
+ * Mouse hover events - mouse leave
+ */
+paper.on('element:mouseleave', function(view) {
+    view.hideTools(); //Hide edit button
+});
+
 // --- (OTHER) FUNCTIONS --
 
 /**
@@ -105,11 +109,10 @@ paper.on('element:pointerclick', function (cell) {
  * 
  * @param {JSON} elementJSON Original raw JSON data for this element
  * @param {joint.dia.Graph} graph Graph object to add this element to
- * @param {Number} elementWidth (Optional) Width of this element
- * @param {Number} elementHeight (Optional) Height of this element
+ * @param {Number} elementMaxWidth (Optional) Maximum width of this element
  * @returns {HTMLNode} Runtime representation of the element that was added
  */
-function addElementToGraph(elementJSON, graph, paper, elementWidth = minElementWidth, elementHeight = minElementHeight, charWidth = 7)
+function addElementToGraph(elementJSON, graph, paper, elementMaxWidth = Config.maxElementWidth, charWidth = 7)
 {
     const diagramJSON = elementJSON.diagram;
     const elementType = elementJSON.type;
@@ -119,20 +122,31 @@ function addElementToGraph(elementJSON, graph, paper, elementWidth = minElementW
     const elementToAdd = new HTMLNode();
     elementToAdd.addTo(graph);
 
+    // -- TOOLS SETUP --
+    
+    const toolView = new joint.dia.ToolsView({
+        tools: [new HTMLNodeEditTool()]
+    });
+    elementToAdd.findView(paper).addTools(toolView);
+    elementToAdd.findView(paper).hideTools();
+
     // -- SET VISUAL ATTRIBUTES --
 
     //Position
     elementToAdd.position(diagramJSON.position.x, diagramJSON.position.y);
 
-    //Title
+    //Title, type
     elementToAdd.attr({
-        label: {
-            text: HTMLNode.formatString(elementTitle, maxElementWidth / charWidth)
+        view_label_title: {
+            text: HTMLNode.formatString(elementTitle, elementMaxWidth / charWidth)
+        },
+        view_label_type: {
+            text: elementType
         }
     });
 
     //Size
-    HTMLNode.resizeElementBasedOnText(elementToAdd, paper, "label", undefined, {width: minElementWidth, height: minElementHeight});
+    HTMLNode.resizeElementBasedOnText(elementToAdd, paper, "view_");
 
     //Type (Set dropdown <select> menu to pre-select the right type)
     const typeAttrString = 'select' + elementType + "/props/selected";
@@ -149,6 +163,7 @@ function addElementToGraph(elementJSON, graph, paper, elementWidth = minElementW
      */
     elementToAdd.set('uuid', elementJSON.uuid);
     elementToAdd.set('elementType', elementType);
+    elementToAdd.set('viewMode', 'view');
 
     return elementToAdd; //For storing the runtime rect object
 }
