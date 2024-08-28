@@ -1,5 +1,5 @@
 import * as joint from "@joint/core/dist/joint.js"
-import graphData from './schema-compliant-cdd.json' assert {type: 'json'}
+import graphData from './schema_compliant_cdd.json' assert {type: 'json'}
 import {SaveButton} from "./uiButtons.js"
 import { HTMLNode, HTMLNodeView, HTMLNodeEditTool } from "./htmlNode.js"
 import {Config} from "./config.js"
@@ -38,6 +38,10 @@ var paper = new joint.dia.Paper({
 
 //Read graph rectangle data from JSON
 const graphElementsJSON = graphData.diagrams[0].elements;
+
+//Dictionary for storing original JSON representation of each element
+//Key: Element UUID from JSON
+//Value: Original JSON object for this element
 const elementsJSONMap = {};
 
 //Dictionary for storing runtime Rectangle objects
@@ -70,7 +74,7 @@ graphLinksJSON.forEach((linkData) => graphLinks[linkData.uuid] = addLinkToGraph(
 const functionButtons = {};
 
 //SAVE BUTTON
-const saveButton = new SaveButton([graphData, graphElements, graphLinks]);
+const saveButton = new SaveButton([graphData, graphElements, graphLinks, elementsJSONMap]);
 functionButtons[saveButton.uuid] = saveButton;
 saveButton.JointRect.addTo(graph);
 
@@ -164,10 +168,13 @@ function addElementToGraph(elementJSON, graph, paper, elementMaxWidth = Config.m
      * 
      * Element rectangle models will have the following fields:
      * uuid (string) - This element's UID. Used for storage/lookup in runtime rect dict
+     * name (string) - This element's human-readable name. Used for display on the diagram.
      * elementType (string) - Used to store the type of Decision Element contained in this area
+     * viewMode (enum ["view", "edit"]) - Currently not used? (TODO: Investigate 2024-08-28)
      */
     elementToAdd.set('uuid', elementJSON.uuid);
     elementToAdd.set('elementType', elementType);
+    elementToAdd.set('name', elementTitle);
     elementToAdd.set('viewMode', 'view');
 
     return elementToAdd; //For storing the runtime rect object

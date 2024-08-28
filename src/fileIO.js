@@ -3,25 +3,39 @@
  * to an updated json file. Prompts an immediate download of the JSON file.
  * 
  * @param {JSON} originalJSON The JSON file used to create the graph originally
- * @param {Array<joint.shapes.standard.Rectangle>} rects The array of updated rects to save
+ * @param {Map<string,joint.shapes.standard.Rectangle>} rects Map of updated runtime rects, by UUID
  * @param {Array<joint.shapes.standard.Link>} links The array of updated links to save
+ * @param {Map<string,JSON>} elementsJSONMap Map of element UUID to original JSON for that element
  * @param {string} fileName File name for output JSON file
  */
-export function saveGraphJSON(originalJSON, rects, links, fileName = "cdd.json")
+export function saveGraphJSON(originalJSON, rects, links, elementsJSONMap, fileName = "cdd.json")
 {
     console.log("SAVING...");
     
     const newElements = new Array();
-    originalJSON.diagrams[0].elements.forEach((node) => {
-        const rectFromGraph = rects[node.meta.uuid];
-        if(rectFromGraph !== null)
+    Object.keys(rects).forEach((uuid) => {
+        let newElementJSON = elementsJSONMap[uuid];
+        const rect = rects[uuid];
+        if(newElementJSON == null)
         {
-            const nodePosition = rectFromGraph.get('position');
-            node.content.position.x = nodePosition.x;
-            node.content.position.y = nodePosition.y;
-            node.causalType = rectFromGraph.get('elementType');
+            newElementJSON = {
+                "meta": {
+                    "uuid": uuid,
+                    "name": rect.get('name')
+                },
+                "content": {}
+            };
         }
-        newElements.push(node);
+        else
+        {
+            newElementJSON.meta.name = rect.get('name');
+        }
+        const elementPosition = rect.get('position');
+        newElementJSON.content.position.x = elementPosition.x;
+        newElementJSON.content.position.y = elementPosition.y;
+        newElementJSON.causalType = rect.get('elementType');
+
+        newElements.push(newElementJSON);
     });
 
     const jsonOut = originalJSON; //Preserve any existing metadata
