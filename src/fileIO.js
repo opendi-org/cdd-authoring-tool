@@ -12,21 +12,21 @@ export function saveGraphJSON(originalJSON, rects, links, fileName = "cdd.json")
     console.log("SAVING...");
     
     const newElements = new Array();
-    originalJSON.elements.forEach((node) => {
-        const rectFromGraph = rects[node.uuid];
+    originalJSON.diagrams[0].elements.forEach((node) => {
+        const rectFromGraph = rects[node.meta.uuid];
         if(rectFromGraph !== null)
         {
             const nodePosition = rectFromGraph.get('position');
-            node.diagram.position.x = nodePosition.x;
-            node.diagram.position.y = nodePosition.y;
-            node.type = rectFromGraph.get('elementType');
+            node.content.position.x = nodePosition.x;
+            node.content.position.y = nodePosition.y;
+            node.causalType = rectFromGraph.get('elementType');
         }
         newElements.push(node);
     });
 
     const jsonOut = originalJSON; //Preserve any existing metadata
-    jsonOut.elements = newElements; //Overwrite element information
-    jsonOut.dependencies = originalJSON.dependencies; //Later this will be set to something similar to newElements
+    jsonOut.diagrams[0].elements = newElements; //Overwrite element information
+    jsonOut.diagrams[0].dependencies = originalJSON.diagrams[0].dependencies; //Later this will be set to something similar to newElements
 
     console.log(JSON.stringify(jsonOut));
 

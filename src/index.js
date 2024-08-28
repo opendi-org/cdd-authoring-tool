@@ -37,7 +37,8 @@ var paper = new joint.dia.Paper({
 });
 
 //Read graph rectangle data from JSON
-const graphElementsJSON = graphData.elements;
+const graphElementsJSON = graphData.diagrams[0].elements;
+const elementsJSONMap = {};
 
 //Dictionary for storing runtime Rectangle objects
 //Key: Rectangle UUID from JSON (string)
@@ -45,11 +46,15 @@ const graphElementsJSON = graphData.elements;
 const graphElements = {};
 
 //Send each rect's JSON data to add-to-graph function. Store runtime rects in the dict
-graphElementsJSON.forEach((rectData) => graphElements[rectData.uuid] = addElementToGraph(rectData, graph, paper));
+graphElementsJSON.forEach((rectData) => {
+        graphElements[rectData.meta.uuid] = addElementToGraph(rectData, graph, paper);
+        elementsJSONMap[rectData.meta.uuid] = rectData;
+    }
+);
 
 
 //Read graph link data from JSON
-const graphLinksJSON = graphData.dependencies;
+const graphLinksJSON = graphData.diagrams[0].dependencies;
 
 //Dictionary for storing runtime Link objects
 //Key: Link UUID from JSON (string)
@@ -114,9 +119,9 @@ paper.on('element:mouseleave', function(view) {
  */
 function addElementToGraph(elementJSON, graph, paper, elementMaxWidth = Config.maxElementWidth, charWidth = 7)
 {
-    const diagramJSON = elementJSON.diagram;
-    const elementType = elementJSON.type;
-    const elementTitle = elementJSON.name;
+    const diagramJSON = elementJSON.content;
+    const elementType = elementJSON.causalType;
+    const elementTitle = elementJSON.meta.name;
 
     //Add a new element to the graph
     const elementToAdd = new HTMLNode();
