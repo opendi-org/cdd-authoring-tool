@@ -6,12 +6,14 @@
  * @param {Map<string,joint.shapes.standard.Rectangle>} rects Map of updated runtime rects, by UUID
  * @param {Array<joint.shapes.standard.Link>} links The array of updated links to save
  * @param {Map<string,JSON>} elementsJSONMap Map of element UUID to original JSON for that element
+ * @param {Map<string,JSON>} elementsJSONMap Map of dependency UUID to original JSON for that dependency
  * @param {string} fileName File name for output JSON file
  */
-export function saveGraphJSON(originalJSON, rects, links, elementsJSONMap, fileName = "cdd.json")
+export function saveGraphJSON(originalJSON, rects, links, elementsJSONMap, dependenciesJSONMap, fileName = "cdd.json")
 {
     console.log("SAVING...");
     
+    //Generate updated JSON for rect elements
     const newElements = new Array();
     Object.keys(rects).forEach((uuid) => {
         let newElementJSON = elementsJSONMap[uuid];
@@ -30,6 +32,7 @@ export function saveGraphJSON(originalJSON, rects, links, elementsJSONMap, fileN
         {
             newElementJSON.meta.name = rect.get('name');
         }
+        //These property names are defined in addRectToGraph() in index.js
         const elementPosition = rect.get('position');
         newElementJSON.content.position.x = elementPosition.x;
         newElementJSON.content.position.y = elementPosition.y;
@@ -38,9 +41,34 @@ export function saveGraphJSON(originalJSON, rects, links, elementsJSONMap, fileN
         newElements.push(newElementJSON);
     });
 
+    //Generate updated JSON for dependencies
+    const newDependencies = new Array();
+    Object.keys(links).forEach((uuid) => {
+        let newDependencyJSON = dependenciesJSONMap[uuid];
+        const link = links[uuid];
+        if(newDependencyJSON == null)
+        {
+            newDependencyJSON = {
+                "meta": {
+                    "uuid": uuid,
+                    "name": link.get('name')
+                },
+                "content": {}
+            };
+        }
+        //Currently no plans to allow named links
+        //But if those get added in the future, this should look like the else for elements. See above.
+
+        //These property names are defined in addLinkToGraph() in index.js
+        newDependencyJSON.source = link.get('source_uuid');
+        newDependencyJSON.target = link.get('target_uuid');
+
+        newDependencies.push(newDependencyJSON);
+    });
+
     const jsonOut = originalJSON; //Preserve any existing metadata
     jsonOut.diagrams[0].elements = newElements; //Overwrite element information
-    jsonOut.diagrams[0].dependencies = originalJSON.diagrams[0].dependencies; //Later this will be set to something similar to newElements
+    jsonOut.diagrams[0].dependencies = newDependencies;
 
     console.log(JSON.stringify(jsonOut));
 
