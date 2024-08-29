@@ -20,12 +20,20 @@ export function saveGraphJSON(originalJSON, rects, links, elementsJSONMap, depen
         const rect = rects[uuid];
         if(newElementJSON == null)
         {
+            console.log(uuid);
             newElementJSON = {
                 "meta": {
                     "uuid": uuid,
                     "name": rect.get('name')
                 },
-                "content": {}
+                "diaType": "box",
+                "content": {
+                    "position": {},
+                    "boundingBoxSize": {
+                        "width": 400,   //Default width
+                        "height": 500   //Default height (we don't use these)
+                    }
+                }
             };
         }
         else

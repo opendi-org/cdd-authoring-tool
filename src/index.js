@@ -1,8 +1,9 @@
 import * as joint from "@joint/core/dist/joint.js"
 import graphData from './schema_compliant_cdd.json' assert {type: 'json'}
-import {SaveButton} from "./uiButtons.js"
+import {SaveButton, FunctionButton} from "./uiButtons.js"
 import { HTMLNode, HTMLNodeView, HTMLNodeEditTool } from "./htmlNode.js"
 import {Config} from "./config.js"
+import { v4 as uuidv4 } from 'uuid';
 
 // --- MAIN GRAPH SETUP ---
 var namespace = {
@@ -85,6 +86,37 @@ const functionButtons = {};
 const saveButton = new SaveButton([graphData, graphElements, graphLinks, elementsJSONMap, dependenciesJSONMap]);
 functionButtons[saveButton.uuid] = saveButton;
 saveButton.JointRect.addTo(graph);
+
+const newElementButton = new FunctionButton(0, 25, 80, 20, "New Elem.", addNewElement, [graphElements, graph, paper]);
+functionButtons[newElementButton.uuid] = newElementButton;
+newElementButton.JointRect.addTo(graph);
+
+//TEST ADD NEW ELEMENT
+function addNewElement(graphElementsMap, graph, paper)
+{
+    const newElementUUID = uuidv4();
+    const addElementJSON = {
+        "meta": {
+            "uuid": newElementUUID,
+            "name": "TEST ADD"
+        },
+        "causalType": "Lever",
+        "diaType": "box",
+        "content": {
+            "position": {
+                "x": 100,
+                "y": 100
+            },
+            "boundingBoxSize": {
+                "width": 400,
+                "height": 500
+            }
+        }
+    };
+
+    graphElementsMap[newElementUUID] = addElementToGraph(addElementJSON, graph, paper);
+    //Don't add to elements OG JSON map
+}
 
 
 
