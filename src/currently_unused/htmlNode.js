@@ -1,5 +1,5 @@
 import * as joint from "@joint/core/dist/joint.js"
-import {Config} from "./config.js"
+import {Config} from "../config.js"
 
 /**
  * Custom JointJS element, defining a Node with HTML elements.

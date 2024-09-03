@@ -1,15 +1,15 @@
 import * as joint from "@joint/core/dist/joint.js"
 import graphData from './schema_compliant_cdd.json' assert {type: 'json'}
 import {SaveButton, FunctionButton} from "./uiButtons.js"
-import { HTMLNode, HTMLNodeView, HTMLNodeEditTool } from "./htmlNode.js"
+//import { HTMLNode, HTMLNodeView, HTMLNodeEditTool } from "./htmlNode.js"
+import {DecisionElement} from "./decisionElement/decisionElement.js"
 import {Config} from "./config.js"
 import { v4 as uuidv4 } from 'uuid';
 
 // --- MAIN GRAPH SETUP ---
 var namespace = {
     shapes: joint.shapes,
-    HTMLNode,
-    HTMLNodeView
+    DecisionElement
 }
 
 var graph = new joint.dia.Graph({}, { cellNamespace: namespace });
@@ -136,19 +136,6 @@ paper.on('element:pointerclick', function (cell) {
     }
 });
 
-/**
- * Mouse hover events - mouse enter
- */
-paper.on('element:mouseenter', function(view) {
-    view.showTools(); //Show edit button
-});
-
-/**
- * Mouse hover events - mouse leave
- */
-paper.on('element:mouseleave', function(view) {
-    view.hideTools(); //Hide edit button
-});
 
 // --- (OTHER) FUNCTIONS --
 
@@ -159,7 +146,7 @@ paper.on('element:mouseleave', function(view) {
  * @param {JSON} elementJSON Original raw JSON data for this element
  * @param {joint.dia.Graph} graph Graph object to add this element to
  * @param {Number} elementMaxWidth (Optional) Maximum width of this element
- * @returns {HTMLNode} Runtime representation of the element that was added
+ * @returns {DecisionElement} Runtime representation of the element that was added
  */
 function addElementToGraph(elementJSON, graph, paper, elementMaxWidth = Config.maxElementWidth, charWidth = 7)
 {
@@ -168,16 +155,8 @@ function addElementToGraph(elementJSON, graph, paper, elementMaxWidth = Config.m
     const elementTitle = elementJSON.meta.name;
 
     //Add a new element to the graph
-    const elementToAdd = new HTMLNode();
+    const elementToAdd = new DecisionElement();
     elementToAdd.addTo(graph);
-
-    // -- TOOLS SETUP --
-    
-    const toolView = new joint.dia.ToolsView({
-        tools: [new HTMLNodeEditTool()]
-    });
-    elementToAdd.findView(paper).addTools(toolView);
-    elementToAdd.findView(paper).hideTools();
 
     // -- SET VISUAL ATTRIBUTES --
 
@@ -186,16 +165,16 @@ function addElementToGraph(elementJSON, graph, paper, elementMaxWidth = Config.m
 
     //Title, type
     elementToAdd.attr({
-        view_label_title: {
-            text: HTMLNode.formatString(elementTitle, elementMaxWidth / charWidth)
+        content_label_title: {
+            text: DecisionElement.formatString(elementTitle, elementMaxWidth / charWidth)
         },
-        view_label_type: {
+        content_label_type: {
             text: elementType
         }
     });
 
     //Size
-    HTMLNode.resizeElementBasedOnText(elementToAdd, paper, "view_");
+    DecisionElement.resizeElementBasedOnText(elementToAdd, paper, "content");
 
     //Type (Set dropdown <select> menu to pre-select the right type)
     const typeAttrString = 'select' + elementType + "/props/selected";
@@ -210,12 +189,10 @@ function addElementToGraph(elementJSON, graph, paper, elementMaxWidth = Config.m
      * uuid (string) - This element's UID. Used for storage/lookup in runtime rect dict
      * name (string) - This element's human-readable name. Used for display on the diagram.
      * elementType (string) - Used to store the type of Decision Element contained in this area
-     * viewMode (enum ["view", "edit"]) - Currently not used? (TODO: Investigate 2024-08-28)
      */
     elementToAdd.set('uuid', elementJSON.meta.uuid);
     elementToAdd.set('elementType', elementType);
     elementToAdd.set('name', elementTitle);
-    elementToAdd.set('viewMode', 'view');
 
     return elementToAdd; //For storing the runtime rect object
 }
