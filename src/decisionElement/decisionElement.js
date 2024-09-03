@@ -8,13 +8,38 @@ export class DecisionElement extends joint.dia.Element {
 
         //Main SVG markup defining the element's visual components
         this.markup = joint.util.svg([`
-                <rect @selector="body"/>
-                <g @selector="content">
-                    <text @selector="content_label_title"/>
-                    <line @selector="content_divider"/>
-                    <text @selector="content_label_type"/>
-                </g>
-            `]);
+            <rect @selector="body"/>
+            <g @selector="content">
+                <text @selector="content_label_title"/>
+                <line @selector="content_divider"/>
+                <text @selector="content_label_type"/>
+            </g>
+        `]);
+        
+        this.selectedAttr = {
+            body: {
+                strokeWidth: 3,
+                fill: '#89d3f5'
+            },
+            content_label_title: {
+                fill: 'black'
+            },
+            content_label_type: {
+                fill: 'black'
+            }
+        },
+        this.defaultAttr = {
+            body: {
+                strokeWidth: 2,
+                fill: '#001fd1'
+            },
+            content_label_title: {
+                fill: 'white'
+            },
+            content_label_type: {
+                fill: 'white'
+            }
+        }
     }
 
     defaults() {
@@ -28,7 +53,7 @@ export class DecisionElement extends joint.dia.Element {
                     y: 0,
                     width: 'calc(w)',
                     height: 'calc(h)',
-                    fill: 'blue',
+                    fill: '#001fd1',
                     strokeWidth: 2,
                     stroke: 'black'
                 },
@@ -56,6 +81,16 @@ export class DecisionElement extends joint.dia.Element {
                 }
             }
         }
+    }
+
+    select()
+    {
+        this.attr(this.selectedAttr);
+    }
+
+    deselect()
+    {
+        this.attr(this.defaultAttr);
     }
 
 
