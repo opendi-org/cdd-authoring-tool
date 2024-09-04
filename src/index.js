@@ -79,9 +79,13 @@ const saveButton = new SaveButton([graphData, graphElements, graphLinks]);
 functionButtons[saveButton.uuid] = saveButton;
 saveButton.JointRect.addTo(graph);
 
-const newElementButton = new FunctionButton(0, 25, 80, 20, "New Elem.", addNewElement, [graphElements, graph, paper]);
+const newElementButton = new FunctionButton(0, 25, 80, 20, "New Elem", addNewElement, [graphElements, graph, paper]);
 functionButtons[newElementButton.uuid] = newElementButton;
 newElementButton.JointRect.addTo(graph);
+
+const deleteElementButton = new FunctionButton(0, 50, 80, 20, "Del Elem", deleteElements, [selectionBuffer, graphElements, graphLinks]);
+functionButtons[deleteElementButton.uuid] = deleteElementButton;
+deleteElementButton.JointRect.addTo(graph);
 
 //TEST ADD NEW ELEMENT
 function addNewElement(graphElementsMap, graph, paper)
@@ -108,6 +112,52 @@ function addNewElement(graphElementsMap, graph, paper)
 
     graphElementsMap[newElementUUID] = DecisionElement.addElementToGraph(addElementJSON, graph, paper);
     //Don't add to elements OG JSON map
+}
+
+//TEST DELETE ELEMENT
+function deleteElements(selectionBuffer, graphElementsMap, graphLinksMap)
+{
+    //Filter an array to unique values only
+    //Thanks: https://stackoverflow.com/a/14438954
+    const uniqueFilter = (value, index, array) => {
+        return array.indexOf(value) === index;
+    }
+
+    //Get arrays of elements and dependencies to delete. Use counts for confirmation dialogue.
+    const elemsToDelete = selectionBuffer.buffer.filter(uniqueFilter);
+    const numElemsToDelete = elemsToDelete.length;
+
+    let depsToDelete = [];
+    elemsToDelete.forEach((elem) => {
+        depsToDelete.push(...elem.associatedDependencies);
+    });
+    depsToDelete = depsToDelete.filter(uniqueFilter);
+    const numDepsToDelete = depsToDelete.length;
+
+    if(confirm("Deleting  " + numElemsToDelete + " element/s and " + numDepsToDelete + " associated dependency/ies. Are you sure?"))
+    {
+        //Delete all dependencies
+        depsToDelete.forEach((depUUID) => {
+            //Deregister this dependency from the "associated dependencies" list in its source and target DecisionElement objects
+            const deregisterSelf = (depUUID) => {
+                const dep = graphLinksMap[depUUID];
+                const idxAtSource = dep.runtimeSource.associatedDependencies.indexOf(depUUID);
+                const idxAtTarget = dep.runtimeTarget.associatedDependencies.indexOf(depUUID);
+                dep.runtimeSource.associatedDependencies.splice(idxAtSource, 1);
+                dep.runtimeTarget.associatedDependencies.splice(idxAtTarget, 1);
+            }
+
+            deregisterSelf(depUUID);            //Helper defined above
+            graphLinksMap[depUUID].remove();    //JointJS: remove from actual graph
+            delete graphLinksMap[depUUID];      //Remove from master dict of links
+        });
+
+        //Delete all elements
+        elemsToDelete.forEach((elem) => {
+            elem.remove();                                          //JointJS: remove from actual graph
+            delete graphElementsMap[elem.originalJSON.meta.uuid];   //Remove from master dict of elements
+        });
+    }
 }
 
 
