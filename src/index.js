@@ -56,14 +56,13 @@ const selectionBuffer = new SelectionBuffer();
 
 //Send each rect's JSON data to add-to-graph function. Store runtime rects in the dict
 graphElementsJSON.forEach((rectData) => {
-        graphElements[rectData.meta.uuid] = addElementToGraph(rectData, graph, paper);
+        graphElements[rectData.meta.uuid] = DecisionElement.addElementToGraph(rectData, graph, paper);
         elementsJSONMap[rectData.meta.uuid] = rectData;
     }
 );
 
-
 //Read graph link data from JSON
-const graphLinksJSON = graphData.diagrams[0].dependencies;
+const graphDependenciesJSON = graphData.diagrams[0].dependencies;
 
 //Dictionary for storing original JSON representation of each dependency
 //Key: Dependency UUID from JSON
@@ -76,9 +75,9 @@ const dependenciesJSONMap = {};
 const graphLinks = {};
 
 //Send each link to add-to-graph function
-graphLinksJSON.forEach((linkData) => {
-    graphLinks[linkData.meta.uuid] = addLinkToGraph(linkData, graph, graphElements);
-    dependenciesJSONMap[linkData.meta.uuid] = linkData;
+graphDependenciesJSON.forEach((depData) => {
+    graphLinks[depData.meta.uuid] = addLinkToGraph(depData, graph, graphElements);
+    dependenciesJSONMap[depData.meta.uuid] = depData;
 });
 
 //Dictionary for storing runtime Function Button objects
@@ -118,7 +117,7 @@ function addNewElement(graphElementsMap, graph, paper)
         }
     };
 
-    graphElementsMap[newElementUUID] = addElementToGraph(addElementJSON, graph, paper);
+    graphElementsMap[newElementUUID] = DecisionElement.addElementToGraph(addElementJSON, graph, paper);
     //Don't add to elements OG JSON map
 }
 
@@ -166,63 +165,6 @@ paper.on('blank:pointerup', function (evt, x, y) {
 
 // --- (OTHER) FUNCTIONS --
 
-/**
- * Add an element with the given JSON values to the given graph.
- * Element JSON must be OpenDI-compliant.
- * 
- * @param {JSON} elementJSON Original raw JSON data for this element
- * @param {joint.dia.Graph} graph Graph object to add this element to
- * @param {Number} elementMaxWidth (Optional) Maximum width of this element
- * @returns {DecisionElement} Runtime representation of the element that was added
- */
-function addElementToGraph(elementJSON, graph, paper, elementMaxWidth = Config.maxElementWidth, charWidth = 7)
-{
-    const diagramJSON = elementJSON.content;
-    const elementType = elementJSON.causalType;
-    const elementTitle = elementJSON.meta.name;
-
-    //Add a new element to the graph
-    const elementToAdd = new DecisionElement();
-    elementToAdd.addTo(graph);
-
-    // -- SET VISUAL ATTRIBUTES --
-
-    //Position
-    elementToAdd.position(diagramJSON.position.x, diagramJSON.position.y);
-
-    //Title, type
-    elementToAdd.attr({
-        content_label_title: {
-            text: DecisionElement.formatString(elementTitle, elementMaxWidth / charWidth)
-        },
-        content_label_type: {
-            text: elementType
-        }
-    });
-
-    //Size
-    DecisionElement.resizeElementBasedOnText(elementToAdd, paper, "content");
-
-    //Type (Set dropdown <select> menu to pre-select the right type)
-    const typeAttrString = 'select' + elementType + "/props/selected";
-    elementToAdd.attr(typeAttrString, true);
-
-    /*
-     * -- SET MODEL FIELDS --
-     * 
-     * See JointJS docs: https://resources.jointjs.com/docs/jointjs/v4.0/joint.html#mvc.Model.prototype.set
-     * 
-     * Element rectangle models will have the following fields:
-     * uuid (string) - This element's UID. Used for storage/lookup in runtime rect dict
-     * name (string) - This element's human-readable name. Used for display on the diagram.
-     * elementType (string) - Used to store the type of Decision Element contained in this area
-     */
-    elementToAdd.set('uuid', elementJSON.meta.uuid);
-    elementToAdd.set('elementType', elementType);
-    elementToAdd.set('name', elementTitle);
-
-    return elementToAdd; //For storing the runtime rect object
-}
 
 /**
  * Add a link with the given JSON values to the given graph.

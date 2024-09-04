@@ -27,7 +27,7 @@ export class DecisionElement extends joint.dia.Element {
             content_label_type: {
                 fill: 'black'
             }
-        },
+        };
         this.defaultAttr = {
             body: {
                 strokeWidth: 2,
@@ -39,7 +39,9 @@ export class DecisionElement extends joint.dia.Element {
             content_label_type: {
                 fill: 'white'
             }
-        }
+        };
+
+        this.originalJSON = {};
     }
 
     defaults() {
@@ -195,17 +197,71 @@ export class DecisionElement extends joint.dia.Element {
         var resize = {width: textBBox.width + pad.width, height: textBBox.height + pad.height};
 
         //Adhere to provided minima
-        if(resize.width < minimum.width)
-        {
-            resize.width = minimum.width;
-        }
-        if(resize.height < minimum.height)
-        {
-            resize.height = minimum.height;
-        }
-
+        resize.width = Math.max(resize.width, minimum.width);
+        resize.height = Math.max(resize.height, minimum.height);
 
         elementToResize.resize(resize.width, resize.height);
+    }
+
+    /**
+     * Add an element with the given JSON values to the given graph.
+     * Element JSON must be OpenDI-compliant.
+     * 
+     * @param {JSON} elementJSON Original raw JSON data for this element
+     * @param {joint.dia.Graph} graph Graph object to add this element to
+     * @param {Number} elementMaxWidth (Optional) Maximum width of this element
+     * @returns {DecisionElement} Runtime representation of the element that was added
+     */
+    static addElementToGraph(elementJSON, graph, paper, elementMaxWidth = Config.maxElementWidth, charWidth = 7)
+    {
+        const diagramJSON = elementJSON.content;
+        const elementType = elementJSON.causalType;
+        const elementTitle = elementJSON.meta.name;
+    
+        //Add a new element to the graph
+        const elementToAdd = new DecisionElement();
+        elementToAdd.addTo(graph);
+
+        //Set runtime properties
+        elementToAdd.originalJSON = elementJSON;
+    
+        // -- SET VISUAL ATTRIBUTES --
+    
+        //Position
+        elementToAdd.position(diagramJSON.position.x, diagramJSON.position.y);
+    
+        //Title, type
+        elementToAdd.attr({
+            content_label_title: {
+                text: DecisionElement.formatString(elementTitle, elementMaxWidth / charWidth)
+            },
+            content_label_type: {
+                text: elementType
+            }
+        });
+    
+        //Size
+        DecisionElement.resizeElementBasedOnText(elementToAdd, paper, "content");
+    
+        //Type (Set dropdown <select> menu to pre-select the right type)
+        const typeAttrString = 'select' + elementType + "/props/selected";
+        elementToAdd.attr(typeAttrString, true);
+    
+        /*
+         * -- SET MODEL FIELDS --
+         * 
+         * See JointJS docs: https://resources.jointjs.com/docs/jointjs/v4.0/joint.html#mvc.Model.prototype.set
+         * 
+         * Element rectangle models will have the following fields:
+         * uuid (string) - This element's UID. Used for storage/lookup in runtime rect dict
+         * name (string) - This element's human-readable name. Used for display on the diagram.
+         * elementType (string) - Used to store the type of Decision Element contained in this area
+         */
+        elementToAdd.set('uuid', elementJSON.meta.uuid);
+        elementToAdd.set('elementType', elementType);
+        elementToAdd.set('name', elementTitle);
+    
+        return elementToAdd; //For storing the runtime rect object
     }
 
 };
