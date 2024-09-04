@@ -140,7 +140,7 @@ paper.on('element:pointerup', function (cellView)
     const decisionElem = graphElements[cellUUID]
     if(decisionElem != null)
     {
-        selectionBuffer.updateSelections(decisionElem);
+        selectionBuffer.updateSelections(graphLinks, decisionElem);
     }
 });
 
@@ -148,5 +148,5 @@ paper.on('element:pointerup', function (cellView)
  * Pointer up event (non-element, blank area of the paper)
  */
 paper.on('blank:pointerup', function (evt, x, y) {
-    selectionBuffer.updateSelections();
+    selectionBuffer.updateSelections(graphLinks);
 });

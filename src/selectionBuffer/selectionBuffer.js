@@ -23,7 +23,24 @@ export class SelectionBuffer {
      * Elements passed in that are already in the buffer get re-inserted at front of buffer.
      * @param {DecisionElement} elemToSelect The element to select. Pass null to clear all selections.
      */
-    updateSelections(elemToSelect = null) {
+    updateSelections(dependenciesMap, elemToSelect = null) {
+
+        /**
+         * lil helper function
+         * Select or deselect dependencies associated with an element, as needed.
+         * Defer to @see {CausalDependency.updateSelection} for (de)selection logic.
+         * @param {DecisionElement} elem The selected or deselected element, whose dependencies need to be (de)selected.
+         */
+        const updateDepsForElement = (elem) => {
+            elem.associatedDependencies.forEach((depUUID) => {
+                //Get runtime representation for this dependency
+                const dep = dependenciesMap[depUUID];
+                dep.updateSelection();  //Run (de)selection logic
+            });
+        };
+
+
+        //MAIN LOGIC START
 
         //Are we adding or clearing?
         if(elemToSelect !== null)           //Adding: Add to end of queue
@@ -32,18 +49,26 @@ export class SelectionBuffer {
         }
         else                                //Clearing: Deselect all and empty queue
         {
-            this.buffer.forEach((elem) => elem.deselect());
+            this.buffer.forEach((elem) => {
+                elem.deselect();
+                updateDepsForElement(elem);
+            });
             this.buffer = [];
         }
 
         //Adjust to buffer max. Shift to remove from front of queue, then deselect shifted.
         while(this.buffer.length > this.bufferSize)
         {
-            this.buffer.shift().deselect();
+            const deselectedElement = this.buffer.shift();
+            deselectedElement.deselect();
+            updateDepsForElement(deselectedElement);
         }
 
         //Now that buffer is updated, select everything in it.
         //Usually this is just one element, unless we're multi-selecting.
-        this.buffer.forEach((elem) => elem.select());
+        this.buffer.forEach((elem) => {
+            elem.select();
+            updateDepsForElement(elem);
+        });
     }
 }

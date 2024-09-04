@@ -41,6 +41,9 @@ export class DecisionElement extends joint.dia.Element {
             }
         };
 
+        //This field used by CausalDependency for its updateSelection() logic
+        this.isSelected = false;
+
         this.originalJSON = {};
         
         //UUIDs
@@ -91,11 +94,14 @@ export class DecisionElement extends joint.dia.Element {
     select()
     {
         this.attr(this.selectedAttr);
+        this.isSelected = true;
+        this.toFront();
     }
 
     deselect()
     {
         this.attr(this.defaultAttr);
+        this.isSelected = false;
     }
 
 
