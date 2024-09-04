@@ -9,15 +9,15 @@
  * @param {Map<string,JSON>} elementsJSONMap Map of dependency UUID to original JSON for that dependency
  * @param {string} fileName File name for output JSON file
  */
-export function saveGraphJSON(originalJSON, rects, links, elementsJSONMap, dependenciesJSONMap, fileName = "cdd.json")
+export function saveGraphJSON(originalJSON, rects, links, fileName = "cdd.json")
 {
     console.log("SAVING...");
     
     //Generate updated JSON for rect elements
     const newElements = new Array();
     Object.keys(rects).forEach((uuid) => {
-        let newElementJSON = elementsJSONMap[uuid];
         const rect = rects[uuid];
+        let newElementJSON = rect.originalJSON;
         if(newElementJSON == null)
         {
             console.log(uuid);
@@ -52,8 +52,8 @@ export function saveGraphJSON(originalJSON, rects, links, elementsJSONMap, depen
     //Generate updated JSON for dependencies
     const newDependencies = new Array();
     Object.keys(links).forEach((uuid) => {
-        let newDependencyJSON = dependenciesJSONMap[uuid];
         const link = links[uuid];
+        let newDependencyJSON = link.originalJSON;
         if(newDependencyJSON == null)
         {
             newDependencyJSON = {

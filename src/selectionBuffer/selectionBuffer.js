@@ -1,4 +1,4 @@
-import { DecisionElement } from "../decisionElement/decisionElement";
+import { DecisionElement } from "../graphComponents/decisionElement";
 
 /**
  * Simple class for keeping track of selected elements.

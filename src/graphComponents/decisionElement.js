@@ -42,6 +42,9 @@ export class DecisionElement extends joint.dia.Element {
         };
 
         this.originalJSON = {};
+        
+        //UUIDs
+        this.associatedDependencies = [];
     }
 
     defaults() {

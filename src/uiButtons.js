@@ -77,7 +77,7 @@ export class FunctionButton {
  */
 export class SaveButton extends FunctionButton {
     /**
-     * @param {Array<any>} args Needs: Original JSON, current rects map, current links array, original JSON elements map, original JSON dependencies map
+     * @param {Array<any>} args Needs: Original JSON, current rects map, current links array
      * @see fileIO.saveGraphJSON
      */
     constructor(args) {
@@ -85,8 +85,8 @@ export class SaveButton extends FunctionButton {
         this.callback = this.saveCallback;
     }
 
-    saveCallback(originalJSON, rects, links, elementsJSONMap, dependenciesJSONMap)
+    saveCallback(originalJSON, rects, links)
     {
-        fileIO.saveGraphJSON(originalJSON, rects, links, elementsJSONMap, dependenciesJSONMap);
+        fileIO.saveGraphJSON(originalJSON, rects, links);
     }
 }
