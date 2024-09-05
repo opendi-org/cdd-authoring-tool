@@ -187,9 +187,11 @@ paper.on('element:pointerup', function (cellView)
     const cellUUID = cellView.model.get('uuid');
 
     //See if it's a decision element
-    const decisionElem = graphElements[cellUUID]
+    const decisionElem = graphElements[cellUUID];
     if(decisionElem != null)
     {
+        //Select the element
+        selectionBuffer.bufferSize = SelectionBuffer.DefaultBufferSize;
         selectionBuffer.updateSelections(graphLinks, decisionElem);
     }
 });
@@ -198,5 +200,23 @@ paper.on('element:pointerup', function (cellView)
  * Pointer up event (non-element, blank area of the paper)
  */
 paper.on('blank:pointerup', function (evt, x, y) {
+    //Deselect elements
+    selectionBuffer.bufferSize = SelectionBuffer.DefaultBufferSize;
     selectionBuffer.updateSelections(graphLinks);
 });
+
+/**
+ * Right-click event (elements)
+ */
+paper.on('element:contextmenu', function(cell) {
+    const cellUUID = cell.model.get('uuid');
+
+    //See if it's a decision element
+    const decisionElem = graphElements[cellUUID];
+    if(decisionElem != null)
+    {
+        //Multi-select elements
+        selectionBuffer.bufferSize = SelectionBuffer.MaxBufferSize;
+        selectionBuffer.updateSelections(graphLinks, decisionElem);
+    }
+})

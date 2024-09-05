@@ -7,11 +7,15 @@ import { DecisionElement } from "../graphComponents/decisionElement";
  * @property {Array<DecisionElement>} buffer: Queue of selected elements
  */
 export class SelectionBuffer {
+
+    static DefaultBufferSize = 1;
+    static MaxBufferSize = 50;
+
     /**
      * Construct a selection buffer, for keeping track of selected elements.
      * @param {Number} bufferSize Maximum number of elements in the selection queue
      */
-    constructor(bufferSize = 1) {
+    constructor(bufferSize = this.DefaultBufferSize) {
         this.bufferSize = bufferSize;
         this.buffer = [];
     }
