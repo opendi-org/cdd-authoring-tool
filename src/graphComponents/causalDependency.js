@@ -48,7 +48,7 @@ export class CausalDependency extends joint.shapes.standard.Link {
      * 
      * @param {JSON} linkJSON Original raw JSON data for this link
      * @param {joint.dia.Graph} graph Graph object to add this link to
-     * @param {Array<joint.shapes.standard.Rectangle>} elementsInGraph Array of all decision elements in the graph
+     * @param {Map<string,joint.shapes.standard.Rectangle>} elementsInGraph Map of all decision elements in the graph
      * @returns {joint.shapes.standard.Link} Runtime representation of the link that was added
      */
     static addLinkToGraph(linkJSON, graph, elementsInGraph)

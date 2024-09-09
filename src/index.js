@@ -87,6 +87,10 @@ const deleteElementButton = new FunctionButton(0, 50, 80, 20, "Del Elem", delete
 functionButtons[deleteElementButton.uuid] = deleteElementButton;
 deleteElementButton.JointRect.addTo(graph);
 
+const toggleDependencyButton = new FunctionButton(0, 75, 80, 20, "Toggle Dep", toggleDependency, [selectionBuffer, graphElements, graphLinks, graph]);
+functionButtons[toggleDependencyButton.uuid] = toggleDependencyButton;
+toggleDependencyButton.JointRect.addTo(graph);
+
 //TEST ADD NEW ELEMENT
 function addNewElement(graphElementsMap, graph, paper)
 {
@@ -114,6 +118,22 @@ function addNewElement(graphElementsMap, graph, paper)
     //Don't add to elements OG JSON map
 }
 
+function deleteDependency(depUUID, graphLinksMap)
+{
+    //Deregister this dependency from the "associated dependencies" list in its source and target DecisionElement objects
+    const deregisterSelf = (depUUID) => {
+        const dep = graphLinksMap[depUUID];
+        const idxAtSource = dep.runtimeSource.associatedDependencies.indexOf(depUUID);
+        const idxAtTarget = dep.runtimeTarget.associatedDependencies.indexOf(depUUID);
+        dep.runtimeSource.associatedDependencies.splice(idxAtSource, 1);
+        dep.runtimeTarget.associatedDependencies.splice(idxAtTarget, 1);
+    }
+
+    deregisterSelf(depUUID);            //Helper defined above
+    graphLinksMap[depUUID].remove();    //JointJS: remove from actual graph
+    delete graphLinksMap[depUUID];      //Remove from master dict of links
+}
+
 //TEST DELETE ELEMENT
 function deleteElements(selectionBuffer, graphElementsMap, graphLinksMap)
 {
@@ -138,18 +158,7 @@ function deleteElements(selectionBuffer, graphElementsMap, graphLinksMap)
     {
         //Delete all dependencies
         depsToDelete.forEach((depUUID) => {
-            //Deregister this dependency from the "associated dependencies" list in its source and target DecisionElement objects
-            const deregisterSelf = (depUUID) => {
-                const dep = graphLinksMap[depUUID];
-                const idxAtSource = dep.runtimeSource.associatedDependencies.indexOf(depUUID);
-                const idxAtTarget = dep.runtimeTarget.associatedDependencies.indexOf(depUUID);
-                dep.runtimeSource.associatedDependencies.splice(idxAtSource, 1);
-                dep.runtimeTarget.associatedDependencies.splice(idxAtTarget, 1);
-            }
-
-            deregisterSelf(depUUID);            //Helper defined above
-            graphLinksMap[depUUID].remove();    //JointJS: remove from actual graph
-            delete graphLinksMap[depUUID];      //Remove from master dict of links
+            deleteDependency(depUUID, graphLinksMap);
         });
 
         //Delete all elements
@@ -157,6 +166,108 @@ function deleteElements(selectionBuffer, graphElementsMap, graphLinksMap)
             elem.remove();                                          //JointJS: remove from actual graph
             delete graphElementsMap[elem.originalJSON.meta.uuid];   //Remove from master dict of elements
         });
+    }
+}
+
+/**
+ * Creates a fresh dependency with the given source and target elements, and adds it to the given graph.
+ * 
+ * @param {DecisionElement} sourceElem Source element for the dependency
+ * @param {DecisionElement} targetElem Target element for the dependency
+ * @param {Map<string,CausalDependency>} graphLinksMap Map of dependency UUIDs to runtime representations of dependencies
+ * @param {Map<string,DecisionElement>} graphElementsMap Map of element UUIDs to runtime representations of elements
+ * @param {joint.dia.graph} graph Graph to add dependency to
+ */
+function addNewDependency(sourceElem, targetElem, graphLinksMap, graphElementsMap, graph)
+{
+    const newDepUUID = uuidv4();
+    const newDepName = "" + sourceElem.originalJSON.meta.name + " --> " + targetElem.originalJSON.meta.name;
+    const sourceUUID = sourceElem.originalJSON.meta.uuid;
+    const targetUUID = targetElem.originalJSON.meta.uuid;
+    const addDepJSON = {
+        "meta": {
+            "uuid": newDepUUID,
+            "name": newDepName
+        },
+        "source": sourceUUID,
+        "target": targetUUID
+    };
+
+    graphLinksMap[newDepUUID] = CausalDependency.addLinkToGraph(addDepJSON, graph, graphElementsMap);
+}
+
+//TEST TOGGLE DEPENDENCY
+function toggleDependency(selectionBuffer, graphElementsMap, graphLinksMap, graph)
+{
+    /**
+     * lil helper function
+     * Checks to see if a dependency already exists between the given source element and target element.
+     * If found, returns UUID for the dependency. Otherwise, returns null.
+     * @param {DecisionElement} sourceElem Source element to check
+     * @param {DecisionElement} targetElem Target element to check
+     * @returns {string} UUID of found existing dependency. null if no dependency found.
+     */
+    const dependencyExists = (sourceElem, targetElem) => {
+        const targetUUID = targetElem.originalJSON.meta.uuid;
+        let result = null;
+        //Check associated dependencies on the source.
+        //See if associated target matches the target we're checking.
+        sourceElem.associatedDependencies.forEach((depUUID) => {
+            const associatedTargetUUID = graphLinksMap[depUUID].runtimeTarget.originalJSON.meta.uuid;
+            if(associatedTargetUUID == targetUUID)
+            {
+                result = depUUID;
+            }
+        });
+
+        return result;
+    }
+
+    
+    //MAIN LOGIC STARTS HERE
+
+    //Make sure we have enough selected to bother
+    if(selectionBuffer.buffer.length >= 2)
+    {
+        /**
+         * Run through the selection buffer, pairwise. Initially, assume that we will add
+         * new deps wherever they are missing. However, if we get to the end of the buffer
+         * and no deps were missing, remove all deps. To make this easier, keep a running
+         * list of existing deps until the first "hole" is found. That way, if no holes
+         * exist, we'll have our list of deletions ready.
+         */
+        let someDepsMissing = false;
+        let existingDeps = [];
+        for(let bufferIdx = 0; bufferIdx + 1 < selectionBuffer.buffer.length; bufferIdx++)
+        {
+            //Skip instances where consecutive selections are the same (double-selected one element)
+            if(selectionBuffer.buffer[bufferIdx].originalJSON.meta.uuid !== selectionBuffer.buffer[bufferIdx + 1].originalJSON.meta.uuid)
+            {
+                const existingDepUUID = dependencyExists(selectionBuffer.buffer[bufferIdx], selectionBuffer.buffer[bufferIdx + 1]);
+                if(existingDepUUID !== null)
+                {
+                    //If this flag is set, no need to occupy more memory. We won't use this array.
+                    if(!someDepsMissing)
+                    {
+                        existingDeps.push(existingDepUUID);
+                    }
+                }
+                else
+                {
+                    someDepsMissing = true;
+                    addNewDependency(selectionBuffer.buffer[bufferIdx], selectionBuffer.buffer[bufferIdx + 1], graphLinksMap, graphElementsMap, graph);
+                }
+            }
+        }
+
+        //If we got through the whole buffer and added no new deps,
+        //delete all existing deps.
+        if(!someDepsMissing)
+        {
+            existingDeps.forEach((depUUID) => {
+                deleteDependency(depUUID, graphLinksMap);
+            });
+        }
     }
 }
 
