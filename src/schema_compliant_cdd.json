@@ -1,0 +1,183 @@
+{
+    "$schema": "./schema/Causal-Decision-Model.json",
+    "meta": {
+        "uuid": "98f56597-75d8-441a-bd19-239db7d1b4f4",
+        "name": "Test CDD for authoring demo."
+    },
+    "diagrams": [
+        {
+            "meta": {
+                "uuid": "ef40e7b4-1a11-46ab-8a43-38821c595b66",
+                "name": "CDD"
+            },
+            "elements": [
+                {
+                    "meta": {
+                        "uuid": "7bf2ad85-c050-41e4-a864-750e6a61e920",
+                        "name": "Create a compelling value proposition"
+                    },
+                    "causalType": "Intermediate",
+                    "diaType": "box",
+                    "content": {
+                        "position": {
+                            "x": 316,
+                            "y": 595
+                        },
+                        "boundingBoxSize": {
+                            "width": 400,
+                            "height": 500
+                        }
+                    }
+                },
+                {
+                    "meta": {
+                        "uuid": "fafe61b6-9826-4dff-8454-86c79385a17d",
+                        "name": "Promote services and mentorship program"
+                    },
+                    "causalType": "External",
+                    "diaType": "box",
+                    "content": {
+                        "position": {
+                            "x": 461,
+                            "y": 0
+                        },
+                        "boundingBoxSize": {
+                            "width": 400,
+                            "height": 500
+                        }
+                    }
+                },
+                {
+                    "meta": {
+                        "uuid": "84357a26-7547-453f-a38d-eb2bd7dabea5",
+                        "name": "Gain exposure"
+                    },
+                    "causalType": "Intermediate",
+                    "diaType": "box",
+                    "content": {
+                        "position": {
+                            "x": 332,
+                            "y": 479
+                        },
+                        "boundingBoxSize": {
+                            "width": 400,
+                            "height": 500
+                        }
+                    }
+                },
+                {
+                    "meta": {
+                        "uuid": "e104404a-62fe-467a-a2d9-2dc70077a6cc",
+                        "name": "Reach out to professional networks and organizations"
+                    },
+                    "causalType": "Lever",
+                    "diaType": "box",
+                    "content": {
+                        "position": {
+                            "x": 0,
+                            "y": 454
+                        },
+                        "boundingBoxSize": {
+                            "width": 400,
+                            "height": 500
+                        }
+                    }
+                },
+                {
+                    "meta": {
+                        "uuid": "823b69f9-9ef5-49a7-b2a8-48437509efcd",
+                        "name": "Increase your network"
+                    },
+                    "causalType": "Outcome",
+                    "diaType": "box",
+                    "content": {
+                        "position": {
+                            "x": 707,
+                            "y": 667
+                        },
+                        "boundingBoxSize": {
+                            "width": 400,
+                            "height": 500
+                        }
+                    }
+                },
+                {
+                    "meta": {
+                        "uuid": "b92ab786-60c5-48e6-a786-2ccac4fbf9ae",
+                        "name": "My happiness"
+                    },
+                    "causalType": "Intermediate",
+                    "diaType": "box",
+                    "content": {
+                        "position": {
+                            "x": 0,
+                            "y": 11
+                        },
+                        "boundingBoxSize": {
+                            "width": 400,
+                            "height": 500
+                        }
+                    }
+                }
+            ],
+            "dependencies": [
+                {
+                    "meta": {
+                        "uuid": "901208f2-2fa0-41e5-81e1-d99d3b865bf4",
+                        "name": "Create a compelling value proposition --> Gain exposure"
+                    },
+                    "source": "7bf2ad85-c050-41e4-a864-750e6a61e920",
+                    "target": "84357a26-7547-453f-a38d-eb2bd7dabea5"
+                },
+                {
+                    "meta": {
+                        "uuid": "41653199-0b91-47ea-a628-b34d2990fd67",
+                        "name": "Create a compelling value proposition --> Promote services and mentorship program"
+                    },
+                    "source": "7bf2ad85-c050-41e4-a864-750e6a61e920",
+                    "target": "fafe61b6-9826-4dff-8454-86c79385a17d"
+                },
+                {
+                    "meta": {
+                        "uuid": "a273ecad-08e7-4ab8-afd3-96c4d6e359e5",
+                        "name": "Promote services and mentorship program --> Increase your network"
+                    },
+                    "source": "fafe61b6-9826-4dff-8454-86c79385a17d",
+                    "target": "823b69f9-9ef5-49a7-b2a8-48437509efcd"
+                },
+                {
+                    "meta": {
+                        "uuid": "4e1a7570-d56e-4089-aef9-6f14438a775d",
+                        "name": "Gain exposure --> Promote services and mentorship program" 
+                    },
+                    "source": "84357a26-7547-453f-a38d-eb2bd7dabea5",
+                    "target": "fafe61b6-9826-4dff-8454-86c79385a17d"
+                },
+                {
+                    "meta": {
+                        "uuid": "27361b6e-9ac2-4bab-b3c1-b6777895871e",
+                        "name": "Reach out to professional networks and organizations --> Create a compelling value proposition"
+                    },
+                    "source": "e104404a-62fe-467a-a2d9-2dc70077a6cc",
+                    "target": "7bf2ad85-c050-41e4-a864-750e6a61e920"
+                },
+                {
+                    "meta": {
+                        "uuid": "47ea5167-c209-4e14-b42a-23047c581cc9",
+                        "name": "Promote services and mentorship program --> Reach out to professional networks and organizations"
+                    },
+                    "source": "fafe61b6-9826-4dff-8454-86c79385a17d",
+                    "target": "e104404a-62fe-467a-a2d9-2dc70077a6cc"
+                },
+                {
+                    "meta": {
+                        "uuid": "756b249c-cf4e-46e0-ac35-09f86cae9972",
+                        "name": "Reach out to professional networks and organizations --> My happiness"
+                    },
+                    "source": "e104404a-62fe-467a-a2d9-2dc70077a6cc",
+                    "target": "b92ab786-60c5-48e6-a786-2ccac4fbf9ae"
+                }
+            ]
+        }
+    ]
+}

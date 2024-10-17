@@ -77,7 +77,8 @@ export class FunctionButton {
  */
 export class SaveButton extends FunctionButton {
     /**
-     * @param {Array<any>} args Needs: Original JSON, current rects array, current links array
+     * @param {Array<any>} args Needs: Original JSON, current rects map, current links array
+     * @see fileIO.saveGraphJSON
      */
     constructor(args) {
         super(0, 0, 80, 20, "Download", null, args);

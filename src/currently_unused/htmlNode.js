@@ -1,4 +1,5 @@
 import * as joint from "@joint/core/dist/joint.js"
+import {Config} from "../config.js"
 
 /**
  * Custom JointJS element, defining a Node with HTML elements.
@@ -17,22 +18,32 @@ export class HTMLNode extends joint.dia.Element {
         //Main SVG markup defining the element's visual components
         this.markup = joint.util.svg([`
         <rect @selector="body"/>
-        <text @selector="label"/>
-        <foreignObject @selector="typeSelector">
-        <div
-            xmlns="http://www.w3.org/1999/xhtml"
-            class="outer"
-        >
-            <div class="inner">
-                <select @selector="select">
-                    <option value="Lever" @selector="selectLever">Lever</option>
-                    <option value="External" @selector="selectExternal">External</option>
-                    <option value="Intermediate" @selector="selectIntermediate">Intermediate</option>
-                    <option value="Outcome" @selector="selectOutcome">Outcome</option>
-                </select>
-            </div>
-        </div>
-        </foreignObject>
+        <g @selector="view_">
+            <text @selector="view_label_title"/>
+            <line @selector="view_divider"/>
+            <text @selector="view_label_type"/>
+        </g>
+        <g @selector="edit_">
+            <foreignObject @selector="edit_html">
+                <div
+                    xmlns="http://www.w3.org/1999/xhtml"
+                    class="outer"
+                >
+                    <div>
+                        <textarea @selector="edit_textarea_title"></textarea>
+                    </div>
+                    <br/>
+                    <div>
+                        <select @selector="edit_select_type">
+                            <option value="Lever" @selector="selectLever">Lever</option>
+                            <option value="External" @selector="selectExternal">External</option>
+                            <option value="Intermediate" @selector="selectIntermediate">Intermediate</option>
+                            <option value="Outcome" @selector="selectOutcome">Outcome</option>
+                        </select>
+                    </div>
+                </div>
+            </foreignObject>
+        </g>
         `]);
     }
 
@@ -51,24 +62,52 @@ export class HTMLNode extends joint.dia.Element {
                     strokeWidth: 2,
                     stroke: "black"
                 },
+                view_: {
+                    display: ""
+                },
+                edit_: {
+                    display: "none"
+                },
                 //Title label, a <text/> SVG component
-                label: {
+                view_label_title: {
                     x: 10,
                     y: 20,
                     textAnchor: "start",
                     textVerticalAnchor: "start",
                     fill: 'white'
                 },
+                view_label_type: {
+                    x: 10,
+                    y: 'calc(h - 20)',
+                    textAnchor: "start",
+                    textVerticalAnchor: "end",
+                    fill: "white"
+                },
+                view_divider: {
+                    x1: 0,
+                    y1: 'calc(h - 40)',
+                    x2: 'calc(w)',
+                    y2: 'calc(h - 40)',
+                    stroke: "black"
+                },
                 //The <foreignObject> SVG component containing the type dropdown
-                typeSelector: {
-                    x: 'calc(w/2 - 50)',
-                    y: `calc(h - 25)`,
-                    width: 'calc(w - 10)',
-                    height: 'calc(h - 10)'
+                edit_html: {
+                    x: 5,
+                    y: 5,
+                    width: 110,
+                    height: 110,
+                    overflow: "visible"
+                },
+                edit_textarea_title: {
+                    rows: 3,
+                    cols: 13,
+                    props: {
+                        value: "EDIT TITLE"
+                    }
                 },
                 //The actual type dropdown, a <select> HTML component
-                select: {
-                    style: "width:100px"
+                edit_select_type: {
+                    style: "width:110px"
                 }
             }
         }
@@ -145,7 +184,7 @@ export class HTMLNode extends joint.dia.Element {
             }
         }
 
-        return formattedString.substring(1);
+        return formattedString.substring(1); //Leave out the leading space
     }
 
     /**
@@ -164,8 +203,9 @@ export class HTMLNode extends joint.dia.Element {
      * @param {Number} minimum.width Minimum width of the element
      * @param {Number} minimum.height Minimum height of the element
      */
-    static resizeElementBasedOnText(elementToResize, paper, textSelector, pad = {width: 20, height: 40}, minimum = {width: 0, height: 0})
+    static resizeElementBasedOnText(elementToResize, paper, textSelector, pad = {width: 20, height: 20}, minimum = {width: Config.minElementWidth, height: Config.minElementHeight})
     {
+
         // Get textbox bounding box dimensions
         var elementView = paper.findViewByModel(elementToResize);
         const textBBox = elementView.findNode(textSelector).getBBox();
@@ -218,5 +258,77 @@ const HTMLNodeView = joint.dia.ElementView.extend({
     }
 });
 
-export { HTMLNodeView };
+const HTMLNodeEditTool = joint.elementTools.Button.extend({
+    name: 'edit-button',
+    options: {
+        markup: [
+            {
+                tagName: 'circle',
+                selector: 'button',
+                attributes: {
+                    'r': 7,
+                    'fill': '#5d6e5c',
+                    'cursor': 'pointer'
+                }
+            },
+            {
+                tagName: 'path',
+                selector: 'icon',
+                attributes: {
+                    'd': 'm -3.9170051,1.8469034 2.0267429,2.0267429 6.935967,-6.9359671 -2.026745,-2.0267429 z M -3.0742353,3.0800088 -4.1121729,2.0420712 -4.4457356,4.488959 -2.08543,4.0688141 Z',
+                    'fill': '#FFFFFF',
+                    'stroke': '#FFFFFF',
+                    'stroke-width': 0,
+                    'pointer-events': 'none'
+                }
+            }
+        ],
+        x: '100%',
+        y: '100%',
+        offset: {
+            x: 0,
+            y: 0
+        },
+        rotate: true,
+        action: function(evt) {
+            const modeModelTag = 'viewMode';
+            var isView = this.model.get(modeModelTag) == 'view';
+
+            console.log(isView);
+
+            //Toggle view value
+            if(isView)
+            {
+                this.model.set(modeModelTag, 'edit')
+            }
+            else
+            {
+                this.model.set(modeModelTag, 'view');
+            }
+
+            //Toggle display groups
+            const viewAttribute = 'view_';
+            const editAttribute = 'edit_';
+            const viewAttributePath = viewAttribute + '/display';
+            const editAttributePath = editAttribute + '/display';
+
+            if(!isView)
+            {
+                this.model.attr(viewAttributePath, "");
+                this.model.attr(editAttributePath, "none");
+
+                HTMLNode.resizeElementBasedOnText(this.model, this.paper, viewAttribute);
+            }
+            else
+            {
+                this.model.attr(viewAttributePath, "none");
+                this.model.attr(editAttributePath, "");
+
+                HTMLNode.resizeElementBasedOnText(this.model, this.paper, editAttribute);
+            }
+        }
+    }
+});
+
+export { HTMLNodeView, HTMLNodeEditTool };
 
