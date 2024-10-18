@@ -11,7 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "@joint/core": "^4.0.2",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "vanilla-jsoneditor": "^1.0.8"
   },
   "devDependencies": {
     "webpack": "^5.91.0",

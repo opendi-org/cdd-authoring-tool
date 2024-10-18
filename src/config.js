@@ -1,6 +1,6 @@
 export class Config {
     //Canvas size
-    static paperWidth = 2000;
+    static paperWidth = "66%"; //See style.css for .right, which is taking up the other 34%.
     static paperHeight = 2000;
 
     //Used for resizing elements

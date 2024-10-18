@@ -7,6 +7,8 @@ import { SelectionBuffer } from "./selectionBuffer/selectionBuffer.js"
 import {Config} from "./config.js"
 import { v4 as uuidv4 } from 'uuid';
 
+import { createJSONEditor } from "vanilla-jsoneditor"
+
 // --- MAIN GRAPH SETUP ---
 var namespace = {
     shapes: joint.shapes,
@@ -17,7 +19,7 @@ var graph = new joint.dia.Graph({}, { cellNamespace: namespace });
 
 //Define canvas (paper)
 var paper = new joint.dia.Paper({
-    el: document.getElementById('myholder'), //div in static/index.html
+    el: document.getElementById('jointjspaper'), //div in static/index.html
     model: graph,
     width: Config.paperWidth,
     height: Config.paperHeight,
@@ -35,6 +37,19 @@ var paper = new joint.dia.Paper({
 
         //Otherwise, return the default value
         return {labelMove: false};
+    }
+});
+
+//Define json editor
+let content = {
+    text: undefined,
+    json: graphData
+}
+
+const editor = createJSONEditor({
+    target: document.getElementById("jsoneditor"),
+    props: {
+        content
     }
 });
 
@@ -331,3 +346,15 @@ paper.on('element:contextmenu', function(cell) {
         selectionBuffer.updateSelections(graphLinks, decisionElem);
     }
 })
+
+
+/**
+ * ACKNOWLEDGEMENTS
+ * 
+ * svelte-jsoneditor:
+ * Svelte JSON Editor used here under the ISC License, with its copyright notice and permission notice included as required:
+ *      Copyright (c) 2020-2024 by Jos de Jong.
+ *      Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted,
+ *      provided that the above copyright notice and this permission notice appear in all copies.
+ * See original license online: https://github.com/josdejong/svelte-jsoneditor?tab=License-1-ov-file#readme
+ */
