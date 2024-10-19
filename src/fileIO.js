@@ -7,9 +7,8 @@
  * @param {Array<joint.shapes.standard.Link>} links The array of updated links to save
  * @param {Map<string,JSON>} elementsJSONMap Map of element UUID to original JSON for that element
  * @param {Map<string,JSON>} elementsJSONMap Map of dependency UUID to original JSON for that dependency
- * @param {string} fileName File name for output JSON file
  */
-export function saveGraphJSON(originalJSON, rects, links, fileName = "cdd.json")
+export function saveGraphJSON(originalJSON, rects, links)
 {
     console.log("SAVING...");
     
@@ -78,11 +77,7 @@ export function saveGraphJSON(originalJSON, rects, links, fileName = "cdd.json")
     jsonOut.diagrams[0].elements = newElements; //Overwrite element information
     jsonOut.diagrams[0].dependencies = newDependencies;
 
-    console.log(JSON.stringify(jsonOut));
-
-    console.log("Initiating download...");
-
-    downloadTextFile(JSON.stringify(jsonOut), fileName);
+    return jsonOut;
 }
 
 /**
@@ -91,9 +86,9 @@ export function saveGraphJSON(originalJSON, rects, links, fileName = "cdd.json")
  * This means the JSON data will download all on 1 line. Recommend using an auto-formatter to prettify the file.
  * 
  * @param {string} textContent Text content of the file to download. Here, this is expected to be a JSON string
- * @param {string} fileName Name of file to be downloaded. Here, this is expected to be a JSON file name
+ * @param {string} fileName (Default: "cdd.json") Name of file to be downloaded. Here, this is expected to be a JSON file name.
  */
-export function downloadTextFile(textContent, fileName)
+export function downloadTextFile(textContent, fileName = "cdd.json")
 {
     var elem = document.createElement('a');
     elem.setAttribute("href", "data:application/octet-stream;charset=utf-8," + textContent); //HREF with raw URI of the file contents
