@@ -85,8 +85,8 @@ export class SaveButton extends FunctionButton {
         this.callback = this.saveCallback;
     }
 
-    saveCallback(originalJSON, rects, links)
+    saveCallback(originalJSON, runtimeGraphData)
     {
-        fileIO.downloadTextFile( JSON.stringify( fileIO.saveGraphJSON(originalJSON, rects, links) ) );
+        fileIO.downloadTextFile( JSON.stringify( fileIO.saveGraphJSON(originalJSON, runtimeGraphData.graphElements, runtimeGraphData.graphLinks) ) );
     }
 }

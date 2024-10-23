@@ -1,33 +1,45 @@
+import { cloneDeep } from "lodash-es";
+
 /**
- * Save the updated rectangle and link information from the current graph
- * to an updated json file. Prompts an immediate download of the JSON file.
+ * Create updated JSON representation of the CDD in the current graph.
+ * JSON should comply with OpenDI schema.
+ * This can be downloaded with @see downloadTextFile
  * 
  * @param {JSON} originalJSON The JSON file used to create the graph originally
  * @param {Map<string,joint.shapes.standard.Rectangle>} rects Map of updated runtime rects, by UUID
  * @param {Array<joint.shapes.standard.Link>} links The array of updated links to save
- * @param {Map<string,JSON>} elementsJSONMap Map of element UUID to original JSON for that element
- * @param {Map<string,JSON>} elementsJSONMap Map of dependency UUID to original JSON for that dependency
+ * 
+ * @returns {JSON} Updated JSON representation of the CDD in the current graph.
  */
 export function saveGraphJSON(originalJSON, rects, links)
 {
     console.log("SAVING...");
-    
+
     //Generate updated JSON for rect elements
     const newElements = new Array();
     Object.keys(rects).forEach((uuid) => {
+        
         const rect = rects[uuid];
-        let newElementJSON = rect.originalJSON;
-        if(newElementJSON == null)
+        //These property names are defined in addRectToGraph() in index.js
+        const elementPosition = rect.get('position');
+        const elementType = rect.get('elementType');
+        const elementName = rect.get('name');
+
+        let newElementJSON = {};
+        if(rect.originalJSON == null)
         {
             console.log(uuid);
             newElementJSON = {
                 "meta": {
                     "uuid": uuid,
-                    "name": rect.get('name')
+                    "name": elementName
                 },
                 "diaType": "box",
                 "content": {
-                    "position": {},
+                    "position": {
+                        "x": elementPosition.x,
+                        "y": elementPosition.y
+                    },
                     "boundingBoxSize": {
                         "width": 400,   //Default width
                         "height": 500   //Default height (we don't use these)
@@ -37,13 +49,12 @@ export function saveGraphJSON(originalJSON, rects, links)
         }
         else
         {
-            newElementJSON.meta.name = rect.get('name');
+            newElementJSON = cloneDeep(rect.originalJSON);
+            newElementJSON.meta.name = elementName;
+            newElementJSON.content.position.x = elementPosition.x;
+            newElementJSON.content.position.y = elementPosition.y;
+            newElementJSON.causalType = elementType;
         }
-        //These property names are defined in addRectToGraph() in index.js
-        const elementPosition = rect.get('position');
-        newElementJSON.content.position.x = elementPosition.x;
-        newElementJSON.content.position.y = elementPosition.y;
-        newElementJSON.causalType = rect.get('elementType');
 
         newElements.push(newElementJSON);
     });
@@ -52,17 +63,14 @@ export function saveGraphJSON(originalJSON, rects, links)
     const newDependencies = new Array();
     Object.keys(links).forEach((uuid) => {
         const link = links[uuid];
-        let newDependencyJSON = link.originalJSON;
-        if(newDependencyJSON == null)
-        {
-            newDependencyJSON = {
-                "meta": {
-                    "uuid": uuid,
-                    "name": link.get('name')
-                },
-                "content": {}
-            };
-        }
+        let newDependencyJSON = {
+            "meta": {
+                "uuid": uuid,
+                "name": link.get('name')
+            },
+            "source": null,
+            "target": null
+        };
         //Currently no plans to allow named links
         //But if those get added in the future, this should look like the else for elements. See above.
 
@@ -73,8 +81,8 @@ export function saveGraphJSON(originalJSON, rects, links)
         newDependencies.push(newDependencyJSON);
     });
 
-    const jsonOut = originalJSON; //Preserve any existing metadata
-    jsonOut.diagrams[0].elements = newElements; //Overwrite element information
+    const jsonOut = cloneDeep(originalJSON);
+    jsonOut.diagrams[0].elements = newElements;
     jsonOut.diagrams[0].dependencies = newDependencies;
 
     return jsonOut;

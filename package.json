@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@joint/core": "^4.0.2",
+    "lodash-es": "^4.17.21",
     "uuid": "^9.0.1",
     "vanilla-jsoneditor": "^1.0.8"
   },
