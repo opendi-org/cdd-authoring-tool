@@ -1,13 +1,13 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "$id": "ODI-Asset-v0.0-alpha-0824",
+    "$id": "https://opendi.org/DI-Asset.json",
     "title": "DI Base Asset",
     "description": "(DRAFT) -- Base properties shared by all DI Assets.",
     "type": "object",
     "properties": {
         "uuid": {
             "description": "Unique identifier for this asset.",
-            "$ref": "./UUID.json"
+            "$ref": "UUID.json"
         },
         "name": {
             "title": "Name",
@@ -45,7 +45,7 @@
         "creator": {
             "title": "Creator",
             "description": "Unique identifier for this asset's creator.",
-            "$ref": "./UUID.json"
+            "$ref": "UUID.json"
         },
         "createdDate": {
             "title": "Creation Date",
@@ -56,7 +56,7 @@
         "updator": {
             "title": "Updator",
             "description": "Unique identifier for the user that most recently updated this asset.",
-            "$ref": "./UUID.json"
+            "$ref": "UUID.json"
         },
         "updatedDate": {
             "title": "Last Updated Date",

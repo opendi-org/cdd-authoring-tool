@@ -1,6 +1,6 @@
 import * as joint from "@joint/core/dist/joint.js";
 import {v4 as uuidv4} from 'uuid';
-import * as fileIO from "./fileIO.js"
+import * as fileIO from "./fileIO.js";
 
 /**
  * Defines function button object. Used for clickable buttons that
@@ -85,8 +85,8 @@ export class SaveButton extends FunctionButton {
         this.callback = this.saveCallback;
     }
 
-    saveCallback(originalJSON, rects, links)
+    saveCallback(originalJSON, runtimeGraphData)
     {
-        fileIO.saveGraphJSON(originalJSON, rects, links);
+        fileIO.downloadTextFile( JSON.stringify( fileIO.saveGraphJSON(originalJSON, runtimeGraphData.graphElements, runtimeGraphData.graphLinks) ) );
     }
 }

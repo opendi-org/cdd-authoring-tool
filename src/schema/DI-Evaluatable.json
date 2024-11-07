@@ -1,13 +1,13 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "$id": "ODI-Eval-v0.0-alpha-0824",
+    "$id": "https://opendi.org/DI-Evaluatable.json",
     "title": "DI Evaluatable Model",
     "description": "(DRAFT) -- Represents an evaluatable component of a Causal Decision Model for OpenDI-compliant software. Used for simulation/computation.",
     "properties": {
         "meta": {
             "title": "Asset Metadata",
             "description": "Metadata shared by all DI Assets",
-            "$ref": "./DI-Asset.json"
+            "$ref": "DI-Asset.json"
         },
         "elements": {
             "type": "array",
@@ -33,7 +33,7 @@
         "addons": {
             "title": "Addon Data",
             "description": "Object containing data for various addons.",
-            "$ref": "./DI-Addons.json"
+            "$ref": "DI-Addons.json"
         }
     },
     "required": ["meta", "elements"],
@@ -47,10 +47,10 @@
                 "meta": {
                     "title": "Asset Metadata",
                     "description": "Metadata shared by all DI Assets",
-                    "$ref": "./DI-Asset.json"
+                    "$ref": "DI-Asset.json"
                 },
                 "causalType": {
-                    "$ref": "./Causal-Type.json"
+                    "$ref": "Causal-Type.json"
                 },
                 "evalType": {
                     "title": "Evaluatable Type",
@@ -83,10 +83,10 @@
                 "meta": {
                     "title": "Asset Metadata",
                     "description": "Metadata shared by all DI Assets",
-                    "$ref": "./DI-Asset.json"
+                    "$ref": "DI-Asset.json"
                 },
                 "causalType": {
-                    "$ref": "./Causal-Type.json"
+                    "$ref": "Causal-Type.json"
                 },
                 "evalType": {
                     "title": "Evaluatable Type",
@@ -119,10 +119,10 @@
                 "meta": {
                     "title": "Asset Metadata",
                     "description": "Metadata shared by all DI Assets",
-                    "$ref": "./DI-Asset.json"
+                    "$ref": "DI-Asset.json"
                 },
                 "causalType": {
-                    "$ref": "./Causal-Type.json"
+                    "$ref": "Causal-Type.json"
                 },
                 "evalType": {
                     "title": "Evaluatable Type",
@@ -154,10 +154,10 @@
                 "meta": {
                     "title": "Asset Metadata",
                     "description": "Metadata shared by all DI Assets",
-                    "$ref": "./DI-Asset.json"
+                    "$ref": "DI-Asset.json"
                 },
                 "causalType": {
-                    "$ref": "./Causal-Type.json"
+                    "$ref": "Causal-Type.json"
                 },
                 "evalType": {
                     "title": "Evaluatable Type",

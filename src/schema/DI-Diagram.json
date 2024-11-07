@@ -1,13 +1,13 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "$id": "ODI-Dia-v0.0-alpha-0824",
+    "$id": "https://opendi.org/DI-Diagram.json",
     "title": "DI Diagram",
     "description": "(DRAFT) -- Represents a diagram component of a Causal Decision Model for OpenDI-compliant software.",
     "properties": {
         "meta": {
             "title": "Asset Metadata",
             "description": "Metadata shared by all DI Assets",
-            "$ref": "./DI-Asset.json"
+            "$ref": "DI-Asset.json"
         },
         "elements": {
             "type": "array",
@@ -45,7 +45,7 @@
         "addons": {
             "title": "Addon Data",
             "description": "Object containing data for various addons.",
-            "$ref": "./DI-Addons.json"
+            "$ref": "DI-Addons.json"
         }
     },
     "required": ["meta"],
@@ -60,10 +60,10 @@
                 "meta": {
                     "title": "Asset Metadata",
                     "description": "Metadata shared by all DI Assets",
-                    "$ref": "./DI-Asset.json"
+                    "$ref": "DI-Asset.json"
                 },
                 "causalType": {
-                    "$ref": "./Causal-Type.json"
+                    "$ref": "Causal-Type.json"
                 },
                 "diaType": {
                     "title": "Diagram Type",
@@ -103,10 +103,10 @@
                 "meta": {
                     "title": "Asset Metadata",
                     "description": "Metadata shared by all DI Assets",
-                    "$ref": "./DI-Asset.json"
+                    "$ref": "DI-Asset.json"
                 },
                 "causalType": {
-                    "$ref": "./Causal-Type.json"
+                    "$ref": "Causal-Type.json"
                 },
                 "diaType": {
                     "title": "Diagram Type",
@@ -146,10 +146,10 @@
                 "meta": {
                     "title": "Asset Metadata",
                     "description": "Metadata shared by all DI Assets",
-                    "$ref": "./DI-Asset.json"
+                    "$ref": "DI-Asset.json"
                 },
                 "causalType": {
-                    "$ref": "./Causal-Type.json"
+                    "$ref": "Causal-Type.json"
                 },
                 "diaType": {
                     "title": "Diagram Type",
@@ -198,10 +198,10 @@
                 "meta": {
                     "title": "Asset Metadata",
                     "description": "Metadata shared by all DI Assets",
-                    "$ref": "./DI-Asset.json"
+                    "$ref": "DI-Asset.json"
                 },
                 "causalType": {
-                    "$ref": "./Causal-Type.json"
+                    "$ref": "Causal-Type.json"
                 },
                 "diaType": {
                     "title": "Diagram Type",
@@ -243,10 +243,10 @@
                 "meta": {
                     "title": "Asset Metadata",
                     "description": "Metadata shared by all DI Assets",
-                    "$ref": "./DI-Asset.json"
+                    "$ref": "DI-Asset.json"
                 },
                 "causalType": {
-                    "$ref": "./Causal-Type.json"
+                    "$ref": "Causal-Type.json"
                 },
                 "diaType": {
                     "title": "Diagram Type",
@@ -278,8 +278,13 @@
                         },
                         "text": { "type": "string", "default": "" },
                         "font": {
-                            "MIMEType": {"type": "string", "default": "font/otf"},
-                            "base64String": {"type": "string"}
+                            "type": "object",
+                            "properties": {
+                                "MIMEType": {"type": "string", "default": "font/otf"},
+                                "base64String": {"type": "string"}
+                            },
+                            "required": ["MIMEType", "base64String"],
+                            "additionalProperties": false
                         }
                     },
                     "required": ["position", "text"],
@@ -300,10 +305,10 @@
                 "meta": {
                     "title": "Asset Metadata",
                     "description": "Metadata shared by all DI Assets",
-                    "$ref": "./DI-Asset.json"
+                    "$ref": "DI-Asset.json"
                 },
                 "causalType": {
-                    "$ref": "./Causal-Type.json"
+                    "$ref": "Causal-Type.json"
                 },
                 "diaType": {
                     "title": "Diagram Type",
@@ -331,17 +336,17 @@
                 "meta": {
                     "title": "Asset Metadata",
                     "description": "Metadata shared by all DI Assets",
-                    "$ref": "./DI-Asset.json"
+                    "$ref": "DI-Asset.json"
                 },
                 "source": {
                     "title": "Source Element",
                     "description": "UUID of the source element.",
-                    "$ref": "./UUID.json"
+                    "$ref": "UUID.json"
                 },
                 "target": {
                     "title": "Target Element",
                     "description": "UUID of the target element.",
-                    "$ref": "./UUID.json"
+                    "$ref": "UUID.json"
                 }
             },
             "required": ["meta", "source", "target"]
@@ -353,7 +358,7 @@
             "description": "List of evaluatable elements associated with this diagram element.",
             "type": "array",
             "items": {
-                "$ref": "./UUID.json"
+                "$ref": "UUID.json"
             }
         }
     }
