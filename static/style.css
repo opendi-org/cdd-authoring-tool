@@ -2,13 +2,14 @@
 /* See https://css-tricks.com/snippets/css/a-guide-to-flexbox/ for a nice intro */
 .cdd-editor {
     display: flex;
-    padding: 5px;
+    padding-inline: 0.5%;
+    max-height: 900px; /* Would prefer this be a percent, but I can't get it to work */
 }
 
 .left {
-    width: 66%; /* Not actually used. See paper definition in index.js */
+    width: 64%; /* Not actually used. See paper definition in index.js */
 }
 
 .right {
-    width: 34%;
+    width: 33%;
 }

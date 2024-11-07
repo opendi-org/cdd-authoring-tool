@@ -1,6 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "$id": "ODI-CDM-v0.0-alpha-0824",
+    "$id": "https://opendi.org/Causal-Decision-Model.json",
     "title": "Causal Decision Model",
     "description": "(DRAFT) -- Represents a Causal Decision Model for OpenDI-compliant software.",
     "properties": {
@@ -12,14 +12,14 @@
         "meta": {
             "title": "Asset Metadata",
             "description": "Metadata shared by all DI Assets",
-            "$ref": "./DI-Asset.json"
+            "$ref": "DI-Asset.json"
         },
         "evaluatables": {
             "title": "Evaluatable Decision Models",
             "description": "The evaluatable model (or set of model fragments) used for computing or simulating this CDM.",
             "type": "array",
             "items": {
-                "$ref": "./DI-Evaluatable.json"
+                "$ref": "DI-Evaluatable.json"
             }
         },
         "diagrams": {
@@ -27,13 +27,13 @@
             "description": "List of diagrams (likely Causal Decision Diagrams) associated with this model.",
             "type": "array",
             "items": {
-                "$ref": "./DI-Diagram.json"
+                "$ref": "DI-Diagram.json"
             }
         },
         "addons": {
             "title": "Addon Data",
             "description": "Object containing data for various addons.",
-            "$ref": "./DI-Addons.json"
+            "$ref": "DI-Addons.json"
         }
     },
     "required": ["meta"],
