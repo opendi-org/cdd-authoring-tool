@@ -4,6 +4,9 @@
 # For storing notes and other custom non-tracked things
 ~local/*
 
+### MacOS ###
+.DS_Store
+
 ### Node ###
 # Logs
 logs
