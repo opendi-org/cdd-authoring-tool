@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>CDD Authoring Tool</title>
+        <link rel="stylesheet" type="text/css" href="./style.css">
+    </head>
+    <body>
+
+        <div class="cdd-editor">
+            <div id="jointjspaper" class="cdd-editor left"><!-- This is used by index.js to attach the JointJS Paper object, for displaying CDDs. --></div>
+            <div id="jsoneditor" class="cdd-editor right"><!-- This is used by index.js to attach the JSON Editor object. --></div>
+        </div>
+
+        
+        <!-- Must reference the file that will be output by Webpack here. See webpack.config.js -- output filename in module.exports object -->
+        <script src="bundled_app.js"></script>
+    </body>
+</html>

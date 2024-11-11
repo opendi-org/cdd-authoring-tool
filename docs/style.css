@@ -1,0 +1,15 @@
+/* CDD Editor will use a flexbox layout, favoring the graph display. */
+/* See https://css-tricks.com/snippets/css/a-guide-to-flexbox/ for a nice intro */
+.cdd-editor {
+    display: flex;
+    padding-inline: 0.5%;
+    max-height: 900px; /* Would prefer this be a percent, but I can't get it to work */
+}
+
+.left {
+    width: 64%; /* Not actually used. See paper definition in index.js */
+}
+
+.right {
+    width: 33%;
+}
