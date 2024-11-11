@@ -1,0 +1,46 @@
+name: Prep for pages build
+
+on:
+    push:
+        branches:
+            - main
+    
+    workflow_dispatch:  # Allow manual re-run from Actions tab
+
+
+
+jobs:
+    build-webpack:
+        name: Generate webpack build artifacts
+        permissions:
+            contents: write # Allow to push artifacts back to remote
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                fetch-depth: 0
+            - uses: actions/setup-node@v4
+              with:
+                node-version: 18
+                cache: npm
+            
+            - name: Configure git
+              run: |
+                git config --global user.name 'Actions: Deploy to Pages'
+                git config --global user.email 'actions-pages-deploy@users.noreply.github.com'
+                git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+            
+            - name: Install dependencies
+              run: npm ci
+            - name: Generate build artifacts
+              run: npm run build
+
+            - name: Move static artifacts
+              run: mv -v ./static/* ./docs/
+            
+            - name: Push changes
+              run: |
+                git add docs/*
+                git commit -m "Action: Build for Pages deploy"
+                git push

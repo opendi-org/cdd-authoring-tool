@@ -1,7 +1,25 @@
-# model-authoring-prototype-internal
-Internal repository for prototypes of an example implementation of an OpenDI-compliant CDM/CDD authoring frontend system.
+# CDD Authoring Tool
+This repo holds a publicly-useable prototype of an OpenDI-compliant CDM/CDD authoring frontend tool.
 
-# Setup
+This is meant as an example implementation of OpenDI standards and resources.
+
+# Live Test
+You can try this tool out yourself!  
+Visit https://opendi.org/cdd-authoring-tool/  
+See warning below.
+
+## Warning
+This tool is a prototype!  
+We cannot yet guarantee that the system is bug-free. The tool may crash unexpectedly, and you may lose data.
+
+The tool provides a Download button to save your work to a JSON file. Use this often!  
+To use your own JSON file as a starting point:  
+1. Delete all contents in the tool's JSON view.
+2. Open your JSON file in a text editor.
+3. Copy the entire text contents of the JSON file.
+4. Paste into the frontend tool's JSON view.
+
+# Setup for Local Testing
 
 To setup, clone this repo to a local directory. Then:  
 1. [Install npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm). This setup was initially performed on npm v9.6.6, and Node.js v18.16.0
