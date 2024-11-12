@@ -3,7 +3,9 @@
 .cdd-editor {
     display: flex;
     padding-inline: 0.5%;
-    max-height: 900px; /* Would prefer this be a percent, but I can't get it to work */
+    min-height: 300px;
+    max-height: 87.5vh; /* Leave a little room at bottom of screen to reveal instruction text */
+    min-width: 300px;
 }
 
 .left {
@@ -12,4 +14,14 @@
 
 .right {
     width: 33%;
+    max-height: 100%;
+}
+
+.instructions {
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    padding:0.5%;
+}
+
+body {
+    background-color: #e2e9eb;
 }
