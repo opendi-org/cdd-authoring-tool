@@ -1,6 +1,6 @@
 export class Config {
     //Canvas size
-    static paperWidth = "64%"; //See style.css for .right, which is taking up the other 34%.
+    static paperWidth = 90000; //Effectively caps max width at 90k pixels (see style.css). Hopefully that covers most use cases.
     static paperHeight = 90000; //Effectively caps max height at 90k pixels (see style.css). Hopefully that covers most use cases.
 
     //Used for resizing elements
