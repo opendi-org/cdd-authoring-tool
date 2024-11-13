@@ -56,7 +56,8 @@ export class FunctionButton {
             },
             label: {
                 cursor: "pointer",
-                fill: "black"
+                fill: "black",
+                style: 'font-family: Roboto, Arial, Helvetica, sans-serif;'
             }
         })
 
