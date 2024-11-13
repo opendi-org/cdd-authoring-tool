@@ -7,7 +7,8 @@ import { SelectionBuffer } from "./selectionBuffer/selectionBuffer.js";
 import {Config} from "./config.js";
 import { v4 as uuidv4 } from 'uuid';
 
-import { createJSONEditor, toJSONContent } from "vanilla-jsoneditor"
+import JSONEditorSelection from "vanilla-jsoneditor";
+import { createJSONEditor, toJSONContent } from "vanilla-jsoneditor";
 import * as fileIO from "./fileIO.js";
 import { cloneDeep } from "lodash-es";
 import { getValidator, validateGraphData } from "./validation.js";
@@ -54,7 +55,8 @@ const editor = createJSONEditor({
     props: {
         content: jsonEditorContent,
         onChange: handleJSONEditorChange,
-        validator: getValidator()
+        validator: getValidator(),
+        onSelect: handleJSONEditorSelectionChange,
     }
 });
 
@@ -198,6 +200,107 @@ function handleGraphChange(runtimeGraphData)
     const newContent = cloneDeep(oldContent);
     newContent.json = fileIO.saveGraphJSON(newContent.json, runtimeGraphData.graphElements, runtimeGraphData.graphLinks)
     editor.update(newContent);
+}
+
+// --- OTHER JSON EDITOR CALLBACKS ---
+
+/**
+ * Called when user selects JSON content at some editor JSON path.
+ * Check if JSON selected corresponds to an element. If so, select that
+ * element.
+ * @param {JSONEditorSelection | undefined} selection 
+ */
+function handleJSONEditorSelectionChange(selection)
+{
+    /*
+     *  TODO: This will be the callback for JSON editor selection change.
+     *  Search JSON path of selection for elements that could be selected in the graphical view.
+     *  Basically, if path is ["diagrams", "0", "elements", "<ELEMENT INDEX>", ... ] find the
+     *  element at that index and select it.
+     */
+}
+
+/**
+ * Update JSON view based on what has been selected in the graph view.
+ * Select the JSON for the most-recently selected element.
+ * Collapse all other JSON, expand JSON for selected element.
+ * @param {SelectionBuffer} selectionBuffer Buffer of selected elements, used to update JSON view
+ */
+function updateJSONEditorSelection(selectionBuffer, jsonEditor)
+{
+    //If we add multi-diagram support in the future, this will need to be settable
+    const currentDiagram = "0";
+
+    if(selectionBuffer.buffer.length > 0)
+    {
+        
+        /**
+         * Get array index of an element or dependency by its UUID.
+         * svelte-jsoneditor uses array index for JSON path stuff.
+         * 
+         * @param {string} uuid UUID of element or dependency to find
+         * @param {boolean} idIsDependency Whether to look for this UUID in the list of elements or dependencies
+         * @returns {number} The array index of the given element/dependency
+         */
+        const findIdx = (uuid, idIsDependency = false) => {
+            const listToSearch = idIsDependency ?
+                toJSONContent(jsonEditor.get()).json.diagrams[0].dependencies :
+                toJSONContent(jsonEditor.get()).json.diagrams[0].elements;
+
+            // Find UUID in list, get the index.
+            for(let i = 0; i < listToSearch.length; i++)
+            {
+                if(listToSearch[i].meta.uuid === uuid)
+                {
+                    return i;
+                }
+            }
+            return undefined;
+        }
+
+        let elementPaths = [];
+        let allAssociatedDependencies = new Set(); //Store dep UUIDs as strings here. Set ensures no duplicates.
+        selectionBuffer.buffer.forEach((elem) => {
+            //Add element's JSON path to the list
+            const elemUUID = elem.originalJSON.meta.uuid.toString();
+            const elemIdx = findIdx(elemUUID, false);
+            if(elemIdx !== undefined)
+            {
+                elementPaths.push(["diagrams", currentDiagram, "elements", elemIdx.toString()]);
+            }
+
+            //Add associated dependency UUIDs to the set
+            elem.associatedDependencies.forEach((depUUID) => allAssociatedDependencies.add(depUUID.toString()));
+        });
+
+        let dependencyPaths = [];
+        allAssociatedDependencies.forEach((depUUID) => {
+            //Add dependency's JSON path to the list
+            const depIdx = findIdx(depUUID, true);
+            if(depIdx !== undefined)
+            {
+                dependencyPaths.push(["diagrams", currentDiagram, "dependencies", depIdx.toString()]);
+            }
+        })
+
+        // Perform JSON Editor view changes:
+        // Collapse all groups. Expand selected elements and their associated dependencies. Scroll to most-recently-selected element.
+        jsonEditor.collapse([], true);
+
+        elementPaths.forEach((path) => jsonEditor.expand(path, () => true));
+        dependencyPaths.forEach((path) => jsonEditor.expand(path, () => true));
+
+        if(elementPaths.length > 0)
+        {
+            jsonEditor.scrollTo(elementPaths[elementPaths.length - 1]);
+        }
+    }
+    else
+    {
+        //Expand all, scroll to top
+        jsonEditor.expand([], () => true);
+        jsonEditor.scrollTo([]);
+    }
 }
 
 // --- ELEMENT CRUD OPERATIONS ---
@@ -477,6 +580,8 @@ paper.on('element:pointerup', function (cellView)
         selectionBuffer.updateSelections(runtimeGraphData.graphLinks, decisionElem);
 
         handleGraphChange(runtimeGraphData);
+
+        updateJSONEditorSelection(selectionBuffer, editor);
     }
 });
 
@@ -487,6 +592,8 @@ paper.on('blank:pointerup', function (evt, x, y) {
     //Deselect elements
     selectionBuffer.bufferSize = SelectionBuffer.DefaultBufferSize;
     selectionBuffer.updateSelections(runtimeGraphData.graphLinks);
+
+    updateJSONEditorSelection(selectionBuffer, editor);
 });
 
 /**
@@ -502,6 +609,8 @@ paper.on('element:contextmenu', function(cell) {
         //Multi-select elements
         selectionBuffer.bufferSize = SelectionBuffer.MaxBufferSize;
         selectionBuffer.updateSelections(runtimeGraphData.graphLinks, decisionElem);
+
+        updateJSONEditorSelection(selectionBuffer, editor);
     }
 })
 
