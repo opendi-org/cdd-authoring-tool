@@ -30,7 +30,7 @@ body {
 }
 
 /* Mobile-specific (small screens) */
-@media (max-width: 900px)
+@media (max-aspect-ratio: 6/5) or (max-width: 650px)
 {
     .cdd-editor {
         flex-direction: column;
