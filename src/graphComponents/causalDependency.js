@@ -71,6 +71,8 @@ export class CausalDependency extends joint.shapes.standard.Link {
 
         //Set visual properties
         linkToAdd.attr(linkToAdd.defaultAttr);
+        linkToAdd.router("normal");
+        linkToAdd.connector("normal");
 
         //Set runtime properties
         linkToAdd.originalJSON = linkJSON;

@@ -59,6 +59,7 @@ export class DecisionElement extends joint.dia.Element {
                 body: {
                     x: 0,
                     y: 0,
+                    rx: 5,
                     width: 'calc(w)',
                     height: 'calc(h)',
                     fill: '#001fd1',
@@ -71,20 +72,22 @@ export class DecisionElement extends joint.dia.Element {
                     y: 20,
                     textAnchor: 'start',
                     textVerticalAnchor: 'start',
-                    fill: 'white'
+                    fill: 'white',
+                    style: 'font-family: Roboto, Arial, Helvetica, sans-serif; font-weight: 600;'
                 },
                 content_label_type: {
                     x: 10,
-                    y: 'calc(h-20)',
+                    y: 'calc(h-10)',
                     textAnchor: 'start',
                     textVerticalAnchor: 'end',
-                    fill: 'white'
+                    fill: 'white',
+                    style: 'font-family: Roboto, Arial, Helvetica, sans-serif; font-weight: 100;'
                 },
                 content_divider: {
                     x1: 0,
-                    y1: 'calc(h-40)',
+                    y1: 'calc(h-30)',
                     x2: 'calc(w)',
-                    y2: 'calc(h-40)',
+                    y2: 'calc(h-30)',
                     stroke: 'black'
                 }
             }
@@ -195,7 +198,7 @@ export class DecisionElement extends joint.dia.Element {
      * @param {Number} minimum.width Minimum width of the element
      * @param {Number} minimum.height Minimum height of the element
      */
-    static resizeElementBasedOnText(elementToResize, paper, textSelector, pad = {width: 20, height: 20}, minimum = {width: Config.minElementWidth, height: Config.minElementHeight})
+    static resizeElementBasedOnText(elementToResize, paper, textSelector, pad = {width: 16, height: 10}, minimum = {width: Config.minElementWidth, height: Config.minElementHeight})
     {
 
         // Get textbox bounding box dimensions
