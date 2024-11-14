@@ -49,6 +49,7 @@ let jsonEditorContent = {
     text: undefined,
     json: graphData
 }
+var editorCurrentMode = 'tree';
 
 const editor = createJSONEditor({
     target: document.getElementById("jsoneditor"),
@@ -57,6 +58,7 @@ const editor = createJSONEditor({
         onChange: handleJSONEditorChange,
         validator: getValidator(),
         onSelect: handleJSONEditorSelectionChange,
+        onChangeMode: (mode) => {editorCurrentMode = mode}
     }
 });
 
@@ -212,12 +214,35 @@ function handleGraphChange(runtimeGraphData)
  */
 function handleJSONEditorSelectionChange(selection)
 {
-    /*
-     *  TODO: This will be the callback for JSON editor selection change.
-     *  Search JSON path of selection for elements that could be selected in the graphical view.
-     *  Basically, if path is ["diagrams", "0", "elements", "<ELEMENT INDEX>", ... ] find the
-     *  element at that index and select it.
-     */
+    //For a key selection, the selection object will have path property
+    //For a multi selection, object will have anchorPath to mark start of selection
+    //For any weirder selections, we'll just not bother for now.
+    const selectionPathStart = selection?.path ?? selection?.anchorPath ?? [];
+    //For multi selection, object will have focusPath to mark end of selection
+    const selectionPathEnd = selection?.focusPath ?? selectionPathStart;
+
+    //Relevant paths will be something like ["diagrams", "0", "elements", "<element index>", ... ]
+    if(selectionPathStart.length >= 4 && selectionPathStart[2] === "elements")
+    {
+        const startElementIdx = Number(selectionPathStart[3]);
+        let endElementIdx = startElementIdx;
+        if(selectionPathEnd.length >= 4 && selectionPathStart[2] == "elements")
+        {
+            endElementIdx = Number(selectionPathEnd[3]);
+        }
+
+        selectionBuffer.updateSelections(runtimeGraphData.graphLinks, null);
+
+        //Iterate over selected indices. Add elements at those indices to selection buffer
+        for(let idx = Math.min(startElementIdx, endElementIdx); idx <= Math.max(startElementIdx, endElementIdx); idx++)
+        {
+            const selectedElementUUID = toJSONContent(editor.get()).json.diagrams[0].elements[idx].meta.uuid;
+            const elementToSelect = runtimeGraphData.graphElements[selectedElementUUID];
+
+            selectionBuffer.updateSelections(runtimeGraphData.graphLinks, elementToSelect);
+        }
+    }
+
 }
 
 /**
@@ -228,6 +253,11 @@ function handleJSONEditorSelectionChange(selection)
  */
 function updateJSONEditorSelection(selectionBuffer, jsonEditor)
 {
+    //"Tree" is the only view mode that supports expand/collapse functions.
+    if(editorCurrentMode !== "tree")
+    {
+        return;
+    }
     //If we add multi-diagram support in the future, this will need to be settable
     const currentDiagram = "0";
 
