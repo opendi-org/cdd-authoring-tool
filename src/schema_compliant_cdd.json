@@ -1,183 +1,292 @@
 {
     "$schema": "./schema/Causal-Decision-Model.json",
     "meta": {
-        "uuid": "98f56597-75d8-441a-bd19-239db7d1b4f4",
-        "name": "Test CDD for authoring demo."
+      "uuid": "98f56597-75d8-441a-bd19-239db7d1b4f4",
+      "name": "Coffee purchasing decision",
+      "summary": "For deciding whether to purchase regular or fair trade coffee, and how much. CDD models the impact to workers and environment, to ultimately track social/environmental and financial impacts as main outcomes.",
+      "documentation": {
+        "content": "This CDD authored by Dr. Lorien Pratt.\nSource: https://www.lorienpratt.com/a-framework-for-how-data-informs-decisions/\n\nAdapted for OpenDI schema compliance by Isaac Kellogg.",
+        "MIMEType": "text/plain"
+      },
+      "draft": true,
+      "updatedDate": "2024-11-14T15:13:50-05:00"
     },
     "diagrams": [
-        {
+      {
+        "meta": {
+          "uuid": "ef40e7b4-1a11-46ab-8a43-38821c595b66",
+          "name": "Coffee purchasing CDD"
+        },
+        "elements": [
+          {
             "meta": {
-                "uuid": "ef40e7b4-1a11-46ab-8a43-38821c595b66",
-                "name": "CDD"
+              "uuid": "63148d46-8006-4865-ba50-2506463ad828",
+              "name": "Buy regular coffee"
             },
-            "elements": [
-                {
-                    "meta": {
-                        "uuid": "7bf2ad85-c050-41e4-a864-750e6a61e920",
-                        "name": "Create a compelling value proposition"
-                    },
-                    "causalType": "Intermediate",
-                    "diaType": "box",
-                    "content": {
-                        "position": {
-                            "x": 316,
-                            "y": 595
-                        },
-                        "boundingBoxSize": {
-                            "width": 400,
-                            "height": 500
-                        }
-                    }
-                },
-                {
-                    "meta": {
-                        "uuid": "fafe61b6-9826-4dff-8454-86c79385a17d",
-                        "name": "Promote services and mentorship program"
-                    },
-                    "causalType": "External",
-                    "diaType": "box",
-                    "content": {
-                        "position": {
-                            "x": 461,
-                            "y": 0
-                        },
-                        "boundingBoxSize": {
-                            "width": 400,
-                            "height": 500
-                        }
-                    }
-                },
-                {
-                    "meta": {
-                        "uuid": "84357a26-7547-453f-a38d-eb2bd7dabea5",
-                        "name": "Gain exposure"
-                    },
-                    "causalType": "Intermediate",
-                    "diaType": "box",
-                    "content": {
-                        "position": {
-                            "x": 332,
-                            "y": 479
-                        },
-                        "boundingBoxSize": {
-                            "width": 400,
-                            "height": 500
-                        }
-                    }
-                },
-                {
-                    "meta": {
-                        "uuid": "e104404a-62fe-467a-a2d9-2dc70077a6cc",
-                        "name": "Reach out to professional networks and organizations"
-                    },
-                    "causalType": "Lever",
-                    "diaType": "box",
-                    "content": {
-                        "position": {
-                            "x": 0,
-                            "y": 454
-                        },
-                        "boundingBoxSize": {
-                            "width": 400,
-                            "height": 500
-                        }
-                    }
-                },
-                {
-                    "meta": {
-                        "uuid": "823b69f9-9ef5-49a7-b2a8-48437509efcd",
-                        "name": "Increase your network"
-                    },
-                    "causalType": "Outcome",
-                    "diaType": "box",
-                    "content": {
-                        "position": {
-                            "x": 707,
-                            "y": 667
-                        },
-                        "boundingBoxSize": {
-                            "width": 400,
-                            "height": 500
-                        }
-                    }
-                },
-                {
-                    "meta": {
-                        "uuid": "b92ab786-60c5-48e6-a786-2ccac4fbf9ae",
-                        "name": "My happiness"
-                    },
-                    "causalType": "Intermediate",
-                    "diaType": "box",
-                    "content": {
-                        "position": {
-                            "x": 0,
-                            "y": 11
-                        },
-                        "boundingBoxSize": {
-                            "width": 400,
-                            "height": 500
-                        }
-                    }
-                }
-            ],
-            "dependencies": [
-                {
-                    "meta": {
-                        "uuid": "901208f2-2fa0-41e5-81e1-d99d3b865bf4",
-                        "name": "Create a compelling value proposition --> Gain exposure"
-                    },
-                    "source": "7bf2ad85-c050-41e4-a864-750e6a61e920",
-                    "target": "84357a26-7547-453f-a38d-eb2bd7dabea5"
-                },
-                {
-                    "meta": {
-                        "uuid": "41653199-0b91-47ea-a628-b34d2990fd67",
-                        "name": "Create a compelling value proposition --> Promote services and mentorship program"
-                    },
-                    "source": "7bf2ad85-c050-41e4-a864-750e6a61e920",
-                    "target": "fafe61b6-9826-4dff-8454-86c79385a17d"
-                },
-                {
-                    "meta": {
-                        "uuid": "a273ecad-08e7-4ab8-afd3-96c4d6e359e5",
-                        "name": "Promote services and mentorship program --> Increase your network"
-                    },
-                    "source": "fafe61b6-9826-4dff-8454-86c79385a17d",
-                    "target": "823b69f9-9ef5-49a7-b2a8-48437509efcd"
-                },
-                {
-                    "meta": {
-                        "uuid": "4e1a7570-d56e-4089-aef9-6f14438a775d",
-                        "name": "Gain exposure --> Promote services and mentorship program" 
-                    },
-                    "source": "84357a26-7547-453f-a38d-eb2bd7dabea5",
-                    "target": "fafe61b6-9826-4dff-8454-86c79385a17d"
-                },
-                {
-                    "meta": {
-                        "uuid": "27361b6e-9ac2-4bab-b3c1-b6777895871e",
-                        "name": "Reach out to professional networks and organizations --> Create a compelling value proposition"
-                    },
-                    "source": "e104404a-62fe-467a-a2d9-2dc70077a6cc",
-                    "target": "7bf2ad85-c050-41e4-a864-750e6a61e920"
-                },
-                {
-                    "meta": {
-                        "uuid": "47ea5167-c209-4e14-b42a-23047c581cc9",
-                        "name": "Promote services and mentorship program --> Reach out to professional networks and organizations"
-                    },
-                    "source": "fafe61b6-9826-4dff-8454-86c79385a17d",
-                    "target": "e104404a-62fe-467a-a2d9-2dc70077a6cc"
-                },
-                {
-                    "meta": {
-                        "uuid": "756b249c-cf4e-46e0-ac35-09f86cae9972",
-                        "name": "Reach out to professional networks and organizations --> My happiness"
-                    },
-                    "source": "e104404a-62fe-467a-a2d9-2dc70077a6cc",
-                    "target": "b92ab786-60c5-48e6-a786-2ccac4fbf9ae"
-                }
-            ]
-        }
+            "causalType": "Lever",
+            "diaType": "box",
+            "content": {
+              "position": {
+                "x": 100,
+                "y": 160
+              },
+              "boundingBoxSize": {
+                "width": 400,
+                "height": 500
+              }
+            }
+          },
+          {
+            "meta": {
+              "uuid": "0e96cce3-101c-41c7-8c23-fa8d633fe589",
+              "name": "Buy fair trade, bird friendly coffee"
+            },
+            "causalType": "Lever",
+            "diaType": "box",
+            "content": {
+              "position": {
+                "x": 100,
+                "y": 50
+              },
+              "boundingBoxSize": {
+                "width": 400,
+                "height": 500
+              }
+            }
+          },
+          {
+            "meta": {
+              "uuid": "6a4b7773-6915-49d0-91d3-7987c867295c",
+              "name": "Price per pound for regular coffee"
+            },
+            "causalType": "External",
+            "diaType": "box",
+            "content": {
+              "position": {
+                "x": 90,
+                "y": 520
+              },
+              "boundingBoxSize": {
+                "width": 400,
+                "height": 500
+              }
+            }
+          },
+          {
+            "meta": {
+              "uuid": "0468ece4-0910-44f8-bd9c-b7590b70a7e3",
+              "name": "Price per pound for fair trade bird friendly coffee"
+            },
+            "causalType": "External",
+            "diaType": "box",
+            "content": {
+              "position": {
+                "x": 90,
+                "y": 420
+              },
+              "boundingBoxSize": {
+                "width": 400,
+                "height": 500
+              }
+            }
+          },
+          {
+            "meta": {
+              "uuid": "15fff188-9c80-46e2-9c61-d8c7e0cc99f6",
+              "name": "Number of pounds of coffee I buy"
+            },
+            "causalType": "Lever",
+            "diaType": "box",
+            "content": {
+              "position": {
+                "x": 40,
+                "y": 260
+              },
+              "boundingBoxSize": {
+                "width": 400,
+                "height": 500
+              }
+            }
+          },
+          {
+            "meta": {
+              "uuid": "530ad25a-03b8-4419-9ff7-3a6194a32d66",
+              "name": "Environmental impact (birds, deforestation)"
+            },
+            "causalType": "Intermediate",
+            "diaType": "box",
+            "content": {
+              "position": {
+                "x": 450,
+                "y": 490
+              },
+              "boundingBoxSize": {
+                "width": 400,
+                "height": 500
+              }
+            }
+          },
+          {
+            "meta": {
+              "uuid": "081e042a-65e9-4f39-ab58-bd4763630ce4",
+              "name": "Impact on workers and growers (revenue, wages)"
+            },
+            "causalType": "Intermediate",
+            "diaType": "box",
+            "content": {
+              "position": {
+                "x": 440,
+                "y": 80
+              },
+              "boundingBoxSize": {
+                "width": 400,
+                "height": 500
+              }
+            }
+          },
+          {
+            "meta": {
+              "uuid": "dac1083c-fac3-4828-9d38-769e5afcb604",
+              "name": "How much money I pay for coffee"
+            },
+            "causalType": "Outcome",
+            "diaType": "box",
+            "content": {
+              "position": {
+                "x": 780,
+                "y": 290
+              },
+              "boundingBoxSize": {
+                "width": 400,
+                "height": 500
+              }
+            }
+          },
+          {
+            "meta": {
+              "uuid": "1c1f521c-d93e-4fb9-a090-8f8d4b24a2c5",
+              "name": "Total social and environmental impact of my choice"
+            },
+            "causalType": "Outcome",
+            "diaType": "box",
+            "content": {
+              "position": {
+                "x": 750,
+                "y": 80
+              },
+              "boundingBoxSize": {
+                "width": 400,
+                "height": 500
+              }
+            }
+          }
+        ],
+        "dependencies": [
+          {
+            "meta": {
+              "uuid": "c622793c-1149-406f-9d49-1d450957238c",
+              "name": "Buy fair trade, bird friendly coffee --> Impact on workers and growers (revenue, wages)"
+            },
+            "source": "0e96cce3-101c-41c7-8c23-fa8d633fe589",
+            "target": "081e042a-65e9-4f39-ab58-bd4763630ce4"
+          },
+          {
+            "meta": {
+              "uuid": "6c20d1df-2432-4f99-8db8-5f2ad27633a7",
+              "name": "Buy fair trade, bird friendly coffee --> How much money I pay for coffee"
+            },
+            "source": "0e96cce3-101c-41c7-8c23-fa8d633fe589",
+            "target": "dac1083c-fac3-4828-9d38-769e5afcb604"
+          },
+          {
+            "meta": {
+              "uuid": "8db167d8-0776-4385-b878-ba075c50a836",
+              "name": "Buy fair trade, bird friendly coffee --> Environmental impact (birds, deforestation)"
+            },
+            "source": "0e96cce3-101c-41c7-8c23-fa8d633fe589",
+            "target": "530ad25a-03b8-4419-9ff7-3a6194a32d66"
+          },
+          {
+            "meta": {
+              "uuid": "7293f409-6f7c-49ec-ab67-40f7cf0a99ab",
+              "name": "Buy regular coffee --> Impact on workers and growers (revenue, wages)"
+            },
+            "source": "63148d46-8006-4865-ba50-2506463ad828",
+            "target": "081e042a-65e9-4f39-ab58-bd4763630ce4"
+          },
+          {
+            "meta": {
+              "uuid": "bf2fa000-c9e2-4bac-9f2b-47f0e69516a6",
+              "name": "Buy regular coffee --> How much money I pay for coffee"
+            },
+            "source": "63148d46-8006-4865-ba50-2506463ad828",
+            "target": "dac1083c-fac3-4828-9d38-769e5afcb604"
+          },
+          {
+            "meta": {
+              "uuid": "9a4dc6f8-c7c5-48b1-bfc7-b935d7cf10d8",
+              "name": "Buy regular coffee --> Environmental impact (birds, deforestation)"
+            },
+            "source": "63148d46-8006-4865-ba50-2506463ad828",
+            "target": "530ad25a-03b8-4419-9ff7-3a6194a32d66"
+          },
+          {
+            "meta": {
+              "uuid": "934be48b-d518-4545-a8e2-5b3db8d558bc",
+              "name": "Number of pounds of coffee I buy --> How much money I pay for coffee"
+            },
+            "source": "15fff188-9c80-46e2-9c61-d8c7e0cc99f6",
+            "target": "dac1083c-fac3-4828-9d38-769e5afcb604"
+          },
+          {
+            "meta": {
+              "uuid": "a529e785-7438-4f7d-8000-3923ec0cd7d0",
+              "name": "Number of pounds of coffee I buy --> Environmental impact (birds, deforestation)"
+            },
+            "source": "15fff188-9c80-46e2-9c61-d8c7e0cc99f6",
+            "target": "530ad25a-03b8-4419-9ff7-3a6194a32d66"
+          },
+          {
+            "meta": {
+              "uuid": "cf801a34-fd53-4631-864c-397c7d52a516",
+              "name": "Price per pound for fair trade bird friendly coffee --> How much money I pay for coffee"
+            },
+            "source": "0468ece4-0910-44f8-bd9c-b7590b70a7e3",
+            "target": "dac1083c-fac3-4828-9d38-769e5afcb604"
+          },
+          {
+            "meta": {
+              "uuid": "3105d038-5e0d-465d-a30e-2fc73aff76fd",
+              "name": "Price per pound for regular coffee --> How much money I pay for coffee"
+            },
+            "source": "6a4b7773-6915-49d0-91d3-7987c867295c",
+            "target": "dac1083c-fac3-4828-9d38-769e5afcb604"
+          },
+          {
+            "meta": {
+              "uuid": "3c8ef5af-a578-4fe1-8fb2-3a149f3c260b",
+              "name": "Environmental impact (birds, deforestation) --> Total social and environmental impact of my choice"
+            },
+            "source": "530ad25a-03b8-4419-9ff7-3a6194a32d66",
+            "target": "1c1f521c-d93e-4fb9-a090-8f8d4b24a2c5"
+          },
+          {
+            "meta": {
+              "uuid": "de6e257e-5f25-4437-aa16-eca5fffa2c56",
+              "name": "Impact on workers and growers (revenue, wages) --> Total social and environmental impact of my choice"
+            },
+            "source": "081e042a-65e9-4f39-ab58-bd4763630ce4",
+            "target": "1c1f521c-d93e-4fb9-a090-8f8d4b24a2c5"
+          },
+          {
+            "meta": {
+              "uuid": "733ba8fb-9b81-4b4a-a78e-da784f722f34",
+              "name": "How much money I pay for coffee --> Impact on workers and growers (revenue, wages)"
+            },
+            "source": "dac1083c-fac3-4828-9d38-769e5afcb604",
+            "target": "081e042a-65e9-4f39-ab58-bd4763630ce4"
+          }
+        ]
+      }
     ]
-}
+  }
