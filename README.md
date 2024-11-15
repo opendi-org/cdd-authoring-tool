@@ -27,6 +27,11 @@ To setup, clone this repo to a local directory. Then:
 3. In the same directory, run `npm start` to run webpack, initialize the dev server, and open the main project in a browser
 4. If step 3 does not open your browser automatically, open a browser and navigate to http://localhost:8080/
 
+# Contributing
+
+Contributions are welcome and encouraged! Please fork and PR to `dev`.  
+See [issues](https://github.com/opendi-org/cdd-authoring-tool/issues) for task ideas. If you have an idea that is not in the issues list, open a new issue so it can be discussed!
+
 # Environment configuration
 
 Node dependencies are specified in `package.json` and `package-lock.json`.  
