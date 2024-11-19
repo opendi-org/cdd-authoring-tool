@@ -40,8 +40,9 @@ jobs:
             - name: Move static artifacts
               # Move site files out of repo, switch branches, replace old site build files with new files
               run: |
+                cp ./static/* ./docs/
                 mkdir ../TEMP
-                mv ./static ../TEMP/docs
+                mv ./docs ../TEMP/docs
                 git switch gh-pages
                 rm -rf ./docs/
                 mv ../TEMP/docs ./docs
