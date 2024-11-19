@@ -3,6 +3,8 @@
 
 # For storing notes and other custom non-tracked things
 ~local/*
+# Local copy of build files
+docs/
 
 ### MacOS ###
 .DS_Store
