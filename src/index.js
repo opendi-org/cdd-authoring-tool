@@ -454,7 +454,6 @@ function deleteElements(selectionBuffer, runtimeGraphData)
 
 /**
  * Creates a fresh dependency with the given source and target elements, and adds it to the given graph.
- * NOTE: This function does not add the dependency to the JSON editor view.
  * 
  * Used here:
  * @see toggleDependency
@@ -483,6 +482,7 @@ function addNewDependency(sourceElem, targetElem, runtimeGraphData, graph)
     };
 
     runtimeGraphData.graphLinks[newDepUUID] = CausalDependency.addLinkToGraph(addDepJSON, graph, runtimeGraphData.graphElements);
+    runtimeGraphData.graphLinks[newDepUUID].updateSelection();
 }
 
 /**
