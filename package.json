@@ -16,7 +16,7 @@
     "ajv-formats": "^3.0.1",
     "immutable-json-patch": "^6.0.1",
     "lodash-es": "^4.17.21",
-    "uuid": "^9.0.1",
+    "uuid": "^11.0.3",
     "vanilla-jsoneditor": "^1.0.8"
   },
   "devDependencies": {
