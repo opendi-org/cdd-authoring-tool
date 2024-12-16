@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@joint/core": "^4.0.2",
+    "@joint/core": "^4.1.1",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
     "immutable-json-patch": "^6.0.1",
