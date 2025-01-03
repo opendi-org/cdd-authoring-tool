@@ -46,8 +46,8 @@ var paper = new joint.dia.Paper({
 
 //Define json editor
 let jsonEditorContent = {
-    text: undefined,
-    json: graphData
+    text: "",
+    json: undefined,
 }
 var editorCurrentMode = 'tree';
 
@@ -61,6 +61,34 @@ const editor = createJSONEditor({
         onChangeMode: (mode) => {editorCurrentMode = mode}
     }
 });
+
+// https://www.freecodecamp.org/news/make-api-calls-in-javascript/
+fetch("http://localhost:8080/v0/models/a912f7f8-24dd-4b23-aa2a-97291d3f879f/full")
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Failed to retrieve model!")
+        }
+        return response.json();
+    })
+    .then(data => {
+        const newEditorContent = {
+            text: undefined,
+            json: data
+        }
+        editor.update(newEditorContent);
+        jsonEditorContent = newEditorContent;
+        initializeGraph(data, paper, graph)
+    })
+    .catch(error => {
+        console.error('Retrieval error:', error, "Using default graph data.");
+        const newEditorContent = {
+            text: undefined,
+            json: graphData
+        }
+        editor.update(newEditorContent);
+        jsonEditorContent = newEditorContent;
+        initializeGraph(graphData, paper, graph);
+    });
 
 //Defined in selectionBuffer/selectionBuffer.js
 //Keeps track of selected elements
@@ -153,8 +181,6 @@ function initializeGraph(graphData, paper, graph)
 
     runtimeGraphData.functionButtons = functionButtons;
 }
-
-initializeGraph(graphData, paper, graph);
 
 // --- EDITOR/GRAPH ROUND-TRIP I/O ---
 

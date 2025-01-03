@@ -34,7 +34,6 @@ function ValidationResults(canRender, errors, validatedData)
 export function validateGraphData(graphData) {
     let errorList = [];
     let validatedData = cloneDeep(graphData);
-    console.log(validatedData);
     
     //Check that a renderable diagram exists. Diagrams are optional.
     if(!validatedData || !validatedData.diagrams || validatedData.diagrams.length === 0)
