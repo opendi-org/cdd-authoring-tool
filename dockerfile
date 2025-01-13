@@ -10,7 +10,7 @@
 
 # This uses a temporary image and container. These won't stick around.
 
-FROM node:20.14 as Build
+FROM node:20.14 AS build
 
 WORKDIR /
 
@@ -27,25 +27,18 @@ RUN npm run build
 # --CREATE THE LOCAL WEB SERVER
 ###############################
 
-# Using basic nginx webserver image
-# Just put the static build files in the expected folder, and they'll be served automatically.
+# Using basic apache webserver image
+# Just put the static build files in the expected folder, and they'll be served.
 # If you need to debug, run shell:
 #   docker run -it cdd-tool sh
-FROM nginx:alpine
+FROM httpd:2.4
 
 # Only copy the build artifacts
-COPY --from=build /docs/ /usr/share/nginx/html
-COPY --from=build /static/ /usr/share/nginx/html
+WORKDIR /usr/local/apache2/htdocs/
+COPY --from=build /docs/ .
+COPY --from=build /static/ .
 
-# Bind this to something like localhost:3000 on the host machine when run. See below.
 EXPOSE 80
 
-# Standard nginx serve command
-CMD ["nginx", "-g", "daemon off;"]
-
-###############################
-# HOW TO RUN THE RESULT:
-# On Docker Desktop, click the Play button to run the image. In Optional settings, set Host port in the Ports section to 3000
-# For Docker command line, use this command:
-#       docker run -p 3000:80 cdd-tool
-###############################
+# Apache run command
+CMD ["httpd-foreground"]

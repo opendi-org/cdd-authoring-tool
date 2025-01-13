@@ -13,6 +13,8 @@ import * as fileIO from "./fileIO.js";
 import { cloneDeep } from "lodash-es";
 import { getValidator, validateGraphData } from "./validation.js";
 
+import { API } from "./api.js";
+
 // --- MAIN UI/GRAPH SETUP ---
 var namespace = {
     shapes: joint.shapes,
@@ -62,33 +64,32 @@ const editor = createJSONEditor({
     }
 });
 
-// https://www.freecodecamp.org/news/make-api-calls-in-javascript/
-fetch("http://localhost:8080/v0/models/a912f7f8-24dd-4b23-aa2a-97291d3f879f/full")
-    .then(response => {
-        if (!response.ok) {
-            throw new Error("Failed to retrieve model!")
-        }
-        return response.json();
-    })
-    .then(data => {
+const api = new API();
+
+/**
+ * Updates the Graph and JSON Editor views with the model with the given UUID.
+ * Fetches the model from API.
+ * 
+ * @param {string} uuid UUID used by API to fetch the model from the API database
+ * @returns {boolean} True if successful, meaning the model was found and set in the JSON and Graph views. False, otherwise.
+ */
+async function updateViewsWithModel(uuid) {
+    const modelData = await api.fetchFullModel(uuid);
+
+    if (modelData.meta !== undefined && modelData.meta?.uuid !== "")
+    {
         const newEditorContent = {
             text: undefined,
-            json: data
+            json: modelData
         }
         editor.update(newEditorContent);
         jsonEditorContent = newEditorContent;
-        initializeGraph(data, paper, graph)
-    })
-    .catch(error => {
-        console.error('Retrieval error:', error, "Using default graph data.");
-        const newEditorContent = {
-            text: undefined,
-            json: graphData
-        }
-        editor.update(newEditorContent);
-        jsonEditorContent = newEditorContent;
-        initializeGraph(graphData, paper, graph);
-    });
+        initializeGraph(modelData, paper, graph);
+        return true;
+    }
+
+    return false;
+}
 
 //Defined in selectionBuffer/selectionBuffer.js
 //Keeps track of selected elements
@@ -99,6 +100,21 @@ const selectionBuffer = new SelectionBuffer();
  * @property {}
  */
 let runtimeGraphData = {};
+
+// Try to fetch the example model from the API.
+// If unsuccessful, update the views with the packed-in JSON model instead.
+const success = await updateViewsWithModel("a912f7f8-24dd-4b23-aa2a-97291d3f879f")
+if(!success)
+{
+    const newEditorContent = {
+        text: undefined,
+        json: graphData,
+    };
+    editor.update(newEditorContent);
+    jsonEditorContent = newEditorContent;
+    initializeGraph(graphData, paper, graph);
+}
+
 
 /**
  * Defines the CDD graph:  
