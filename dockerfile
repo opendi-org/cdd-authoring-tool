@@ -17,6 +17,10 @@ WORKDIR /
 # .dockerignore is configured so this will avoid copying local node_modules and build artifacts, which would take a while
 COPY . .
 
+# Replace static config with the API-friendly docker config file
+RUN rm -f ./src/config.js
+RUN cp ./docker-config.js ./src/config.js
+
 # Install dependencies
 RUN npm ci
 

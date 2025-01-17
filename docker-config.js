@@ -9,5 +9,5 @@ export class Config {
     static minElementHeight = 60;
     //Do not limit height, so longer text can fully render
 
-    static deploymentIsStatic = true;
+    static deploymentIsStatic = false;
 }

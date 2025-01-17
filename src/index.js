@@ -13,7 +13,8 @@ import * as fileIO from "./fileIO.js";
 import { cloneDeep } from "lodash-es";
 import { getValidator, validateGraphData } from "./validation.js";
 
-import { API } from "./api.js";
+import { API } from "./apiClasses/api.js";
+import { StaticAPI } from "./apiClasses/staticApi.js";
 
 // --- MAIN UI/GRAPH SETUP ---
 var namespace = {
@@ -64,7 +65,16 @@ const editor = createJSONEditor({
     }
 });
 
-const api = new API();
+let api;
+
+if(Config.deploymentIsStatic)
+{
+    api = new StaticAPI();
+}
+else
+{
+    api = new API();
+}
 
 /**
  * Updates the Graph and JSON Editor views with the model with the given UUID.
