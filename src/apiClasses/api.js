@@ -3,6 +3,7 @@
 
 import { validate } from 'uuid'
 import { getValidator, generateReportStringFromValidationResults } from '../validation';
+import * as fileIO from "../fileIO.js"
 
 export class API {
     static DefaultBaseURL = "/api"  //Use the alias from the Docker Compose service name.
@@ -34,50 +35,78 @@ export class API {
             return response.json();
         }
         catch (error) {
-            console.error("Failed to retrieve model. ", error);
+            alert(error);
+            console.error(error);
         }
 
         return {};
     }
 
     /**
-     * Send an API request to update the given model. API attempts to update the model
-     * based on its UUID. This method ensures the model is valid according to the OpenDI JSON
-     * Schema before sending the request.
-     * @param {JSON} modelJSON The complete JSON for the model to be updated
+     * Send an API request to save the given model. If this model has not been saved yet, sends a POST request.
+     * If it already exists, sends a PUT request. Checks for existing model based on the UUID. This
+     * method requires that the model is valid according to the OpenDI JSON Schema before sending the request.
+     * @param {JSON} modelJSON The complete JSON for the model to be saved
      * @returns Nothing
      */
-    async updateModel(modelJSON)
+    async saveModel(modelJSON)
     {
         //Validate model JSON
         const validationResults = getValidator()(modelJSON);
         const reportString = generateReportStringFromValidationResults(validationResults);
         if(reportString != "")
         {
-            confirm("Failed to update model due to JSON Schema validation issues.\n" + reportString);
-            console.error("Update fail: Schema validation.");
+            alert("Failed to save model due to JSON Schema validation issues.\n" + reportString);
+            console.error("Save fail: Schema validation.");
             console.error(validationResults);
             return;
         }
 
-        //Send API call to UPDATE
         try {
             const requestURL = this.baseURL + "/v0/models"
+            const uuid = modelJSON.meta.uuid;
+
+            //Check if model exists to determine "Save As" or "Save (overwrite)" behavior
+            const existsResponse = await fetch(requestURL + "/" + String(uuid));
+            let exists = false;
+            if(existsResponse.ok)
+            {
+                const existsModelMeta = await existsResponse.json();
+                exists = existsModelMeta?.uuid === uuid;
+            }
+
+            const method = exists ? 'PUT' : 'POST';
+            const confirmMessage = exists ?
+                "Overwriting model " + uuid + ": " + (modelJSON.meta.name ?? "<unnamed>") + ".\nOK?" :
+                "Saving new model " + uuid + ": " + (modelJSON.meta.name ?? "<unnamed>") + ".\nOK?";
+            
+            //Convey behavior to user, get confirmation
+            if(!confirm(confirmMessage)) return;
+
+            //Save via the API, either PUT or POST
             const response = await fetch(requestURL, {
-                method: 'PUT',
+                method: method,
                 headers: {
                     'Content-type': 'application/json'
                 },
                 body: JSON.stringify(modelJSON)
             });
+
+            //API failure
             if(!response.ok) {
-                throw new Error("Failed to update model,", response);
+                throw new Error("Failed to save model, ", response);
             }
             return;
         }
         catch (error) {
-            console.error("Failed to update model. ", error);
+            alert(error);
+            console.error(error);
+
+            //Fallback option: Local download!
+            if(confirm("Would you like to download the model as a .json file instead?"))
+            {
+                fileIO.downloadTextFile(JSON.stringify(modelJSON));
+            }
         }
     }
-
 }

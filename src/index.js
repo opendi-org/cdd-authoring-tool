@@ -189,7 +189,7 @@ function initializeGraph(graphData, paper, graph)
     const functionButtons = {};
 
     //SAVE BUTTON
-    const saveButton = new SaveButton([graphData, runtimeGraphData]);
+    const saveButton = new SaveButton([graphData, runtimeGraphData, api]);
     functionButtons[saveButton.uuid] = saveButton;
     saveButton.JointRect.addTo(graph);
 
