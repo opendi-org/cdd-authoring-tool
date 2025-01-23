@@ -13,6 +13,9 @@ import * as fileIO from "./fileIO.js";
 import { cloneDeep } from "lodash-es";
 import { getValidator, validateGraphData } from "./validation.js";
 
+import { API } from "./apiClasses/api.js";
+import { StaticAPI } from "./apiClasses/staticApi.js";
+
 // --- MAIN UI/GRAPH SETUP ---
 var namespace = {
     shapes: joint.shapes,
@@ -46,8 +49,8 @@ var paper = new joint.dia.Paper({
 
 //Define json editor
 let jsonEditorContent = {
-    text: undefined,
-    json: graphData
+    text: "",
+    json: undefined,
 }
 var editorCurrentMode = 'tree';
 
@@ -62,6 +65,42 @@ const editor = createJSONEditor({
     }
 });
 
+let api;
+
+if(Config.deploymentIsStatic)
+{
+    api = new StaticAPI();
+}
+else
+{
+    api = new API();
+}
+
+/**
+ * Updates the Graph and JSON Editor views with the model with the given UUID.
+ * Fetches the model from API.
+ * 
+ * @param {string} uuid UUID used by API to fetch the model from the API database
+ * @returns {boolean} True if successful, meaning the model was found and set in the JSON and Graph views. False, otherwise.
+ */
+async function updateViewsWithModel(uuid) {
+    const modelData = await api.fetchFullModel(uuid);
+
+    if (modelData.meta !== undefined && modelData.meta?.uuid !== "")
+    {
+        const newEditorContent = {
+            text: undefined,
+            json: modelData
+        }
+        editor.update(newEditorContent);
+        jsonEditorContent = newEditorContent;
+        initializeGraph(modelData, paper, graph);
+        return true;
+    }
+
+    return false;
+}
+
 //Defined in selectionBuffer/selectionBuffer.js
 //Keeps track of selected elements
 const selectionBuffer = new SelectionBuffer();
@@ -71,6 +110,21 @@ const selectionBuffer = new SelectionBuffer();
  * @property {}
  */
 let runtimeGraphData = {};
+
+// Try to fetch the example model from the API.
+// If unsuccessful, update the views with the packed-in JSON model instead.
+const success = await updateViewsWithModel("a912f7f8-24dd-4b23-aa2a-97291d3f879f")
+if(!success)
+{
+    const newEditorContent = {
+        text: undefined,
+        json: graphData,
+    };
+    editor.update(newEditorContent);
+    jsonEditorContent = newEditorContent;
+    initializeGraph(graphData, paper, graph);
+}
+
 
 /**
  * Defines the CDD graph:  
@@ -135,7 +189,7 @@ function initializeGraph(graphData, paper, graph)
     const functionButtons = {};
 
     //SAVE BUTTON
-    const saveButton = new SaveButton([graphData, runtimeGraphData]);
+    const saveButton = new SaveButton([graphData, runtimeGraphData, api]);
     functionButtons[saveButton.uuid] = saveButton;
     saveButton.JointRect.addTo(graph);
 
@@ -153,8 +207,6 @@ function initializeGraph(graphData, paper, graph)
 
     runtimeGraphData.functionButtons = functionButtons;
 }
-
-initializeGraph(graphData, paper, graph);
 
 // --- EDITOR/GRAPH ROUND-TRIP I/O ---
 

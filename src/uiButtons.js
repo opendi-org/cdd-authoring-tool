@@ -82,12 +82,12 @@ export class SaveButton extends FunctionButton {
      * @see fileIO.saveGraphJSON
      */
     constructor(args) {
-        super(0, 0, 80, 20, "Download", null, args);
+        super(0, 0, 80, 20, "Save Model", null, args);
         this.callback = this.saveCallback;
     }
 
-    saveCallback(originalJSON, runtimeGraphData)
+    saveCallback(originalJSON, runtimeGraphData, api)
     {
-        fileIO.downloadTextFile( JSON.stringify( fileIO.saveGraphJSON(originalJSON, runtimeGraphData.graphElements, runtimeGraphData.graphLinks) ) );
+        api.saveModel(fileIO.saveGraphJSON(originalJSON, runtimeGraphData.graphElements, runtimeGraphData.graphLinks))
     }
 }

@@ -34,7 +34,6 @@ function ValidationResults(canRender, errors, validatedData)
 export function validateGraphData(graphData) {
     let errorList = [];
     let validatedData = cloneDeep(graphData);
-    console.log(validatedData);
     
     //Check that a renderable diagram exists. Diagrams are optional.
     if(!validatedData || !validatedData.diagrams || validatedData.diagrams.length === 0)
@@ -102,9 +101,54 @@ export function validateGraphData(graphData) {
 }
 
 /**
+ * Generate a well-formatted string reporting the validation results given as an Array.
+ * 
+ * @param {Array<ValidationResults>} validationResults List of validation results to generate a report string for.
+ * @returns {string} A string with a formatted report of the validation issues.
+ */
+export function generateReportStringFromValidationResults(validationResults)
+{
+    if(validationResults.length > 0)
+    {
+        let reportString = "Model not schema compliant. Plese resolve these issues:";
+        validationResults.forEach((result) => {
+            reportString += "\n\n" + result.severity + " at   ";
+
+            let resultPath = "";
+            result.path.forEach((pathComponent) => {
+                if(!isNaN(parseInt(pathComponent)))
+                {
+                    resultPath += "[" + parseInt(pathComponent).toString() + "]";
+                }
+                else
+                {
+                    resultPath += "." + pathComponent;
+                }
+            })
+
+            if(resultPath[0] == ".")
+            {
+                resultPath = resultPath.substring(1);
+            }
+
+            reportString += resultPath + ":   " + result.message;
+        })
+
+        return reportString;
+    }
+
+    return "";
+}
+
+/**
  * Generate an AJV JSON Schema validation function.  
  * Combines all schema definitions, defines string formats,
  * and compiles the validator to create the validation function.
+ * 
+ * AJV errors take the form of an array of objects with these main properties:
+ * "message" - String with the error or warning message.
+ * "severity" - String with the severity. Generally warning or error. Not sure what else is possible.
+ * "path" - Array of strings representing the nested path to where the error is.
  * 
  * @returns {function(json)} JSON Schema validation function. Pass JSON to validate, and get a map of validation errors.
  */
