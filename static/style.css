@@ -7,6 +7,7 @@
     height: 87.5vh;
     max-height: 87.5vh; /* Leave a little room at bottom of screen to reveal instruction text */
     min-width: 300px;
+    position: relative;
 }
 
 .left {
@@ -31,6 +32,23 @@ body {
 /* JSON Editor is closed by default. */
 #jsoneditor {
     display: none;
+}
+
+/* Graph controls legend */
+#controls-legend {
+    /* Colors */
+    background-color: rgba(0, 0, 0, 0.65);
+    color: white;
+    /* Shape */
+    border-radius: 10px;
+    padding: 15px;
+    width: auto;
+    display: inline-block;
+    /* Position */
+    position: absolute;
+    z-index: 10;
+    bottom: 15px;
+    right: 15px;
 }
 
 /* Mobile-specific (small screens) */
