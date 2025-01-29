@@ -62,6 +62,12 @@ const editor = createJSONEditor({
     }
 });
 
+let jsonEditor = document.getElementById("jsoneditor"); // JSON editor HTML Element
+// If user had JSON editor open upon last visit, open by default
+if (localStorage.getItem("jsonEditor") == "open") {
+    jsonEditor.style.display = "flex";
+}
+
 //Defined in selectionBuffer/selectionBuffer.js
 //Keeps track of selected elements
 const selectionBuffer = new SelectionBuffer();
@@ -150,6 +156,10 @@ function initializeGraph(graphData, paper, graph)
     const toggleDependencyButton = new FunctionButton(0, 75, 80, 20, "Toggle Dep", toggleDependency, [selectionBuffer, runtimeGraphData, graph]);
     functionButtons[toggleDependencyButton.uuid] = toggleDependencyButton;
     toggleDependencyButton.JointRect.addTo(graph);
+
+    const advancedButton = new FunctionButton(0, 100, 80, 20, "Toggle Adv", toggleJSONEditor, [selectionBuffer, runtimeGraphData, graph]);
+    functionButtons[advancedButton.uuid] = advancedButton;
+    advancedButton.JointRect.addTo(graph);
 
     runtimeGraphData.functionButtons = functionButtons;
 }
@@ -483,6 +493,19 @@ function addNewDependency(sourceElem, targetElem, runtimeGraphData, graph)
 
     runtimeGraphData.graphLinks[newDepUUID] = CausalDependency.addLinkToGraph(addDepJSON, graph, runtimeGraphData.graphElements);
     runtimeGraphData.graphLinks[newDepUUID].updateSelection();
+}
+
+/**
+ * Toggles the JSON editor between open/closed.
+ */
+function toggleJSONEditor() {
+    if (jsonEditor.style.display == "none" || jsonEditor.style.display == "") {
+        jsonEditor.style.display = "flex"; // Open editor
+        localStorage.setItem("jsonEditor", "open"); // Save preference
+    } else {
+        jsonEditor.style.display = "none"; // Close editor
+        localStorage.setItem("jsonEditor", "closed"); // Save preference
+    }
 }
 
 /**

@@ -10,8 +10,7 @@
 }
 
 .left {
-    width: 64%; /* Not actually used. See paper definition in index.js */
-    max-width: 64%;
+    width: 100%;
 }
 
 .right {
@@ -27,6 +26,11 @@
 
 body {
     background-color: #e2e9eb;
+}
+
+/* JSON Editor is closed by default. */
+#jsoneditor {
+    display: none;
 }
 
 /* Mobile-specific (small screens) */
