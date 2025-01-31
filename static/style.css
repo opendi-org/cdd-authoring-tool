@@ -29,12 +29,80 @@ body {
     background-color: #e2e9eb;
 }
 
-/* JSON Editor is closed by default. */
+/* Entire menu */
+#menu {
+    display: none;
+    flex-direction: column;
+    background-color: #041059;
+    padding: 0;
+}
+
+/* Banner at top of menu, contains tab buttons */
+#menu-options {
+    width: 100%;
+    background-color: #000526;
+    color: white;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+/* Menu tab button */
+.menu-tab {
+    padding: 15px;
+    display: inline-block;
+}
+
+/* Underline menu tab button when user hovers over it */
+.menu-tab:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+/* JSON Editor menu contents */
 #jsoneditor {
     display: none;
 }
 
-/* Graph controls legend */
+/* Glossary menu contents */
+#glossary {
+    display: none;
+}
+
+/* Menu contents that are mostly informational (as opposed to JSON Editor) */
+.info-menu {
+    /* display: none; */
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    background-color: #041059;
+    color: white;
+    padding: 0;
+}
+
+/* H2 acts like a section divider */
+.info-menu h2 {
+    background-color: #010a40;
+    margin: 0;
+    padding: 25px;
+    font-weight: normal;
+}
+
+.info-menu * {
+    font-size: 15px;
+}
+
+.info-menu p {
+    padding-left: 25px;
+    padding-right: 25px;
+}
+
+/* Highlight currently selected menu tab */
+.selected-tab {
+    background-color: #2f3ba1;
+}
+
+/* Shows description of graph controls, hovers over graph */
 #controls-legend {
     /* Colors */
     background-color: rgba(0, 0, 0, 0.65);
@@ -42,7 +110,7 @@ body {
     /* Shape */
     border-radius: 10px;
     padding: 15px;
-    width: auto;
+    /* width: auto; */
     display: inline-block;
     /* Position */
     position: absolute;
