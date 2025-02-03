@@ -360,7 +360,7 @@ function initializeGraph(graphData, paper, graph)
     toggleDependencyButton.JointRect.addTo(graph);
 
     // Menu containing JSON editor, description of controls, and glossary
-    const menuButton = new FunctionButton(0, 100, 80, 20, "Menu", toggleMenu, [selectionBuffer, runtimeGraphData, graph]);
+    const menuButton = new FunctionButton(0, 75, 80, 20, "Menu", toggleMenu, [selectionBuffer, runtimeGraphData, graph]);
     functionButtons[menuButton.uuid] = menuButton;
     menuButton.JointRect.addTo(graph);
 
