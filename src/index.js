@@ -76,6 +76,9 @@ const editor = createJSONEditor({
 //Get an implementation of the API
 //See config.js
 let api = Config.apiBaseURI === "" ? new StaticAPI() : new API(Config.apiBaseURI);
+//Set the api URL textbox value to value from config
+const baseURLTextbox = document.getElementById("api-base-url");
+baseURLTextbox.value = Config.apiBaseURI;
 
 //Defined in selectionBuffer/selectionBuffer.js
 //Keeps track of selected elements
@@ -146,6 +149,16 @@ newModelButton.addEventListener("click", () => {
     updateViewsWithModel(null, newJSON);
 })
 
+const updateURLButton = document.getElementById("update-api-url");
+updateURLButton.addEventListener("click", () => {
+    if(confirm("Refreshing the API. You will lose ALL unsaved data. Continue?"))
+    {
+        const newURL = baseURLTextbox.value;
+        api = newURL === "" ? new StaticAPI() : new API(newURL);
+        refreshAuthoringTool();
+    }
+})
+
 
 
 
@@ -178,16 +191,19 @@ async function refreshAuthoringTool() {
 
     //Fill in selector with latest models
     modelSelector.innerHTML = '';
-    metas.forEach((meta) => {
-        const metaName = meta?.name ?? "<unnamed>";
-        const metaUUID = meta.uuid;
-
-        let newOption = document.createElement('option');
-        newOption.id = "selector-option-" + metaUUID;
-        newOption.value = metaUUID;
-        newOption.innerHTML = metaName + " (uuid=" + metaUUID + ")";
-        modelSelector.appendChild(newOption);
-    })
+    if(metas.length > 0)
+    {
+        metas.forEach((meta) => {
+            const metaName = meta?.name ?? "<unnamed>";
+            const metaUUID = meta.uuid;
+    
+            let newOption = document.createElement('option');
+            newOption.id = "selector-option-" + metaUUID;
+            newOption.value = metaUUID;
+            newOption.innerHTML = metaName + " (uuid=" + metaUUID + ")";
+            modelSelector.appendChild(newOption);
+        })
+    }
 }
 
 /**
