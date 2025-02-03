@@ -3,11 +3,11 @@
 
 import builtinModelJson from "../schema_compliant_cdd.json"  assert {type: 'json'}
 import * as fileIO from "../fileIO.js"
+import {Config} from "../config.js"
 
 export class StaticAPI {
-    static DefaultBaseURL = ""
 
-    constructor(baseURL = StaticAPI.DefaultBaseURL) {
+    constructor(baseURL = Config.apiBaseURI) {
         this.baseURL = baseURL;
     }
 
@@ -20,5 +20,17 @@ export class StaticAPI {
     {
         alert("NOTE: API disabled. The tool will initiate a download of the model's JSON file.")
         fileIO.downloadTextFile(JSON.stringify(modelJSON))
+        return false; //Prevent the tool from refreshing and potentially losing the current model JSON
+    }
+
+    async deleteModel(uuid)
+    {
+        alert("NOTE: API disabled. There is no database to delete the model from.")
+        return false;
+    }
+
+    async getModelMetas()
+    {
+        return [builtinModelJson.meta];
     }
 }

@@ -3,12 +3,18 @@
 
 import { validate } from 'uuid'
 import { getValidator, generateReportStringFromValidationResults } from '../validation';
-import * as fileIO from "../fileIO.js"
+import * as fileIO from "../fileIO.js";
+import {Config} from "../config.js";
 
 export class API {
-    static DefaultBaseURL = "/api"  //Use the alias from the Docker Compose service name.
     
-    constructor(baseURL = API.DefaultBaseURL) {
+    constructor(baseURL = Config.apiBaseURI) {
+        //In case the trailing slash accidentally made it in, remove it.
+        if(baseURL.charAt(baseURL.length - 1) == '/')
+        {
+            baseURL = baseURL.substring(0, baseURL.length - 1);
+        }
+
         this.baseURL = baseURL;
     }
 
@@ -47,7 +53,7 @@ export class API {
      * If it already exists, sends a PUT request. Checks for existing model based on the UUID. This
      * method requires that the model is valid according to the OpenDI JSON Schema before sending the request.
      * @param {JSON} modelJSON The complete JSON for the model to be saved
-     * @returns Nothing
+     * @returns {boolean} True if successfully saved, else false.
      */
     async saveModel(modelJSON)
     {
@@ -59,7 +65,7 @@ export class API {
             alert("Failed to save model due to JSON Schema validation issues.\n" + reportString);
             console.error("Save fail: Schema validation.");
             console.error(validationResults);
-            return;
+            return false;
         }
 
         try {
@@ -81,7 +87,7 @@ export class API {
                 "Saving new model " + uuid + ": " + (modelJSON.meta.name ?? "<unnamed>") + ".\nOK?";
             
             //Convey behavior to user, get confirmation
-            if(!confirm(confirmMessage)) return;
+            if(!confirm(confirmMessage)) return false;
 
             //Save via the API, either PUT or POST
             const response = await fetch(requestURL, {
@@ -96,7 +102,7 @@ export class API {
             if(!response.ok) {
                 throw new Error("Failed to save model, ", response);
             }
-            return;
+            return true;
         }
         catch (error) {
             alert(error);
@@ -106,7 +112,82 @@ export class API {
             if(confirm("Would you like to download the model as a .json file instead?"))
             {
                 fileIO.downloadTextFile(JSON.stringify(modelJSON));
+                return true;
             }
+            return false;
         }
+    }
+
+    /**
+     * Send an API request to delete the given model. Checks that the model exists before
+     * attempting to delete.
+     * @param {string} uuid UUID used to construct model DELETE endpoint URI
+     * @returns {boolean} True if successfully deleted.
+     */
+    async deleteModel(uuid)
+    {
+        try {
+            const requestURL = this.baseURL + "/v0/models/" + String(uuid)
+            //Check if model exists
+            const existsResponse = await fetch(requestURL);
+            let exists = false;
+            let existsModelMeta = {};
+            if(existsResponse.ok)
+            {
+                existsModelMeta = await existsResponse.json();
+                exists = existsModelMeta?.uuid === uuid;
+            }
+
+            const modelName = existsModelMeta?.name ?? "<unnamed>";
+
+            if(!exists)
+            {
+                alert("Cannot delete model " + modelName + " (" + uuid + "): not found.");
+                return false;
+            }
+
+            if(confirm("Deleting model " + modelName + "(" + uuid +").\nOK?"))
+            {
+                const response = await fetch(requestURL, {method: 'DELETE'})
+
+                //API failure
+                if(!response.ok) {
+                    throw new Error("Failed to delete model, " , response);
+                }
+
+                return true;
+            }
+            return false;
+
+        } catch (error) {
+            alert(error);
+            console.error(error);
+            return false;
+        }
+    }
+
+    /**
+     * Get a list of the Meta objects for the Causal Decision Models that the user
+     * has access to.
+     * @returns {JSON} Array of OpenDI Meta objects
+     */
+    async getModelMetas()
+    {
+        try {
+            const requestURL = this.baseURL + "/v0/models";
+            const response = await fetch(requestURL);
+            if(!response.ok)
+            {
+                throw new Error("Failed to get model list.");
+            }
+
+            return response.json();
+
+        } catch (error) {
+            alert(error);
+            console.error(error);
+        }
+
+        return {};
     }
 }
