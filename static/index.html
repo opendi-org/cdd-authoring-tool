@@ -7,6 +7,8 @@
     </head>
     <body>
 
+        <h2 class="title-header">OpenDI CDD Authoring Tool (Prototype)</h2>
+
         <div class="cdd-editor">
             <div class="cdd-editor left">
                 <div id="jointjspaper" class="cdd-editor"><!-- This is used by index.js to attach the JointJS Paper object, for displaying CDDs. --></div>
@@ -69,6 +71,17 @@
                 
             </div>            
         </div>
+
+        <div class="model-controls">
+            <h3 class="model-controls-header">Controls</h2>
+            Select a Model: <select name="models" id="models-select"></select> <button id="load-model">Load Model</button> <button id="delete-model">Delete Model</button>
+            <br> <br>
+            <button id="new-model">New Model</button> <button id="save-model">Save Model</button>
+            <br> <br>
+            API Base URL: <input type="text" id="api-base-url"></input> <button id="update-api-url">Update</button> <label style="font-size:small">(Leave blank for static/no API)</label>
+            <br> <br>
+        </div>
+
         <div class="instructions">
             <p>
                 This tool allows you to create and edit OpenDI standards-compliant

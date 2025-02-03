@@ -1,11 +1,18 @@
+.title-header {
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    margin-top: 0.5vh;
+    margin-bottom: 0.5vh;
+    padding-inline: 0.5%;
+}
+
 /* CDD Editor will use a flexbox layout, favoring the graph display. */
 /* See https://css-tricks.com/snippets/css/a-guide-to-flexbox/ for a nice intro */
 .cdd-editor {
     display: flex;
     padding-inline: 0.5%;
     min-height: 300px;
-    height: 87.5vh;
-    max-height: 87.5vh; /* Leave a little room at bottom of screen to reveal instruction text */
+    height: 80vh;
+    max-height: 80vh; /* Leave a little room at bottom of screen to reveal instruction text */
     min-width: 300px;
     position: relative;
 }
@@ -20,12 +27,26 @@
     max-height: 100%;
 }
 
+.model-controls {
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    background-color: #d8dfe0;
+    width: 98%;
+    margin-left: 0.5%;
+    padding: 0.25%;
+}
+
+.model-controls-header {
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
 .instructions {
     font-family: Roboto, Arial, Helvetica, sans-serif;
     padding:0.5%;
 }
 
 body {
+    font-family: Roboto, Arial, Helvetica, sans-serif;
     background-color: #e2e9eb;
 }
 
@@ -125,8 +146,8 @@ body {
     .cdd-editor {
         flex-direction: column;
         padding-inline: 0%;
-        height: 97vh;
-        max-height: 97vh;
+        height: 90vh;
+        max-height: 90vh;
     }
     .left {
         width: 100%;
