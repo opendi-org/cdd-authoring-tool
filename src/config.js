@@ -9,5 +9,7 @@ export class Config {
     static minElementHeight = 60;
     //Do not limit height, so longer text can fully render
 
-    static deploymentIsStatic = true;
+    // Leave empty for static site
+    // Do not include a trailing slash
+    static apiBaseURI = "";
 }

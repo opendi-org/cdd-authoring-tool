@@ -1,4 +1,5 @@
 import { cloneDeep } from "lodash-es";
+import { DateTime } from "luxon";
 
 /**
  * Create updated JSON representation of the CDD in the current graph.
@@ -86,6 +87,14 @@ export function saveGraphJSON(originalJSON, rects, links)
     jsonOut.diagrams[0].dependencies = newDependencies;
 
     return jsonOut;
+}
+
+/**
+ * Generate the current time as a schema-compliant timestamp string.
+ * @returns A schema-compliant stringified timestamp for the current DateTime
+ */
+export function getCurrentTimeAsTimestamp() {
+    return DateTime.now().toFormat("yyyy-MM-dd'T'HH:mm:ssZZ")
 }
 
 /**

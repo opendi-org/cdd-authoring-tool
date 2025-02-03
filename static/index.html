@@ -7,9 +7,19 @@
     </head>
     <body>
 
+        <h2 class="title-header">OpenDI CDD Authoring Tool (Prototype)</h2>
+
         <div class="cdd-editor">
             <div id="jointjspaper" class="cdd-editor left"><!-- This is used by index.js to attach the JointJS Paper object, for displaying CDDs. --></div>
             <div id="jsoneditor" class="cdd-editor right"><!-- This is used by index.js to attach the JSON Editor object. --></div>
+        </div>
+
+        <div class="model-controls">
+            <h3 class="model-controls-header">Controls</h2>
+            Select a Model: <select name="models" id="models-select"></select> <button id="load-model">Load Model</button> <button id="delete-model">Delete Model</button>
+            <br> <br>
+            <button id="new-model">New Model</button> <button id="save-model">Save Model</button>
+            <br> <br>
         </div>
 
         <div class="instructions">

@@ -1,6 +1,7 @@
 import * as joint from "@joint/core/dist/joint.js";
 import graphData from './schema_compliant_cdd.json' assert {type: 'json'};
-import {SaveButton, FunctionButton} from "./uiButtons.js";
+import newGraph from './empty_cdd.json' assert {type: 'json'};
+import {FunctionButton} from "./uiButtons.js";
 import {DecisionElement} from "./graphComponents/decisionElement.js";
 import {CausalDependency} from "./graphComponents/causalDependency.js";
 import { SelectionBuffer } from "./selectionBuffer/selectionBuffer.js";
@@ -16,7 +17,14 @@ import { getValidator, validateGraphData } from "./validation.js";
 import { API } from "./apiClasses/api.js";
 import { StaticAPI } from "./apiClasses/staticApi.js";
 
+
+
+
+
+// ---------------------------
 // --- MAIN UI/GRAPH SETUP ---
+// ---------------------------
+
 var namespace = {
     shapes: joint.shapes,
     DecisionElement
@@ -26,7 +34,7 @@ var graph = new joint.dia.Graph({}, { cellNamespace: namespace });
 
 //Define canvas (paper)
 var paper = new joint.dia.Paper({
-    el: document.getElementById('jointjspaper'), //div in static/index.html
+    el: document.getElementById('jointjspaper'),
     model: graph,
     width: Config.paperWidth,
     height: Config.paperHeight,
@@ -42,7 +50,7 @@ var paper = new joint.dia.Paper({
             return false;
         }
 
-        //Otherwise, return the default value
+        //Otherwise, return the default interactivity settings value
         return {labelMove: false};
     }
 });
@@ -65,66 +73,164 @@ const editor = createJSONEditor({
     }
 });
 
-let api;
+//Get an implementation of the API
+//See config.js
+let api = Config.apiBaseURI === "" ? new StaticAPI() : new API(Config.apiBaseURI);
 
-if(Config.deploymentIsStatic)
-{
-    api = new StaticAPI();
-}
-else
-{
-    api = new API();
+//Defined in selectionBuffer/selectionBuffer.js
+//Keeps track of selected elements
+let selectionBuffer = new SelectionBuffer();
+
+
+let runtimeGraphData = {
+    graphElements: {},
+    graphLinks: {},
+    functionButtons: {}
+};
+
+const modelSelector = document.getElementById("models-select");
+
+refreshAuthoringTool();
+
+// CONTROL BUTTON CLICK RESPONSES
+
+const loadButton = document.getElementById("load-model");
+loadButton.addEventListener("click", () => {
+    const selectedUUID = modelSelector.value;
+    const selectorLabel = document.getElementById("selector-option-" + selectedUUID).innerHTML;
+    if(confirm("NOTE: Loading model " + selectorLabel + "\nAny unsaved work on the current model WILL BE LOST."))
+    {
+        updateViewsWithModel(selectedUUID);
+    }
+});
+
+const saveButton = document.getElementById("save-model");
+saveButton.addEventListener("click", () => {
+    const jsonToSave = toJSONContent(editor.get()).json;
+    api.saveModel(jsonToSave).then((success) => {
+        if (success)
+        {
+            refreshAuthoringTool();
+        }
+    })
+})
+
+const deleteButton = document.getElementById("delete-model");
+deleteButton.addEventListener("click", () => {
+    api.deleteModel(modelSelector.value).then((success) => {
+        if(success)
+        {
+            const currentGraphData = toJSONContent(editor.get()).json;
+            console.log(modelSelector.value, " ", currentGraphData.meta?.uuid);
+            if(modelSelector.value == currentGraphData.meta?.uuid)
+            {
+                refreshAuthoringTool();
+            }
+            else
+            {
+                const optionToDelete = document.getElementById("selector-option-" + modelSelector.value);
+                modelSelector.removeChild(optionToDelete);
+            }
+        }
+    })
+})
+
+const newModelButton = document.getElementById("new-model");
+newModelButton.addEventListener("click", () => {
+    const newJSON = cloneDeep(newGraph);
+    newJSON.meta.uuid = uuidv4();
+    newJSON.meta.createdDate = fileIO.getCurrentTimeAsTimestamp();
+    newJSON.diagrams[0].meta.uuid = uuidv4();
+    newJSON.diagrams[0].meta.createdDate = fileIO.getCurrentTimeAsTimestamp();
+
+    updateViewsWithModel(null, newJSON);
+})
+
+
+
+
+
+// ----------------------------------
+// --- BASIC GRAPH/JSON VIEW UTIL ---
+// ----------------------------------
+
+/**
+ * Refreshes the main views for the authoring tool (JointJS graph and JSON editor).
+ * Updates these views with the most-recently-edited model from the API,
+ * and refreshes the dropdown menu in the Controls section with an up-to-date model list.
+ */
+async function refreshAuthoringTool() {
+    //Get UUID of the most recently updated model from the API
+    let metas = await api.getModelMetas();
+    const latest = metas[0]?.uuid ?? "";
+
+    const updatedData = await updateViewsWithModel(latest)
+    if(updatedData === null)
+    {
+        const newEditorContent = {
+            text: undefined,
+            json: graphData,
+        };
+        editor.update(newEditorContent);
+        jsonEditorContent = newEditorContent;
+        initializeGraph(graphData, paper, graph);
+    }
+
+    //Fill in selector with latest models
+    modelSelector.innerHTML = '';
+    metas.forEach((meta) => {
+        const metaName = meta?.name ?? "<unnamed>";
+        const metaUUID = meta.uuid;
+
+        let newOption = document.createElement('option');
+        newOption.id = "selector-option-" + metaUUID;
+        newOption.value = metaUUID;
+        newOption.innerHTML = metaName + " (uuid=" + metaUUID + ")";
+        modelSelector.appendChild(newOption);
+    })
 }
 
 /**
  * Updates the Graph and JSON Editor views with the model with the given UUID.
  * Fetches the model from API.
  * 
- * @param {string} uuid UUID used by API to fetch the model from the API database
- * @returns {boolean} True if successful, meaning the model was found and set in the JSON and Graph views. False, otherwise.
+ * @param {string} uuid If using the API to fetch a model from the database, pass its UUID to this param
+ * @param {JSON} modelJSON If updating views with an unsaved local model, pass the model JSON to this param
+ * @returns {JSON} If successful, returns the JSON for the model fetched by api.fetchFullModel. Else, returns null.
  */
-async function updateViewsWithModel(uuid) {
-    const modelData = await api.fetchFullModel(uuid);
+async function updateViewsWithModel(uuid = null, modelJSON = null) {
+    //Discard old Selection Buffer
+    selectionBuffer = new SelectionBuffer();
+
+    const modelData = modelJSON ?? await api.fetchFullModel(uuid);
 
     if (modelData.meta !== undefined && modelData.meta?.uuid !== "")
     {
+        //Elems with null causalType are stored as empty string in the database..
+        //Replace these with null value
+        modelData.diagrams[0]?.elements?.forEach((elem) => {
+            if(elem.causalType === "")
+            {
+                elem.causalType = null;
+            }
+        })
+
+        //Update JSON Editor view
         const newEditorContent = {
             text: undefined,
             json: modelData
         }
         editor.update(newEditorContent);
         jsonEditorContent = newEditorContent;
+
+        //Update graph view
         initializeGraph(modelData, paper, graph);
-        return true;
+
+        return modelData;
     }
 
-    return false;
+    return null;
 }
-
-//Defined in selectionBuffer/selectionBuffer.js
-//Keeps track of selected elements
-const selectionBuffer = new SelectionBuffer();
-
-/**
- * Holds graph data:
- * @property {}
- */
-let runtimeGraphData = {};
-
-// Try to fetch the example model from the API.
-// If unsuccessful, update the views with the packed-in JSON model instead.
-const success = await updateViewsWithModel("a912f7f8-24dd-4b23-aa2a-97291d3f879f")
-if(!success)
-{
-    const newEditorContent = {
-        text: undefined,
-        json: graphData,
-    };
-    editor.update(newEditorContent);
-    jsonEditorContent = newEditorContent;
-    initializeGraph(graphData, paper, graph);
-}
-
 
 /**
  * Defines the CDD graph:  
@@ -139,6 +245,11 @@ if(!success)
 function initializeGraph(graphData, paper, graph)
 {
     graph.clear();
+    runtimeGraphData = {
+        graphElements: {},
+        graphLinks: {},
+        functionButtons: {}
+    };
 
     //Validate graph data
     const validationResults = validateGraphData(graphData);
@@ -188,27 +299,28 @@ function initializeGraph(graphData, paper, graph)
     //Value: Function Button with JointJS object etc.
     const functionButtons = {};
 
-    //SAVE BUTTON
-    const saveButton = new SaveButton([graphData, runtimeGraphData, api]);
-    functionButtons[saveButton.uuid] = saveButton;
-    saveButton.JointRect.addTo(graph);
-
-    const newElementButton = new FunctionButton(0, 25, 80, 20, "New Elem", addNewElement, [runtimeGraphData, graph, paper]);
+    const newElementButton = new FunctionButton(0, 0, 80, 20, "New Elem", addNewElement, [runtimeGraphData, graph, paper]);
     functionButtons[newElementButton.uuid] = newElementButton;
     newElementButton.JointRect.addTo(graph);
 
-    const deleteElementButton = new FunctionButton(0, 50, 80, 20, "Del Elem", deleteElements, [selectionBuffer, runtimeGraphData]);
+    const deleteElementButton = new FunctionButton(0, 25, 80, 20, "Del Elem", deleteElements, [selectionBuffer, runtimeGraphData]);
     functionButtons[deleteElementButton.uuid] = deleteElementButton;
     deleteElementButton.JointRect.addTo(graph);
 
-    const toggleDependencyButton = new FunctionButton(0, 75, 80, 20, "Toggle Dep", toggleDependency, [selectionBuffer, runtimeGraphData, graph]);
+    const toggleDependencyButton = new FunctionButton(0, 50, 80, 20, "Toggle Dep", toggleDependency, [selectionBuffer, runtimeGraphData, graph]);
     functionButtons[toggleDependencyButton.uuid] = toggleDependencyButton;
     toggleDependencyButton.JointRect.addTo(graph);
 
     runtimeGraphData.functionButtons = functionButtons;
 }
 
+
+
+
+
+// -----------------------------------
 // --- EDITOR/GRAPH ROUND-TRIP I/O ---
+// -----------------------------------
 
 /**
  * Callback function that runs whenever the contents of the JSON in the editor change.
@@ -256,7 +368,13 @@ function handleGraphChange(runtimeGraphData)
     editor.update(newContent);
 }
 
+
+
+
+
+// -----------------------------------
 // --- OTHER JSON EDITOR CALLBACKS ---
+// -----------------------------------
 
 /**
  * Called when user selects JSON content at some editor JSON path.
@@ -385,7 +503,13 @@ function updateJSONEditorSelection(selectionBuffer, jsonEditor)
     }
 }
 
+
+
+
+
+// -------------------------------
 // --- ELEMENT CRUD OPERATIONS ---
+// -------------------------------
 
 /**
  * Add a new causal decision element to the CDD. The element initializes with a set of default values,
@@ -629,7 +753,11 @@ function toggleDependency(selectionBuffer, runtimeGraphData, graph)
 
 
 
-// --- EVENTS ---
+
+
+// ----------------------------
+// --- JOINTJS GRAPH EVENTS ---
+// ----------------------------
 
 /**
  * Click event (elements)
@@ -695,6 +823,9 @@ paper.on('element:contextmenu', function(cell) {
         updateJSONEditorSelection(selectionBuffer, editor);
     }
 })
+
+
+
 
 
 /**
