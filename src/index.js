@@ -73,6 +73,38 @@ const editor = createJSONEditor({
     }
 });
 
+// Menu and tab contents
+let menu = document.getElementById("menu");
+let helpMenu = document.getElementById("helpmenu");
+let glossary = document.getElementById("glossary");
+let jsonEditor = document.getElementById("jsoneditor");
+
+// Menu tab buttons
+let helpMenuBtn = document.getElementById("help-tab-btn");
+let glossaryMenuBtn = document.getElementById("glossary-btn");
+let advancedBtn = document.getElementById("advanced-tab-btn");
+let exitBtn = document.getElementById("exit-btn");
+
+// Local storage values - these help persist preferences across browser sessions
+let helpMenuVal = "help";
+let glossaryVal = "glossary";
+let jsonEditorVal = "advanced";
+
+// Open menu by default
+if (localStorage.getItem("menu") == "open" 
+    || localStorage.getItem("menu") == null 
+    || localStorage.getItem("menu") == "") {
+    menu.style.display = "flex"; // Show menu
+    localStorage.setItem("menu", "open"); // Set preference to open
+    openLastTab(); // Open last opened tab    
+}
+
+// Enable switching between menu tabs
+helpMenuBtn.addEventListener("click", showHelpMenu);
+glossaryMenuBtn.addEventListener("click", showGlossary);
+advancedBtn.addEventListener("click", showJSONEditor);
+exitBtn.addEventListener("click", exitMenu);
+
 //Get an implementation of the API
 //See config.js
 let api = Config.apiBaseURI === "" ? new StaticAPI() : new API(Config.apiBaseURI);
@@ -326,6 +358,11 @@ function initializeGraph(graphData, paper, graph)
     const toggleDependencyButton = new FunctionButton(0, 50, 80, 20, "Toggle Dep", toggleDependency, [selectionBuffer, runtimeGraphData, graph]);
     functionButtons[toggleDependencyButton.uuid] = toggleDependencyButton;
     toggleDependencyButton.JointRect.addTo(graph);
+
+    // Menu containing JSON editor, description of controls, and glossary
+    const menuButton = new FunctionButton(0, 75, 80, 20, "Menu", toggleMenu, [selectionBuffer, runtimeGraphData, graph]);
+    functionButtons[menuButton.uuid] = menuButton;
+    menuButton.JointRect.addTo(graph);
 
     runtimeGraphData.functionButtons = functionButtons;
 }
@@ -675,6 +712,98 @@ function addNewDependency(sourceElem, targetElem, runtimeGraphData, graph)
 
     runtimeGraphData.graphLinks[newDepUUID] = CausalDependency.addLinkToGraph(addDepJSON, graph, runtimeGraphData.graphElements);
     runtimeGraphData.graphLinks[newDepUUID].updateSelection();
+}
+
+/**
+ * Opens/closes menu when "Menu" button on graph is clicked.
+ * When menu is opened, it should open to the last opened menu tab.
+ */
+function toggleMenu() {
+    if (menu.style.display == "none" || menu.style.display == "") { // Open menu
+        menu.style.display = "flex";
+        localStorage.setItem("menu", "open");
+        // Open to last opened menu tab
+        openLastTab();
+    } else { // Close menu
+        exitMenu();
+    }
+}
+
+/**
+ * Open the last opened menu tab.
+ */
+function openLastTab()
+{
+    if (localStorage.getItem("tab") == glossaryVal) {
+        showGlossary();
+    } else if (localStorage.getItem("tab") == helpMenuVal) {
+        showHelpMenu();
+    } else { // Default...
+        showJSONEditor();
+    }
+}
+
+/**
+ * Switches menu tab to help menu when the user clicks on the "Help" tab.
+ */
+function showHelpMenu() {
+    showMenuTab(helpMenu, helpMenuBtn, helpMenuVal);
+}
+
+/**
+ * Switches menu tab to glossary when the user clicks on the "Glossary" tab.
+ */
+function showGlossary() {
+    showMenuTab(glossary, glossaryMenuBtn, glossaryVal);
+}
+
+/**
+ * Switches menu tab to JSON editor when the user clicks on the "Advanced" tab.
+ */
+function showJSONEditor() {
+    showMenuTab(jsonEditor, advancedBtn, jsonEditorVal);
+}
+
+/**
+ * Switches to specified menu tab.
+ * @param {HTMLElement} menuContent Menu contents to display (i.e. JSON Editor)
+ * @param {HTMLElement} menuTab Menu tab button that corresponds to menuContent (i.e. Advanced button)
+ * @param {string} localStorageVal Local storage value that corresponds to menuContent (i.e. "advanced")
+ */
+function showMenuTab(menuContent, menuTab, localStorageVal) {
+    // Show only open menu tab contents (i.e. JSON Editor)
+    let menuContents = document.getElementById("menu-contents").children;
+    for (var i = 0; i < menuContents.length; i++) {
+        let currentTab = menuContents[i];
+        if (currentTab == menuContent) {
+            currentTab.style.display = "flex";
+        } else {
+            currentTab.style.display = "none";
+        }
+    }
+
+    // Highlight only selected menu tab button (i.e. Advanced button)
+    let menuTabs = document.getElementById("menu-tabs").children;
+    for (var i = 0; i < menuTabs.length; i++) {
+        let currentButton = menuTabs[i];
+        if (currentButton == menuTab) {
+            currentButton.classList.add("selected-tab");
+        } else {
+            currentButton.classList.remove("selected-tab");
+        }
+    }
+
+    // Set tab preference - when user refreshes or visits the page from another browser tab/window, 
+    // the same menu tab will be open
+    localStorage.setItem("tab", localStorageVal);
+}
+
+/**
+ * Closes menu when the user presses the "Exit" button in the menu banner.
+ */
+function exitMenu() {
+    menu.style.display = "none";
+    localStorage.setItem("menu", "closed");
 }
 
 /**
