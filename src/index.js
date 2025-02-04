@@ -25,6 +25,9 @@ import { StaticAPI } from "./apiClasses/staticApi.js";
 // --- MAIN UI/GRAPH SETUP ---
 // ---------------------------
 
+
+// GLOBALS
+
 var namespace = {
     shapes: joint.shapes,
     DecisionElement
@@ -32,7 +35,31 @@ var namespace = {
 
 var graph = new joint.dia.Graph({}, { cellNamespace: namespace });
 
-//Define canvas (paper)
+//Get an implementation of the API
+//See config.js
+let api = Config.apiBaseURI === "" ? new StaticAPI() : new API(Config.apiBaseURI);
+//Set the api URL textbox value to value from config
+const baseURLTextbox = document.getElementById("api-base-url");
+baseURLTextbox.value = Config.apiBaseURI;
+
+//Defined in selectionBuffer/selectionBuffer.js
+//Keeps track of selected elements
+let selectionBuffer = new SelectionBuffer();
+
+let runtimeGraphData = {
+    graphElements: {},
+    graphLinks: {},
+    functionButtons: {}
+};
+
+const modelSelector = document.getElementById("models-select");
+
+//Initialize graph and JSON views
+refreshAuthoringTool();
+
+
+//JOINTJS CANVAS
+
 var paper = new joint.dia.Paper({
     el: document.getElementById('jointjspaper'),
     model: graph,
@@ -55,7 +82,9 @@ var paper = new joint.dia.Paper({
     }
 });
 
-//Define json editor
+
+//JSON EDITOR
+
 let jsonEditorContent = {
     text: "",
     json: undefined,
@@ -72,6 +101,9 @@ const editor = createJSONEditor({
         onChangeMode: (mode) => {editorCurrentMode = mode}
     }
 });
+
+
+//HELP MENU
 
 // Menu and tab contents
 let menu = document.getElementById("menu");
@@ -105,29 +137,8 @@ glossaryMenuBtn.addEventListener("click", showGlossary);
 advancedBtn.addEventListener("click", showJSONEditor);
 exitBtn.addEventListener("click", exitMenu);
 
-//Get an implementation of the API
-//See config.js
-let api = Config.apiBaseURI === "" ? new StaticAPI() : new API(Config.apiBaseURI);
-//Set the api URL textbox value to value from config
-const baseURLTextbox = document.getElementById("api-base-url");
-baseURLTextbox.value = Config.apiBaseURI;
 
-//Defined in selectionBuffer/selectionBuffer.js
-//Keeps track of selected elements
-let selectionBuffer = new SelectionBuffer();
-
-
-let runtimeGraphData = {
-    graphElements: {},
-    graphLinks: {},
-    functionButtons: {}
-};
-
-const modelSelector = document.getElementById("models-select");
-
-refreshAuthoringTool();
-
-// CONTROL BUTTON CLICK RESPONSES
+// API CONTROL BUTTON CLICK RESPONSES
 
 const loadButton = document.getElementById("load-model");
 loadButton.addEventListener("click", () => {
@@ -360,7 +371,7 @@ function initializeGraph(graphData, paper, graph)
     toggleDependencyButton.JointRect.addTo(graph);
 
     // Menu containing JSON editor, description of controls, and glossary
-    const menuButton = new FunctionButton(0, 75, 80, 20, "Menu", toggleMenu, [selectionBuffer, runtimeGraphData, graph]);
+    const menuButton = new FunctionButton(0, 75, 80, 20, "Menu", toggleMenu, []);
     functionButtons[menuButton.uuid] = menuButton;
     menuButton.JointRect.addTo(graph);
 

@@ -9,7 +9,7 @@
 /* See https://css-tricks.com/snippets/css/a-guide-to-flexbox/ for a nice intro */
 .cdd-editor {
     display: flex;
-    padding-inline: 0.5%;
+    padding-inline: 0.25%;
     min-height: 300px;
     height: 80vh;
     max-height: 80vh; /* Leave a little room at bottom of screen to reveal instruction text */
@@ -25,6 +25,7 @@
     width: 34%;
     min-width: 34%;
     max-height: 100%;
+    margin-right: 0.75%;
 }
 
 .model-controls {
@@ -83,6 +84,7 @@ body {
 /* JSON Editor menu contents */
 #jsoneditor {
     display: none;
+    width: 100%;
 }
 
 /* Glossary menu contents */
@@ -148,14 +150,13 @@ body {
         padding-inline: 0%;
         height: 90vh;
         max-height: 90vh;
+        max-width: 100%;
     }
     .left {
         width: 100%;
         max-width: 100%;
         min-width: 100%;
         min-height: 60%;
-        height: 60%;
-        max-height: 60%;
     }
     .right {
         width: 100%;
@@ -164,5 +165,10 @@ body {
         height: 40%;
         max-height: 40%;
         min-height: 40%;
+        margin:0;
+    }
+    #jsoneditor {
+        height: 100%;
+        max-height: 100%;
     }
 }
