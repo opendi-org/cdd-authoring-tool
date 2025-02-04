@@ -11,6 +11,6 @@ module.exports = {
         static: {
             directory: path.join(__dirname, 'static') //Tell the server where to find static files (like index.html)
         },
-        port:8080
+        port:3000
     }
 };

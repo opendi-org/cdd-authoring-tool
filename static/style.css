@@ -1,23 +1,44 @@
+.title-header {
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    margin-top: 0.5vh;
+    margin-bottom: 0.5vh;
+    padding-inline: 0.5%;
+}
+
 /* CDD Editor will use a flexbox layout, favoring the graph display. */
 /* See https://css-tricks.com/snippets/css/a-guide-to-flexbox/ for a nice intro */
 .cdd-editor {
     display: flex;
-    padding-inline: 0.5%;
+    padding-inline: 0.25%;
     min-height: 300px;
-    height: 87.5vh;
-    max-height: 87.5vh; /* Leave a little room at bottom of screen to reveal instruction text */
+    height: 80vh;
+    max-height: 80vh; /* Leave a little room at bottom of screen to reveal instruction text */
     min-width: 300px;
+    position: relative;
 }
 
 .left {
-    width: 64%; /* Not actually used. See paper definition in index.js */
-    max-width: 64%;
+    width: 100%;
 }
 
 .right {
     width: 34%;
     min-width: 34%;
     max-height: 100%;
+    margin-right: 0.75%;
+}
+
+.model-controls {
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    background-color: #d8dfe0;
+    width: 98%;
+    margin-left: 0.5%;
+    padding: 0.25%;
+}
+
+.model-controls-header {
+    margin-top: 3px;
+    margin-bottom: 3px;
 }
 
 .instructions {
@@ -26,7 +47,99 @@
 }
 
 body {
+    font-family: Roboto, Arial, Helvetica, sans-serif;
     background-color: #e2e9eb;
+}
+
+/* Entire menu */
+#menu {
+    display: none;
+    flex-direction: column;
+    background-color: #041059;
+    padding: 0;
+}
+
+/* Banner at top of menu, contains tab buttons */
+#menu-options {
+    width: 100%;
+    background-color: #000526;
+    color: white;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+/* Menu tab button */
+.menu-tab {
+    padding: 15px;
+    display: inline-block;
+}
+
+/* Underline menu tab button when user hovers over it */
+.menu-tab:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+/* JSON Editor menu contents */
+#jsoneditor {
+    display: none;
+    width: 100%;
+}
+
+/* Glossary menu contents */
+#glossary {
+    display: none;
+}
+
+/* Menu contents that are mostly informational (as opposed to JSON Editor) */
+.info-menu {
+    /* display: none; */
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    background-color: #041059;
+    color: white;
+    padding: 0;
+}
+
+/* H2 acts like a section divider */
+.info-menu h2 {
+    background-color: #010a40;
+    margin: 0;
+    padding: 25px;
+    font-weight: normal;
+}
+
+.info-menu * {
+    font-size: 15px;
+}
+
+.info-menu p {
+    padding-left: 25px;
+    padding-right: 25px;
+}
+
+/* Highlight currently selected menu tab */
+.selected-tab {
+    background-color: #2f3ba1;
+}
+
+/* Shows description of graph controls, hovers over graph */
+#controls-legend {
+    /* Colors */
+    background-color: rgba(0, 0, 0, 0.65);
+    color: white;
+    /* Shape */
+    border-radius: 10px;
+    padding: 15px;
+    /* width: auto; */
+    display: inline-block;
+    /* Position */
+    position: absolute;
+    z-index: 10;
+    bottom: 15px;
+    right: 15px;
 }
 
 /* Mobile-specific (small screens) */
@@ -35,16 +148,15 @@ body {
     .cdd-editor {
         flex-direction: column;
         padding-inline: 0%;
-        height: 97vh;
-        max-height: 97vh;
+        height: 90vh;
+        max-height: 90vh;
+        max-width: 100%;
     }
     .left {
         width: 100%;
         max-width: 100%;
         min-width: 100%;
         min-height: 60%;
-        height: 60%;
-        max-height: 60%;
     }
     .right {
         width: 100%;
@@ -53,5 +165,10 @@ body {
         height: 40%;
         max-height: 40%;
         min-height: 40%;
+        margin:0;
+    }
+    #jsoneditor {
+        height: 100%;
+        max-height: 100%;
     }
 }

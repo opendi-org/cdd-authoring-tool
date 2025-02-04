@@ -68,26 +68,3 @@ export class FunctionButton {
         this.JointRect.set('uuid', this.uuid);          //Identify button during click event
     }
 }
-
-/**
- * Define button specifics and save functionality here to keep
- * index.js a little neater.
- * @class
- * @constructor
- * @public
- */
-export class SaveButton extends FunctionButton {
-    /**
-     * @param {Array<any>} args Needs: Original JSON, current rects map, current links array
-     * @see fileIO.saveGraphJSON
-     */
-    constructor(args) {
-        super(0, 0, 80, 20, "Download", null, args);
-        this.callback = this.saveCallback;
-    }
-
-    saveCallback(originalJSON, runtimeGraphData)
-    {
-        fileIO.downloadTextFile( JSON.stringify( fileIO.saveGraphJSON(originalJSON, runtimeGraphData.graphElements, runtimeGraphData.graphLinks) ) );
-    }
-}

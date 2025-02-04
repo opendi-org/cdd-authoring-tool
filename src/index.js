@@ -1,6 +1,7 @@
 import * as joint from "@joint/core/dist/joint.js";
 import graphData from './schema_compliant_cdd.json' assert {type: 'json'};
-import {SaveButton, FunctionButton} from "./uiButtons.js";
+import newGraph from './empty_cdd.json' assert {type: 'json'};
+import {FunctionButton} from "./uiButtons.js";
 import {DecisionElement} from "./graphComponents/decisionElement.js";
 import {CausalDependency} from "./graphComponents/causalDependency.js";
 import { SelectionBuffer } from "./selectionBuffer/selectionBuffer.js";
@@ -13,7 +14,20 @@ import * as fileIO from "./fileIO.js";
 import { cloneDeep } from "lodash-es";
 import { getValidator, validateGraphData } from "./validation.js";
 
+import { API } from "./apiClasses/api.js";
+import { StaticAPI } from "./apiClasses/staticApi.js";
+
+
+
+
+
+// ---------------------------
 // --- MAIN UI/GRAPH SETUP ---
+// ---------------------------
+
+
+// GLOBALS
+
 var namespace = {
     shapes: joint.shapes,
     DecisionElement
@@ -21,9 +35,33 @@ var namespace = {
 
 var graph = new joint.dia.Graph({}, { cellNamespace: namespace });
 
-//Define canvas (paper)
+//Get an implementation of the API
+//See config.js
+let api = Config.apiBaseURI === "" ? new StaticAPI() : new API(Config.apiBaseURI);
+//Set the api URL textbox value to value from config
+const baseURLTextbox = document.getElementById("api-base-url");
+baseURLTextbox.value = Config.apiBaseURI;
+
+//Defined in selectionBuffer/selectionBuffer.js
+//Keeps track of selected elements
+let selectionBuffer = new SelectionBuffer();
+
+let runtimeGraphData = {
+    graphElements: {},
+    graphLinks: {},
+    functionButtons: {}
+};
+
+const modelSelector = document.getElementById("models-select");
+
+//Initialize graph and JSON views
+refreshAuthoringTool();
+
+
+//JOINTJS CANVAS
+
 var paper = new joint.dia.Paper({
-    el: document.getElementById('jointjspaper'), //div in static/index.html
+    el: document.getElementById('jointjspaper'),
     model: graph,
     width: Config.paperWidth,
     height: Config.paperHeight,
@@ -39,15 +77,17 @@ var paper = new joint.dia.Paper({
             return false;
         }
 
-        //Otherwise, return the default value
+        //Otherwise, return the default interactivity settings value
         return {labelMove: false};
     }
 });
 
-//Define json editor
+
+//JSON EDITOR
+
 let jsonEditorContent = {
-    text: undefined,
-    json: graphData
+    text: "",
+    json: undefined,
 }
 var editorCurrentMode = 'tree';
 
@@ -62,15 +102,194 @@ const editor = createJSONEditor({
     }
 });
 
-//Defined in selectionBuffer/selectionBuffer.js
-//Keeps track of selected elements
-const selectionBuffer = new SelectionBuffer();
+
+//HELP MENU
+
+// Menu and tab contents
+let menu = document.getElementById("menu");
+let helpMenu = document.getElementById("helpmenu");
+let glossary = document.getElementById("glossary");
+let jsonEditor = document.getElementById("jsoneditor");
+
+// Menu tab buttons
+let helpMenuBtn = document.getElementById("help-tab-btn");
+let glossaryMenuBtn = document.getElementById("glossary-btn");
+let advancedBtn = document.getElementById("advanced-tab-btn");
+let exitBtn = document.getElementById("exit-btn");
+
+// Local storage values - these help persist preferences across browser sessions
+let helpMenuVal = "help";
+let glossaryVal = "glossary";
+let jsonEditorVal = "advanced";
+
+// Open menu by default
+if (localStorage.getItem("menu") == "open" 
+    || localStorage.getItem("menu") == null 
+    || localStorage.getItem("menu") == "") {
+    menu.style.display = "flex"; // Show menu
+    localStorage.setItem("menu", "open"); // Set preference to open
+    openLastTab(); // Open last opened tab    
+}
+
+// Enable switching between menu tabs
+helpMenuBtn.addEventListener("click", showHelpMenu);
+glossaryMenuBtn.addEventListener("click", showGlossary);
+advancedBtn.addEventListener("click", showJSONEditor);
+exitBtn.addEventListener("click", exitMenu);
+
+
+// API CONTROL BUTTON CLICK RESPONSES
+
+const loadButton = document.getElementById("load-model");
+loadButton.addEventListener("click", () => {
+    const selectedUUID = modelSelector.value;
+    const selectorLabel = document.getElementById("selector-option-" + selectedUUID).innerHTML;
+    if(confirm("NOTE: Loading model " + selectorLabel + "\nAny unsaved work on the current model WILL BE LOST."))
+    {
+        updateViewsWithModel(selectedUUID);
+    }
+});
+
+const saveButton = document.getElementById("save-model");
+saveButton.addEventListener("click", () => {
+    const jsonToSave = toJSONContent(editor.get()).json;
+    api.saveModel(jsonToSave).then((success) => {
+        if (success)
+        {
+            refreshAuthoringTool();
+        }
+    })
+})
+
+const deleteButton = document.getElementById("delete-model");
+deleteButton.addEventListener("click", () => {
+    api.deleteModel(modelSelector.value).then((success) => {
+        if(success)
+        {
+            const currentGraphData = toJSONContent(editor.get()).json;
+            console.log(modelSelector.value, " ", currentGraphData.meta?.uuid);
+            if(modelSelector.value == currentGraphData.meta?.uuid)
+            {
+                refreshAuthoringTool();
+            }
+            else
+            {
+                const optionToDelete = document.getElementById("selector-option-" + modelSelector.value);
+                modelSelector.removeChild(optionToDelete);
+            }
+        }
+    })
+})
+
+const newModelButton = document.getElementById("new-model");
+newModelButton.addEventListener("click", () => {
+    const newJSON = cloneDeep(newGraph);
+    newJSON.meta.uuid = uuidv4();
+    newJSON.meta.createdDate = fileIO.getCurrentTimeAsTimestamp();
+    newJSON.diagrams[0].meta.uuid = uuidv4();
+    newJSON.diagrams[0].meta.createdDate = fileIO.getCurrentTimeAsTimestamp();
+
+    updateViewsWithModel(null, newJSON);
+})
+
+const updateURLButton = document.getElementById("update-api-url");
+updateURLButton.addEventListener("click", () => {
+    if(confirm("Refreshing the API. You will lose ALL unsaved data. Continue?"))
+    {
+        const newURL = baseURLTextbox.value;
+        api = newURL === "" ? new StaticAPI() : new API(newURL);
+        refreshAuthoringTool();
+    }
+})
+
+
+
+
+
+// ----------------------------------
+// --- BASIC GRAPH/JSON VIEW UTIL ---
+// ----------------------------------
 
 /**
- * Holds graph data:
- * @property {}
+ * Refreshes the main views for the authoring tool (JointJS graph and JSON editor).
+ * Updates these views with the most-recently-edited model from the API,
+ * and refreshes the dropdown menu in the Controls section with an up-to-date model list.
  */
-let runtimeGraphData = {};
+async function refreshAuthoringTool() {
+    //Get UUID of the most recently updated model from the API
+    let metas = await api.getModelMetas();
+    const latest = metas[0]?.uuid ?? "";
+
+    const updatedData = await updateViewsWithModel(latest)
+    if(updatedData === null)
+    {
+        const newEditorContent = {
+            text: undefined,
+            json: graphData,
+        };
+        editor.update(newEditorContent);
+        jsonEditorContent = newEditorContent;
+        initializeGraph(graphData, paper, graph);
+    }
+
+    //Fill in selector with latest models
+    modelSelector.innerHTML = '';
+    if(metas.length > 0)
+    {
+        metas.forEach((meta) => {
+            const metaName = meta?.name ?? "<unnamed>";
+            const metaUUID = meta.uuid;
+    
+            let newOption = document.createElement('option');
+            newOption.id = "selector-option-" + metaUUID;
+            newOption.value = metaUUID;
+            newOption.innerHTML = metaName + " (uuid=" + metaUUID + ")";
+            modelSelector.appendChild(newOption);
+        })
+    }
+}
+
+/**
+ * Updates the Graph and JSON Editor views with the model with the given UUID.
+ * Fetches the model from API.
+ * 
+ * @param {string} uuid If using the API to fetch a model from the database, pass its UUID to this param
+ * @param {JSON} modelJSON If updating views with an unsaved local model, pass the model JSON to this param
+ * @returns {JSON} If successful, returns the JSON for the model fetched by api.fetchFullModel. Else, returns null.
+ */
+async function updateViewsWithModel(uuid = null, modelJSON = null) {
+    //Discard old Selection Buffer
+    selectionBuffer = new SelectionBuffer();
+
+    const modelData = modelJSON ?? await api.fetchFullModel(uuid);
+
+    if (modelData.meta !== undefined && modelData.meta?.uuid !== "")
+    {
+        //Elems with null causalType are stored as empty string in the database..
+        //Replace these with null value
+        modelData.diagrams[0]?.elements?.forEach((elem) => {
+            if(elem.causalType === "")
+            {
+                elem.causalType = null;
+            }
+        })
+
+        //Update JSON Editor view
+        const newEditorContent = {
+            text: undefined,
+            json: modelData
+        }
+        editor.update(newEditorContent);
+        jsonEditorContent = newEditorContent;
+
+        //Update graph view
+        initializeGraph(modelData, paper, graph);
+
+        return modelData;
+    }
+
+    return null;
+}
 
 /**
  * Defines the CDD graph:  
@@ -85,6 +304,11 @@ let runtimeGraphData = {};
 function initializeGraph(graphData, paper, graph)
 {
     graph.clear();
+    runtimeGraphData = {
+        graphElements: {},
+        graphLinks: {},
+        functionButtons: {}
+    };
 
     //Validate graph data
     const validationResults = validateGraphData(graphData);
@@ -134,29 +358,33 @@ function initializeGraph(graphData, paper, graph)
     //Value: Function Button with JointJS object etc.
     const functionButtons = {};
 
-    //SAVE BUTTON
-    const saveButton = new SaveButton([graphData, runtimeGraphData]);
-    functionButtons[saveButton.uuid] = saveButton;
-    saveButton.JointRect.addTo(graph);
-
-    const newElementButton = new FunctionButton(0, 25, 80, 20, "New Elem", addNewElement, [runtimeGraphData, graph, paper]);
+    const newElementButton = new FunctionButton(0, 0, 80, 20, "New Elem", addNewElement, [runtimeGraphData, graph, paper]);
     functionButtons[newElementButton.uuid] = newElementButton;
     newElementButton.JointRect.addTo(graph);
 
-    const deleteElementButton = new FunctionButton(0, 50, 80, 20, "Del Elem", deleteElements, [selectionBuffer, runtimeGraphData]);
+    const deleteElementButton = new FunctionButton(0, 25, 80, 20, "Del Elem", deleteElements, [selectionBuffer, runtimeGraphData]);
     functionButtons[deleteElementButton.uuid] = deleteElementButton;
     deleteElementButton.JointRect.addTo(graph);
 
-    const toggleDependencyButton = new FunctionButton(0, 75, 80, 20, "Toggle Dep", toggleDependency, [selectionBuffer, runtimeGraphData, graph]);
+    const toggleDependencyButton = new FunctionButton(0, 50, 80, 20, "Toggle Dep", toggleDependency, [selectionBuffer, runtimeGraphData, graph]);
     functionButtons[toggleDependencyButton.uuid] = toggleDependencyButton;
     toggleDependencyButton.JointRect.addTo(graph);
+
+    // Menu containing JSON editor, description of controls, and glossary
+    const menuButton = new FunctionButton(0, 75, 80, 20, "Menu", toggleMenu, []);
+    functionButtons[menuButton.uuid] = menuButton;
+    menuButton.JointRect.addTo(graph);
 
     runtimeGraphData.functionButtons = functionButtons;
 }
 
-initializeGraph(graphData, paper, graph);
 
+
+
+
+// -----------------------------------
 // --- EDITOR/GRAPH ROUND-TRIP I/O ---
+// -----------------------------------
 
 /**
  * Callback function that runs whenever the contents of the JSON in the editor change.
@@ -204,7 +432,13 @@ function handleGraphChange(runtimeGraphData)
     editor.update(newContent);
 }
 
+
+
+
+
+// -----------------------------------
 // --- OTHER JSON EDITOR CALLBACKS ---
+// -----------------------------------
 
 /**
  * Called when user selects JSON content at some editor JSON path.
@@ -333,7 +567,13 @@ function updateJSONEditorSelection(selectionBuffer, jsonEditor)
     }
 }
 
+
+
+
+
+// -------------------------------
 // --- ELEMENT CRUD OPERATIONS ---
+// -------------------------------
 
 /**
  * Add a new causal decision element to the CDD. The element initializes with a set of default values,
@@ -486,6 +726,98 @@ function addNewDependency(sourceElem, targetElem, runtimeGraphData, graph)
 }
 
 /**
+ * Opens/closes menu when "Menu" button on graph is clicked.
+ * When menu is opened, it should open to the last opened menu tab.
+ */
+function toggleMenu() {
+    if (menu.style.display == "none" || menu.style.display == "") { // Open menu
+        menu.style.display = "flex";
+        localStorage.setItem("menu", "open");
+        // Open to last opened menu tab
+        openLastTab();
+    } else { // Close menu
+        exitMenu();
+    }
+}
+
+/**
+ * Open the last opened menu tab.
+ */
+function openLastTab()
+{
+    if (localStorage.getItem("tab") == glossaryVal) {
+        showGlossary();
+    } else if (localStorage.getItem("tab") == helpMenuVal) {
+        showHelpMenu();
+    } else { // Default...
+        showJSONEditor();
+    }
+}
+
+/**
+ * Switches menu tab to help menu when the user clicks on the "Help" tab.
+ */
+function showHelpMenu() {
+    showMenuTab(helpMenu, helpMenuBtn, helpMenuVal);
+}
+
+/**
+ * Switches menu tab to glossary when the user clicks on the "Glossary" tab.
+ */
+function showGlossary() {
+    showMenuTab(glossary, glossaryMenuBtn, glossaryVal);
+}
+
+/**
+ * Switches menu tab to JSON editor when the user clicks on the "Advanced" tab.
+ */
+function showJSONEditor() {
+    showMenuTab(jsonEditor, advancedBtn, jsonEditorVal);
+}
+
+/**
+ * Switches to specified menu tab.
+ * @param {HTMLElement} menuContent Menu contents to display (i.e. JSON Editor)
+ * @param {HTMLElement} menuTab Menu tab button that corresponds to menuContent (i.e. Advanced button)
+ * @param {string} localStorageVal Local storage value that corresponds to menuContent (i.e. "advanced")
+ */
+function showMenuTab(menuContent, menuTab, localStorageVal) {
+    // Show only open menu tab contents (i.e. JSON Editor)
+    let menuContents = document.getElementById("menu-contents").children;
+    for (var i = 0; i < menuContents.length; i++) {
+        let currentTab = menuContents[i];
+        if (currentTab == menuContent) {
+            currentTab.style.display = "flex";
+        } else {
+            currentTab.style.display = "none";
+        }
+    }
+
+    // Highlight only selected menu tab button (i.e. Advanced button)
+    let menuTabs = document.getElementById("menu-tabs").children;
+    for (var i = 0; i < menuTabs.length; i++) {
+        let currentButton = menuTabs[i];
+        if (currentButton == menuTab) {
+            currentButton.classList.add("selected-tab");
+        } else {
+            currentButton.classList.remove("selected-tab");
+        }
+    }
+
+    // Set tab preference - when user refreshes or visits the page from another browser tab/window, 
+    // the same menu tab will be open
+    localStorage.setItem("tab", localStorageVal);
+}
+
+/**
+ * Closes menu when the user presses the "Exit" button in the menu banner.
+ */
+function exitMenu() {
+    menu.style.display = "none";
+    localStorage.setItem("menu", "closed");
+}
+
+/**
  * Toggles dependencies between all selected elements.
  * If 2 elements are selected, toggles dependency directed in order of the selection.
  * If more than 2 elements are selected, toggles multiple dependencies in a chain ordered by selection.
@@ -577,7 +909,11 @@ function toggleDependency(selectionBuffer, runtimeGraphData, graph)
 
 
 
-// --- EVENTS ---
+
+
+// ----------------------------
+// --- JOINTJS GRAPH EVENTS ---
+// ----------------------------
 
 /**
  * Click event (elements)
@@ -643,6 +979,9 @@ paper.on('element:contextmenu', function(cell) {
         updateJSONEditorSelection(selectionBuffer, editor);
     }
 })
+
+
+
 
 
 /**

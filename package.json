@@ -1,7 +1,7 @@
 {
   "name": "jointjs",
   "version": "1.0.0",
-  "description": "Investigating JointJS",
+  "description": "OpenDI CDD Authoring Tool",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -16,6 +16,7 @@
     "ajv-formats": "^3.0.1",
     "immutable-json-patch": "^6.0.1",
     "lodash-es": "^4.17.21",
+    "luxon": "^3.5.0",
     "uuid": "^11.0.3",
     "vanilla-jsoneditor": "^2.1.0"
   },

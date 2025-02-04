@@ -11,5 +11,5 @@ export class Config {
 
     // Leave empty for static site
     // Do not include a trailing slash
-    static apiBaseURI = "";
+    static apiBaseURI = "/api";
 }
