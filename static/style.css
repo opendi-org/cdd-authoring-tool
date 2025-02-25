@@ -115,6 +115,16 @@ body {
     font-size: 15px;
 }
 
+/* Make link colors stand out better against the blue background */
+.info-menu a:link {
+    color: #00e1ff
+}
+
+/* Make link colors stand out better against the blue background */
+.info-menu a:visited {
+    color: #ff13d8
+}
+
 .info-menu p {
     padding-left: 25px;
     padding-right: 25px;
