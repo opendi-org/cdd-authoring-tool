@@ -18,7 +18,7 @@
     "lodash-es": "^4.17.21",
     "luxon": "^3.5.0",
     "uuid": "^11.0.3",
-    "vanilla-jsoneditor": "^2.4.0"
+    "vanilla-jsoneditor": "^3.0.0"
   },
   "devDependencies": {
     "webpack": "^5.98.0",
