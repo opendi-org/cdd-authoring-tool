@@ -330,8 +330,8 @@ function initializeGraph(graphData, paper, graph)
         const graphElements = {};
 
         //Send each rect's JSON data to add-to-graph function. Store runtime rects in the dict
-        graphElementsJSON.forEach((rectData) => {
-            graphElements[rectData.meta.uuid] = DecisionElement.addElementToGraph(rectData, graph, paper);
+        graphElementsJSON.forEach((elemData) => {
+            graphElements[elemData.meta.uuid] = DecisionElement.addElementToGraph(elemData, graph, paper);
         });
 
         runtimeGraphData.graphElements = graphElements;
@@ -597,16 +597,9 @@ function addNewElement(runtimeGraphData, graph, paper)
             "name": "New Element"
         },
         "causalType": null,
-        "diaType": "box",
-        "content": {
-            "position": {
-                "x": 100,
-                "y": 100
-            },
-            "boundingBoxSize": {
-                "width": 400,
-                "height": 500
-            }
+        "position": {
+            "x": 100,
+            "y": 100
         }
     };
 

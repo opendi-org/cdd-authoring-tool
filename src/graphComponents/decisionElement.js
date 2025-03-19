@@ -226,7 +226,6 @@ export class DecisionElement extends joint.dia.Element {
      */
     static addElementToGraph(elementJSON, graph, paper, elementMaxWidth = Config.maxElementWidth, charWidth = 7)
     {
-        const diagramJSON = elementJSON.content;
         const elementType = elementJSON.causalType;
         const elementTitle = elementJSON.meta.name;
     
@@ -240,7 +239,7 @@ export class DecisionElement extends joint.dia.Element {
         // -- SET VISUAL ATTRIBUTES --
     
         //Position
-        elementToAdd.position(diagramJSON.position.x, diagramJSON.position.y);
+        elementToAdd.position(elementJSON.position.x, elementJSON.position.y);
     
         //Title, type
         elementToAdd.attr({

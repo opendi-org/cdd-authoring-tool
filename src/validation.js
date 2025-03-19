@@ -158,20 +158,32 @@ export function getValidator() {
     let causalType = require("./schema/Causal-Type.json");
     let DIAddons = require("./schema/DI-Addons.json");
     let DIAsset = require("./schema/DI-Asset.json");
+    let DIControl = require("./schema/DI-Control.json");
+    let DIDiagramDisplay = require("./schema/DI-Diagram-Display.json");
+    let DIDiagramElement = require("./schema/DI-Diagram-Element.json");
     let DIDiagram = require("./schema/DI-Diagram.json");
-    let DIEvaluatable = require("./schema/DI-Evaluatable.json");
+    let DIEvaluatableAsset = require("./schema/DI-Evaluatable-Assets.json");
+    let DIEvaluatableElement = require("./schema/DI-Evaluatable-Element.json");
+    let DIIOValue = require("./schema/DI-IO-Value.json");
+    let DIRunnableModel = require("./schema/DI-Runnable-Model.json");
     let UUIDSchema = require("./schema/UUID.json");
 
     const ajv = new Ajv();
     // Make ajv understand our string format tags. See https://ajv.js.org/guide/formats.html
     ajv.addFormat("uuid", "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
-    ajv.addFormat("date-time", true)
+    ajv.addFormat("date-time", true);
     // Add schemas used in $refs first
     ajv.addSchema(causalType);
     ajv.addSchema(DIAddons);
     ajv.addSchema(DIAsset);
+    ajv.addSchema(DIControl);
+    ajv.addSchema(DIDiagramDisplay);
+    ajv.addSchema(DIDiagramElement);
     ajv.addSchema(DIDiagram);
-    ajv.addSchema(DIEvaluatable);
+    ajv.addSchema(DIEvaluatableAsset);
+    ajv.addSchema(DIEvaluatableElement);
+    ajv.addSchema(DIIOValue);
+    ajv.addSchema(DIRunnableModel);
     ajv.addSchema(UUIDSchema);
     // Compile the main schema, now that all references are filled in
     // This will return our validation function, used in our returned function

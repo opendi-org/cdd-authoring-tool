@@ -25,16 +25,9 @@
               "name": "Buy regular coffee"
             },
             "causalType": "Lever",
-            "diaType": "box",
-            "content": {
-              "position": {
-                "x": 100,
-                "y": 160
-              },
-              "boundingBoxSize": {
-                "width": 400,
-                "height": 500
-              }
+            "position": {
+              "x": 100,
+              "y": 160
             }
           },
           {
@@ -43,16 +36,9 @@
               "name": "Buy fair trade, bird friendly coffee"
             },
             "causalType": "Lever",
-            "diaType": "box",
-            "content": {
-              "position": {
-                "x": 100,
-                "y": 50
-              },
-              "boundingBoxSize": {
-                "width": 400,
-                "height": 500
-              }
+            "position": {
+              "x": 100,
+              "y": 50
             }
           },
           {
@@ -61,16 +47,9 @@
               "name": "Price per pound for regular coffee"
             },
             "causalType": "External",
-            "diaType": "box",
-            "content": {
-              "position": {
-                "x": 90,
-                "y": 520
-              },
-              "boundingBoxSize": {
-                "width": 400,
-                "height": 500
-              }
+            "position": {
+              "x": 90,
+              "y": 520
             }
           },
           {
@@ -79,16 +58,9 @@
               "name": "Price per pound for fair trade bird friendly coffee"
             },
             "causalType": "External",
-            "diaType": "box",
-            "content": {
-              "position": {
-                "x": 90,
-                "y": 420
-              },
-              "boundingBoxSize": {
-                "width": 400,
-                "height": 500
-              }
+            "position": {
+              "x": 90,
+              "y": 420
             }
           },
           {
@@ -97,16 +69,9 @@
               "name": "Number of pounds of coffee I buy"
             },
             "causalType": "Lever",
-            "diaType": "box",
-            "content": {
-              "position": {
-                "x": 40,
-                "y": 260
-              },
-              "boundingBoxSize": {
-                "width": 400,
-                "height": 500
-              }
+            "position": {
+              "x": 40,
+              "y": 260
             }
           },
           {
@@ -115,16 +80,9 @@
               "name": "Environmental impact (birds, deforestation)"
             },
             "causalType": "Intermediate",
-            "diaType": "box",
-            "content": {
-              "position": {
-                "x": 450,
-                "y": 490
-              },
-              "boundingBoxSize": {
-                "width": 400,
-                "height": 500
-              }
+            "position": {
+              "x": 450,
+              "y": 490
             }
           },
           {
@@ -133,16 +91,9 @@
               "name": "Impact on workers and growers (revenue, wages)"
             },
             "causalType": "Intermediate",
-            "diaType": "box",
-            "content": {
-              "position": {
-                "x": 440,
-                "y": 80
-              },
-              "boundingBoxSize": {
-                "width": 400,
-                "height": 500
-              }
+            "position": {
+              "x": 440,
+              "y": 80
             }
           },
           {
@@ -151,16 +102,9 @@
               "name": "How much money I pay for coffee"
             },
             "causalType": "Outcome",
-            "diaType": "box",
-            "content": {
-              "position": {
-                "x": 780,
-                "y": 290
-              },
-              "boundingBoxSize": {
-                "width": 400,
-                "height": 500
-              }
+            "position": {
+              "x": 780,
+              "y": 290
             }
           },
           {
@@ -169,16 +113,9 @@
               "name": "Total social and environmental impact of my choice"
             },
             "causalType": "Outcome",
-            "diaType": "box",
-            "content": {
-              "position": {
-                "x": 750,
-                "y": 80
-              },
-              "boundingBoxSize": {
-                "width": 400,
-                "height": 500
-              }
+            "position": {
+              "x": 750,
+              "y": 80
             }
           }
         ],

@@ -35,25 +35,19 @@ export function saveGraphJSON(originalJSON, rects, links)
                     "uuid": uuid,
                     "name": elementName
                 },
-                "diaType": "box",
-                "content": {
-                    "position": {
-                        "x": elementPosition.x,
-                        "y": elementPosition.y
-                    },
-                    "boundingBoxSize": {
-                        "width": 400,   //Default width
-                        "height": 500   //Default height (we don't use these)
-                    }
-                }
+                "causalType": elementType,
+                "position": {
+                    "x": elementPosition.x,
+                    "y": elementPosition.y
+                },
             };
         }
         else
         {
             newElementJSON = cloneDeep(rect.originalJSON);
             newElementJSON.meta.name = elementName;
-            newElementJSON.content.position.x = elementPosition.x;
-            newElementJSON.content.position.y = elementPosition.y;
+            newElementJSON.position.x = elementPosition.x;
+            newElementJSON.position.y = elementPosition.y;
             newElementJSON.causalType = elementType;
         }
 
