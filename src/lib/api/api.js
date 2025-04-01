@@ -2,9 +2,9 @@
 //TODO: This is incomplete! Add abstractions for more endpoints.
 
 import { validate } from 'uuid'
-import { getValidator, generateReportStringFromValidationResults } from '../validation';
+import { getValidator, generateReportStringFromValidationResults } from '../validation.js';
 import * as fileIO from "../fileIO.js";
-import {Config} from "../config.js";
+import {Config} from "../../config.js";
 
 export class API {
     

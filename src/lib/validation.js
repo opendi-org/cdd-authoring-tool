@@ -154,19 +154,19 @@ export function generateReportStringFromValidationResults(validationResults)
  */
 export function getValidator() {
     //Import schemas
-    let causalDecisionModel = require("./schema/Causal-Decision-Model.json");
-    let causalType = require("./schema/Causal-Type.json");
-    let DIAddons = require("./schema/DI-Addons.json");
-    let DIAsset = require("./schema/DI-Asset.json");
-    let DIControl = require("./schema/DI-Control.json");
-    let DIDiagramDisplay = require("./schema/DI-Diagram-Display.json");
-    let DIDiagramElement = require("./schema/DI-Diagram-Element.json");
-    let DIDiagram = require("./schema/DI-Diagram.json");
-    let DIEvaluatableAsset = require("./schema/DI-Evaluatable-Assets.json");
-    let DIEvaluatableElement = require("./schema/DI-Evaluatable-Element.json");
-    let DIIOValue = require("./schema/DI-IO-Value.json");
-    let DIRunnableModel = require("./schema/DI-Runnable-Model.json");
-    let UUIDSchema = require("./schema/UUID.json");
+    let causalDecisionModel = require("../model_json/schemas/Causal-Decision-Model.json");
+    let causalType = require("../model_json/schemas/Causal-Type.json");
+    let DIAddons = require("../model_json/schemas/DI-Addons.json");
+    let DIAsset = require("../model_json/schemas/DI-Asset.json");
+    let DIControl = require("../model_json/schemas/DI-Control.json");
+    let DIDiagramDisplay = require("../model_json/schemas/DI-Diagram-Display.json");
+    let DIDiagramElement = require("../model_json/schemas/DI-Diagram-Element.json");
+    let DIDiagram = require("../model_json/schemas/DI-Diagram.json");
+    let DIEvaluatableAsset = require("../model_json/schemas/DI-Evaluatable-Assets.json");
+    let DIEvaluatableElement = require("../model_json/schemas/DI-Evaluatable-Element.json");
+    let DIIOValue = require("../model_json/schemas/DI-IO-Value.json");
+    let DIRunnableModel = require("../model_json/schemas/DI-Runnable-Model.json");
+    let UUIDSchema = require("../model_json/schemas/UUID.json");
 
     const ajv = new Ajv();
     // Make ajv understand our string format tags. See https://ajv.js.org/guide/formats.html

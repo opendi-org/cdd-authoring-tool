@@ -1,5 +1,5 @@
 {
-    "$schema": "./schema/Causal-Decision-Model.json",
+    "$schema": "./schemas/Causal-Decision-Model.json",
     "meta": {
       "uuid": "",
       "name": "New Decision Model",

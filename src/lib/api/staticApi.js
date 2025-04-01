@@ -1,9 +1,9 @@
 // A stubbier version of the API class, for use with the static version of the site available at https://opendi.org/cdd-authoring-tool/
 // Index uses config.js and a simple dependency injection pattern to decide between this class and the "true" API class, defined in api.js
 
-import builtinModelJson from "../schema_compliant_cdd.json"  assert {type: 'json'}
+import builtinModelJson from "../../model_json/coffee.json"  assert {type: 'json'}
 import * as fileIO from "../fileIO.js"
-import {Config} from "../config.js"
+import {Config} from "../../config.js"
 
 export class StaticAPI {
 
