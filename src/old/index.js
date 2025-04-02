@@ -1,21 +1,21 @@
 import * as joint from "@joint/core/dist/joint.js";
-import graphData from './model_json/coffee.json' assert {type: 'json'};
-import newGraph from './model_json/empty_cdd.json' assert {type: 'json'};
-import {FunctionButton} from "./uiButtons.js";
-import {DecisionElement} from "./graphComponents/decisionElement.js";
-import {CausalDependency} from "./graphComponents/causalDependency.js";
-import { SelectionBuffer } from "./lib/selectionBuffer/selectionBuffer.js";
-import {Config} from "./old/config.js";
+import graphData from '../model_json/coffee.json' assert {type: 'json'};
+import newGraph from '../model_json/empty_cdd.json' assert {type: 'json'};
+import {FunctionButton} from "../uiButtons.js";
+import {DecisionElement} from "../graphComponents/decisionElement.js";
+import {CausalDependency} from "../graphComponents/causalDependency.js";
+import { SelectionBuffer } from "../lib/selectionBuffer/selectionBuffer.js";
+import {Config} from "./config.js";
 import { v4 as uuidv4 } from 'uuid';
 
 import JSONEditorSelection from "vanilla-jsoneditor";
 import { createJSONEditor, toJSONContent } from "vanilla-jsoneditor";
-import * as fileIO from "./lib/fileIO.js";
+import * as fileIO from "../lib/fileIO.js";
 import { cloneDeep } from "lodash-es";
-import { getValidator, validateGraphData } from "./lib/validation.js";
+import { getValidator, validateGraphData } from "../lib/validation.js";
 
-import { API } from "./lib/api/api.js";
-import { StaticAPI } from "./lib/api/staticApi.js";
+import { API } from "../lib/api/api.js";
+import { StaticAPI } from "../lib/api/staticApi.js";
 
 
 

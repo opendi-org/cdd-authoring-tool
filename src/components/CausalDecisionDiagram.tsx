@@ -152,14 +152,18 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
     })
 
     return (
-        /*Wrapper for Xarrows*/
-        <Xwrapper>
-        <div style={{ fontFamily: "sans-serif"}}>
-            {/* Draw arrows BELOW element boxes */}
-            {dependencyArrows}
-            {diagramElements}
+        <div className="diagram-contents">
+            {/*Wrapper for Xarrows*/}
+            <Xwrapper>
+            <div>
+                {/* Draw arrows BELOW element boxes */}
+                    {dependencyArrows}
+                    {diagramElements}
+                </div>
+            </Xwrapper>
         </div>
-        </Xwrapper>
+        
+        
     );
 
 }

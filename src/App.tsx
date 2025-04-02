@@ -1,39 +1,42 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import rawModelJSON from "./model_json/coffee.json" assert { type: "json" };
 import CausalDecisionDiagram from "./components/CausalDecisionDiagram";
-import VanillaJSONEditor from "./components/VanillaJSONEditor";
+import EditorAndHelpMenu from "./components/RightMenu/EditorAndHelpMenu";
 
 function App() {
     // This is the single source of truth for Model JSON, used by both VanillaJSONEditor and CausalDecisionDiagram.
     const [modelJSON, setModelJSON] = useState(rawModelJSON);
-    // Memoized copy of the above JSON for use in VanillaJSONEditor,
-    // put in the Content type structure expected by VanillaJSONEditor
-    const content = useMemo(() => {
-        return {
-            json: modelJSON,
-            text: undefined
-        }
-    }, [modelJSON])
+    const [menuIsOpen, setMenuIsOpen] = useState(() => localStorage.getItem("menu") !== "closed");
 
     return (
-        <div style={{ display: "flex", flexDirection: "row", height: "85vh", border: "1px solid #ddd" }}>
-            {/* Diagram view / engine */}
-            <div style={{ flex: 2, position: "relative", overflow: "scroll"}}>
-                <CausalDecisionDiagram model={modelJSON} setModelJSON={setModelJSON} />
-            </div>
+        <div style={{ paddingRight:"0.75%" }}>
+            <h2 className="title-header">OpenDI CDD Authoring Tool</h2>
+            <div className="cdd-editor">
+                {/* Diagram view / engine */}
+                <div className="cdd-editor left">
+                    <CausalDecisionDiagram model={modelJSON} setModelJSON={setModelJSON} />
+                    <div id="controls-legend">
+                        Click and drag top bar: Move element.
+                    </div>
+                    <div
+                        id="menu-toggle-button"
+                        onClick={() => setMenuIsOpen(!menuIsOpen)}
+                    >
+                        {menuIsOpen ? "-" : "+"}
+                    </div>
+                </div>
 
-            {/*JSON Editor*/}
-            <div style={{ flex: 1, overflow: "auto", borderRight: "1px solid #ddd" }}>
-                <VanillaJSONEditor
-                    content={content}
-                    onChange={(newContent: any) => {
-                        if(newContent.json)
-                        {
-                            setModelJSON(newContent.json);
-                        }
-                    }}
-                    readOnly={false}
-                />
+                {menuIsOpen && 
+                    <div className="cdd-editor right">
+                        {/*JSON Editor*/}
+                        <EditorAndHelpMenu
+                            menuIsOpen={menuIsOpen}
+                            setMenuIsOpen={setMenuIsOpen}
+                            modelJSON={modelJSON}
+                            setModelJSON={setModelJSON}
+                        />
+                    </div>
+                }
             </div>
         </div>
     )
