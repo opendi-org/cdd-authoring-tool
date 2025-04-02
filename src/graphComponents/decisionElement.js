@@ -1,5 +1,5 @@
 import * as joint from "@joint/core/dist/joint.js"
-import {Config} from "../config.js"
+import {Config} from "../old/config.js"
 
 export class DecisionElement extends joint.dia.Element {
     constructor()

@@ -3,7 +3,7 @@
 
 import builtinModelJson from "../../model_json/coffee.json"  assert {type: 'json'}
 import * as fileIO from "../fileIO.js"
-import {Config} from "../../config.js"
+import {Config} from "../../old/config.js"
 
 export class StaticAPI {
 

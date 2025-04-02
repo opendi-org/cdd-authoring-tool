@@ -5,7 +5,7 @@ import {FunctionButton} from "./uiButtons.js";
 import {DecisionElement} from "./graphComponents/decisionElement.js";
 import {CausalDependency} from "./graphComponents/causalDependency.js";
 import { SelectionBuffer } from "./lib/selectionBuffer/selectionBuffer.js";
-import {Config} from "./config.js";
+import {Config} from "./old/config.js";
 import { v4 as uuidv4 } from 'uuid';
 
 import JSONEditorSelection from "vanilla-jsoneditor";
