@@ -8,7 +8,6 @@ import { getValidator, validateGraphData } from "../../lib/validation";
 type EditorAndHelpMenuProps = {
     modelJSON: any;
     setModelJSON: Function;
-    menuIsOpen: boolean;
     setMenuIsOpen: Function;
 }
 
@@ -21,7 +20,6 @@ const TABS = {
 const EditorAndHelpMenu: React.FC<EditorAndHelpMenuProps> = ({
     modelJSON,
     setModelJSON,
-    menuIsOpen,
     setMenuIsOpen,
 }) => {
     const [activeTab, setActiveTab] = useState(() => localStorage.getItem("tab") || TABS.JSON);
@@ -29,10 +27,6 @@ const EditorAndHelpMenu: React.FC<EditorAndHelpMenuProps> = ({
     useEffect(() => {
         localStorage.setItem("tab", activeTab);
     }, [activeTab]);
-
-    useEffect(() => {
-        localStorage.setItem("menu", menuIsOpen ? "open" : "closed");
-    }, [menuIsOpen])
 
     /**
      * Memoized copy of the input model JSON.
