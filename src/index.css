@@ -59,6 +59,10 @@ body {
     background-color: #e2e9eb;
 }
 
+.hoverable:hover {
+    cursor: pointer;
+}
+
 /* Entire menu */
 #menu {
     display: flex;

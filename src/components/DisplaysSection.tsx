@@ -29,6 +29,7 @@ const DisplaysSection: React.FC<DisplaysSectionProps> = ({
             {/* (Center the toggle button) */}
             <div style={{ display: "flex", justifyContent: "center", margin: "0px" }}>
                 <button
+                    className="hoverable"
                     style={{
                         width: "100%",
                         fontSize: "8px",
