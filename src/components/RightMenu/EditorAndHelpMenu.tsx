@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import VanillaJSONEditor from "./VanillaJSONEditor";
 import GlossaryTab from "./GlossaryTab";
 import HelpTab from "./HelpTab";
+import { getValidator, validateGraphData } from "../../lib/validation";
 
 
 type EditorAndHelpMenuProps = {
@@ -83,13 +84,27 @@ const EditorAndHelpMenu: React.FC<EditorAndHelpMenuProps> = ({
                     {activeTab === TABS.JSON && (
                         <VanillaJSONEditor
                             content={content}
-                            onChange={(newContent: any) => {
-                                if(newContent.json)
+                            onChange={(newContent: any, _previousContent, { contentErrors, patchResult: _ }) => {
+                                if(!contentErrors)
                                 {
-                                    setModelJSON(newContent.json);
+                                    const newJSON = newContent.json ?? (newContent.text ? JSON.parse(newContent.text) : null);
+                                    if(newJSON)
+                                    {
+                                        const validationResults = validateGraphData(newContent.json);
+                                        if(validationResults.errors.length > 0)
+                                        {
+                                            console.log("Graph rendering validation errors:");
+                                            console.log(validationResults.errors);
+                                        }
+                                        if(validationResults.canRender)
+                                        {
+                                            setModelJSON(validationResults.validatedData);
+                                        }
+                                    }
                                 }
                             }}
                             readOnly={false}
+                            validator={getValidator()}
                         />
                     )}
                 </div>
