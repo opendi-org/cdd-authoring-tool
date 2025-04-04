@@ -19,7 +19,8 @@ function App() {
                 <div className="cdd-editor left">
                     <CausalDecisionDiagram model={modelJSON} setModelJSON={setModelJSON} />
                     <div id="controls-legend">
-                        Click and drag top bar: Move element.
+                        <b>Move element:</b> click and drag element's top bar.<br/>
+                        <b>Select element(s):</b> toggle element's top-right checkbox.
                     </div>
                     <div
                         id="menu-toggle-button"

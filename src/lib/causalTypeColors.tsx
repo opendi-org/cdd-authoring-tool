@@ -7,5 +7,6 @@ export const causalTypeColors: Record<string, string> = {
     Intermediate: "#0c9188",
     Outcome: "#ad3e9d",
     External: "#125c26",
-    Unknown: "#7a7a7a"
+    Unknown: "#7a7a7a",
+    Selected: "#ffffff",
 }

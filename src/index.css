@@ -63,6 +63,29 @@ body {
     cursor: pointer;
 }
 
+.diagram-element {
+    border: 2px solid #000000;
+    color: #ffffff;
+    padding: 0px;
+    width: 300px;
+}
+
+.diagram-element-drag-handle {
+    background-color: #000000;
+    height: 14px;
+    width: 300px;
+    border: 2px solid #000000;
+    cursor: grab;
+}
+
+.diagram-element-drag-handle.selected-diagram-element {
+    background-color: #ffffff;
+}
+
+.selected-diagram-element {
+    border: 2px solid #ffffff;
+}
+
 /* Entire menu */
 #menu {
     display: flex;

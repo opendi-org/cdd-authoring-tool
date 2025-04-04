@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import DisplayTypeRegistry from "./DisplayTypeRegistry";
 import DisplaysSection from "./DisplaysSection";
 import Draggable from "react-draggable";
@@ -12,6 +12,8 @@ type DiagramElementProps = {
     controlsMap: Map<string, string[]>;
     updateXarrow: () => void;
     onPositionChange: Function;
+    selectionBuffer: string[];
+    updateElementSelection: Function;
   };
 
 /**
@@ -30,7 +32,22 @@ const DiagramElement: React.FC<DiagramElementProps> = ({
     controlsMap,
     updateXarrow,
     onPositionChange,
+    selectionBuffer,
+    updateElementSelection,
   }) => {
+
+    //Tracks whether this element is in the selection buffer or not
+    const isSelected = useMemo(() => {
+      return selectionBuffer.includes(elementData.meta.uuid);
+    }, [selectionBuffer]);
+
+    //Passes a request to toggle my selection state up to the diagram's selection buffer
+    const toggleMySelection = () => {
+      updateElementSelection(elementData.meta.uuid, !isSelected);
+    }
+
+    //For consistent dynamic styling
+    const selectedElementClass = "selected-diagram-element";
 
     // Header shows basic element info like Name and Causal Type.
     // Header is considered optional. If no causal type is provided, assume
@@ -78,12 +95,9 @@ const DiagramElement: React.FC<DiagramElementProps> = ({
     //Inner content holds the header content and Display sections in a blue box
     let innerContent = (
       <div
+        className={`diagram-element ${isSelected ? selectedElementClass : ""}`}
         style={{
-          border: "2px solid #000000",
           backgroundColor: causalTypeColors[elementData.causalType] ?? causalTypeColors.Unknown,
-          color: "#ffffff",
-          padding: "0px",
-          width: "300px"
         }}
       >
         <div style={{margin:"0px", padding:"0px"}}>
@@ -101,7 +115,7 @@ const DiagramElement: React.FC<DiagramElementProps> = ({
     //Construct draggable outer shell and put inner content inside
     return (
       <Draggable
-        handle=".handle"
+        handle=".diagram-element-drag-handle"
         position={elementData.position}
         onDrag={updateXarrow}
         onStop={(_, data) => {
@@ -121,16 +135,14 @@ const DiagramElement: React.FC<DiagramElementProps> = ({
         >
           {/*Upper black handle for dragging the draggable element.*/}
           <div 
-            className="handle"
-            style={{
-              backgroundColor: "#000000",
-              color: "#cccccc",
-              width: "300px",
-              border: "2px solid #000000",
-              height: "12px",
-              cursor: "grab"
-            }}
-          ></div>
+            className={`diagram-element-drag-handle ${isSelected ? selectedElementClass : ""}`}
+          >
+            <div style={{position: "absolute", right: "2px", top: "0px", color:"#000000"}}>
+              {(selectionBuffer.indexOf(elementData.meta.uuid) != -1) ? selectionBuffer.indexOf(elementData.meta.uuid) + 1 : null}
+              <input type="checkbox" className="hoverable" onChange={toggleMySelection} checked={isSelected}></input>
+            </div>
+            {/**/}
+          </div>
           {innerContent}
         </div>
       </Draggable>

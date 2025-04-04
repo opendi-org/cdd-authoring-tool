@@ -4,6 +4,7 @@ import DiagramElement from "./DiagramElement";
 import { evaluateModel } from "../lib/evaluateModel"
 import { getIOMapFromModelJSON } from "../lib/getIOMapFromModelJSON";
 import { causalTypeColors } from "../lib/causalTypeColors";
+import { updateElementSelection } from "../lib/updateElementSelection";
 
 type CausalDecisionDiagramProps = {
     model: any;
@@ -125,6 +126,14 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
         return diaElems;
     }, [model])
 
+    //Holds a simple list of the UUIDs of selected elements, in the order they were selected.
+    const [selectionBuffer, setSelectionBuffer] = useState(() => {let arr: string[] = []; return arr;});
+    //Updating is handled by lib/updateElementSelection.ts
+    //This function simplifies, removing the need to supply the correct buffer
+    const updateBuffer = (selectionUUID: string, select = true) => {
+        setSelectionBuffer(updateElementSelection(selectionBuffer, selectionUUID, select));
+    }
+
     //Generate HTML for dependency arrows
     const dependencyArrows = model.diagrams[0].dependencies.map((dep: any) => (
         <Xarrow
@@ -133,7 +142,10 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
         end={dep.target}
         strokeWidth={2}
         curveness={0.4}
-        color={causalTypeColors[diagramElementMap.get(dep.source).causalType] ?? causalTypeColors.Unknown}
+        color={
+            ((selectionBuffer.includes(dep.source) || selectionBuffer.includes(dep.target)) ? causalTypeColors.Selected : null) ??
+            causalTypeColors[diagramElementMap.get(dep.source).causalType] ?? 
+            causalTypeColors.Unknown}
         />
     ))
 
@@ -148,14 +160,20 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
         controlsMap={controlsMap}
         updateXarrow={updateXarrow}
         onPositionChange={handlePositionChange}
+        selectionBuffer={selectionBuffer}
+        updateElementSelection={updateBuffer}
         />
     })
 
     return (
         <div className="diagram-contents">
+            {/*Transparent Div. Covers the whole diagram display Div. Catches click events UNIQUE to the graph background */}
+            {/*Click events from diagram elements won't bubble up to this div, because it's a leaf in the DOM tree.*/}
+            <div style={{width: "100%", height: "100%" }} onClick={() => (setSelectionBuffer(updateElementSelection(selectionBuffer, null)))}></div>
             {/*Wrapper for Xarrows*/}
             <Xwrapper>
-            <div>
+            {/*Absolute positioning forces diagram to be drawn over the above click-catching Div.*/}
+            <div style={{position: "absolute", left: "0px", top: "0px"}}>
                 {/* Draw arrows BELOW element boxes */}
                     {dependencyArrows}
                     {diagramElements}

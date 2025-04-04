@@ -278,112 +278,168 @@
         "uuid": "7cf47e6b-9251-43a1-ba50-2b748c405bff",
         "name": "Control: #lbs of FTBF coffee I buy"
       },
-      "displays": ["fab3392d-5191-451e-b3f3-6434c873ff6d"],
-      "inputOutputValues": ["c25b72a6-ced3-46ab-ac7d-79b129377d23"]
+      "displays": [
+        "fab3392d-5191-451e-b3f3-6434c873ff6d"
+      ],
+      "inputOutputValues": [
+        "c25b72a6-ced3-46ab-ac7d-79b129377d23"
+      ]
     },
     {
       "meta": {
         "uuid": "6a2ac43e-d6d7-4534-bcb8-7ac97259a198",
         "name": "Control: #lbs of regular coffee I buy"
       },
-      "displays": ["8b8c316a-ffbd-4682-8c64-966fb5f7266b"],
-      "inputOutputValues": ["ecbed3f2-dbbc-4d64-8c39-25790f5b9999"]
+      "displays": [
+        "8b8c316a-ffbd-4682-8c64-966fb5f7266b"
+      ],
+      "inputOutputValues": [
+        "ecbed3f2-dbbc-4d64-8c39-25790f5b9999"
+      ]
     },
     {
       "meta": {
         "uuid": "a93690e5-5204-484f-824d-154297c8fd89",
         "name": "Control: Time frame (days)"
       },
-      "displays": ["418a1e0e-75ff-44c6-9eb1-fe81cfe64dc7"],
-      "inputOutputValues": ["6b9c2bc9-fa7d-4068-bf8b-ea1168dd8980"]
+      "displays": [
+        "418a1e0e-75ff-44c6-9eb1-fe81cfe64dc7"
+      ],
+      "inputOutputValues": [
+        "6b9c2bc9-fa7d-4068-bf8b-ea1168dd8980"
+      ]
     },
     {
       "meta": {
         "uuid": "d99c072a-3dd8-4d98-8e0a-518c60555914",
         "name": "Control: $/lb for FTBF coffee"
       },
-      "displays": ["6113954e-9335-4dde-848b-c11763fd0859"],
-      "inputOutputValues": ["c921247c-e7f3-46d3-8b5a-bf57fbabcd58"]
+      "displays": [
+        "6113954e-9335-4dde-848b-c11763fd0859"
+      ],
+      "inputOutputValues": [
+        "c921247c-e7f3-46d3-8b5a-bf57fbabcd58"
+      ]
     },
     {
       "meta": {
         "uuid": "880b286f-24c1-4bc1-a9f2-4a61b122f187",
         "name": "Control: $/lb for regular coffee"
       },
-      "displays": ["2ec3ec86-fc57-4228-9bad-535f5d4b2f62"],
-      "inputOutputValues": ["a66c602e-7be7-46c6-825f-1ed892d30efb"]
+      "displays": [
+        "2ec3ec86-fc57-4228-9bad-535f5d4b2f62"
+      ],
+      "inputOutputValues": [
+        "a66c602e-7be7-46c6-825f-1ed892d30efb"
+      ]
     },
     {
       "meta": {
         "uuid": "8e5a0352-0f78-4b7f-94a4-4d08f8472cfb",
         "name": "Control: Total $ spent on ALL coffee"
       },
-      "displays": ["42a33f51-05b7-49d2-83b7-9a83ac4b76b9"],
-      "inputOutputValues": ["0e609c76-5ff3-43c0-96e2-d453b0bec423"]
+      "displays": [
+        "42a33f51-05b7-49d2-83b7-9a83ac4b76b9"
+      ],
+      "inputOutputValues": [
+        "0e609c76-5ff3-43c0-96e2-d453b0bec423"
+      ]
     },
     {
       "meta": {
         "uuid": "fc26dcb9-e6ea-47c5-9cdf-58a38d101878",
         "name": "Control: Total $ spent on FTBF coffee"
       },
-      "displays": ["77f10305-e578-4758-8937-a06fbb45068b"],
-      "inputOutputValues": ["8ced4be1-4151-43e9-b869-0ab4d3895c15"]
+      "displays": [
+        "77f10305-e578-4758-8937-a06fbb45068b"
+      ],
+      "inputOutputValues": [
+        "8ced4be1-4151-43e9-b869-0ab4d3895c15"
+      ]
     },
     {
       "meta": {
         "uuid": "722e4f61-2f16-485e-994b-e6e66b93537d",
         "name": "Control: Total $ spent on regular coffee"
       },
-      "displays": ["9c799a6a-04b4-4cfe-a09e-9981f75f4859"],
-      "inputOutputValues": ["ccb9c26e-615d-4d35-bb7f-f97c7ee547fc"]
+      "displays": [
+        "9c799a6a-04b4-4cfe-a09e-9981f75f4859"
+      ],
+      "inputOutputValues": [
+        "ccb9c26e-615d-4d35-bb7f-f97c7ee547fc"
+      ]
     },
     {
       "meta": {
         "uuid": "2eb50363-a4de-4087-9bb1-f30f7c616485",
         "name": "Control: Environmental impact rate for FTBF coffee"
       },
-      "displays": ["cbd5878f-d4e6-416b-b3cb-5bf6f885bf00"],
-      "inputOutputValues": ["09d0e15a-db26-40ab-957c-1c8536eabe4d"]
+      "displays": [
+        "cbd5878f-d4e6-416b-b3cb-5bf6f885bf00"
+      ],
+      "inputOutputValues": [
+        "09d0e15a-db26-40ab-957c-1c8536eabe4d"
+      ]
     },
     {
       "meta": {
         "uuid": "d3214f94-6316-4a0e-89ff-b24c07f4174a",
         "name": "Control: Environmental impact rate for regular coffee"
       },
-      "displays": ["9d2d4b3f-7319-40de-a2c0-2d10238d6686"],
-      "inputOutputValues": ["8022af61-ddc7-44b0-9d33-235f851cca00"]
+      "displays": [
+        "9d2d4b3f-7319-40de-a2c0-2d10238d6686"
+      ],
+      "inputOutputValues": [
+        "8022af61-ddc7-44b0-9d33-235f851cca00"
+      ]
     },
     {
       "meta": {
         "uuid": "7bc62757-df08-466b-bef3-308994e31e39",
         "name": "Control: Total environmental impact"
       },
-      "displays": ["47b17aa2-dfd5-4271-8601-d25af93b1a74"],
-      "inputOutputValues": ["2505ccde-4180-4528-91f6-2c57682cbc7c"]
+      "displays": [
+        "47b17aa2-dfd5-4271-8601-d25af93b1a74"
+      ],
+      "inputOutputValues": [
+        "2505ccde-4180-4528-91f6-2c57682cbc7c"
+      ]
     },
     {
       "meta": {
         "uuid": "ab233d0e-a869-46b8-89c9-aa282351b1b4",
         "name": "Control: Social income percent for FTBF coffee"
       },
-      "displays": ["a1f842af-f749-4281-9637-ab14a8978ef0"],
-      "inputOutputValues": ["5a982da4-abe2-4eab-b93f-e15c9a5ba4bf"]
+      "displays": [
+        "a1f842af-f749-4281-9637-ab14a8978ef0"
+      ],
+      "inputOutputValues": [
+        "5a982da4-abe2-4eab-b93f-e15c9a5ba4bf"
+      ]
     },
     {
       "meta": {
         "uuid": "2658f39a-647d-4be3-9a86-557bdd0efe22",
         "name": "Control: Social income percent for regular coffee"
       },
-      "displays": ["bbb5fc63-bbb6-4df3-bded-9ca59724afda"],
-      "inputOutputValues": ["ee77ab3e-2fbe-42fb-a498-7c26773fa369"]
+      "displays": [
+        "bbb5fc63-bbb6-4df3-bded-9ca59724afda"
+      ],
+      "inputOutputValues": [
+        "ee77ab3e-2fbe-42fb-a498-7c26773fa369"
+      ]
     },
     {
       "meta": {
         "uuid": "c8aab4b9-a305-4c3d-b2e5-5c9f80b4f20a",
         "name": "Control: Impact on workers and growers (revenue, wages)"
       },
-      "displays": ["caa78734-554e-416a-8e39-43be0b4ef031"],
-      "inputOutputValues": ["84620412-3746-4a83-a03c-a6c68fef30ca"]
+      "displays": [
+        "caa78734-554e-416a-8e39-43be0b4ef031"
+      ],
+      "inputOutputValues": [
+        "84620412-3746-4a83-a03c-a6c68fef30ca"
+      ]
     },
     {
       "meta": {
@@ -391,32 +447,48 @@
         "name": "Control: Reference daily social impact income",
         "summary": "The amount of income directed toward social impact needed for a social impact value of '1' in a period of 1 day. If this value is 0.25, and your choice results in $0.25 per day of revenue going toward social impact, your social impact value for the period will be 1."
       },
-      "displays": ["cf5064b0-4509-4679-890d-c6427926ade5"],
-      "inputOutputValues": ["6b1ebd7b-d193-4651-8d70-64680d9c9e30"]
+      "displays": [
+        "cf5064b0-4509-4679-890d-c6427926ade5"
+      ],
+      "inputOutputValues": [
+        "6b1ebd7b-d193-4651-8d70-64680d9c9e30"
+      ]
     },
     {
       "meta": {
         "uuid": "7879a7d6-6d2b-4012-8db6-ada0eb5e2efc",
         "name": "Control: Total combined impact"
       },
-      "displays": ["df4a4882-5d75-4741-bfe7-6239e5ab7cc4"],
-      "inputOutputValues": ["268c3c48-ff2b-4e95-a3c2-5d8fe9d9cddf"]
+      "displays": [
+        "df4a4882-5d75-4741-bfe7-6239e5ab7cc4"
+      ],
+      "inputOutputValues": [
+        "268c3c48-ff2b-4e95-a3c2-5d8fe9d9cddf"
+      ]
     },
     {
       "meta": {
         "uuid": "18272444-137e-48bb-b907-48103fc4c8c7",
         "name": "Control: Combined impact label"
       },
-      "displays": ["a4ed68ec-33af-4e41-b60a-8b99717a3bef"],
-      "inputOutputValues": ["b0ba9497-ca65-4f71-8d37-dd256b5e9583"]
+      "displays": [
+        "a4ed68ec-33af-4e41-b60a-8b99717a3bef"
+      ],
+      "inputOutputValues": [
+        "b0ba9497-ca65-4f71-8d37-dd256b5e9583"
+      ]
     },
     {
       "meta": {
         "uuid": "4dd6d964-53e2-4d30-971c-ab21b38f6f73",
         "name": "Control: Magnitude for non-neutral impact label"
       },
-      "displays": ["4a0a2201-5303-4ce1-997a-bd38aa94ff41"],
-      "inputOutputValues": ["79667f59-9e74-4544-9207-4d1a58b1396a"]
+      "displays": [
+        "4a0a2201-5303-4ce1-997a-bd38aa94ff41"
+      ],
+      "inputOutputValues": [
+        "79667f59-9e74-4544-9207-4d1a58b1396a"
+      ]
     }
   ],
   "diagrams": [
@@ -492,7 +564,7 @@
           "causalType": "Lever",
           "position": {
             "x": 20,
-            "y": 360
+            "y": 300
           },
           "displays": [
             {
@@ -547,7 +619,7 @@
           "causalType": "Intermediate",
           "position": {
             "x": 420,
-            "y": 180
+            "y": 190
           },
           "displays": [
             {
