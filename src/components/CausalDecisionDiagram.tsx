@@ -5,6 +5,7 @@ import { evaluateModel } from "../lib/evaluateModel"
 import { getIOMapFromModelJSON } from "../lib/getIOMapFromModelJSON";
 import { causalTypeColors } from "../lib/causalTypeColors";
 import { updateElementSelection } from "../lib/updateElementSelection";
+import { useCollapse } from "react-collapsed";
 
 type CausalDecisionDiagramProps = {
     model: any;
@@ -165,6 +166,30 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
         />
     })
 
+    //State and props for expanding/collapsing the summary in the meta info box (top left)
+    const [summaryIsExpanded, setSummaryIsExpanded] = useState(false);
+    const {getCollapseProps: getSummaryCollapseProps, getToggleProps: getSummaryToggleProps} = useCollapse({isExpanded: summaryIsExpanded})
+
+    //Generate HTML for the meta info box
+    //This hovers in the top-left of the diagram window
+    //Currently shows model name, diagram name, and summary.
+    //Does not break if any of those are missing.
+    const modelMetaInfo = (
+        <div className="diagram-meta">
+            <b><u>{model.meta.name || "(Unnamed Model)"}</u></b><br/>{model.diagrams[0].meta.name || "(Unnamed Diagram)"}
+            {model.meta.summary && (
+                <>
+                <div
+                    className="diagram-meta-summary"
+                    {...getSummaryToggleProps({ onClick: () => setSummaryIsExpanded((prev) => !prev) })}
+                >
+                    {summaryIsExpanded ? "(Hide summary)" : "(Show summary)"}
+                </div><div {...getSummaryCollapseProps()}>{model.meta.summary}</div>
+                </>
+            )}
+        </div>
+    )
+
     return (
         <div className="diagram-contents">
             {/*Transparent Div. Covers the whole diagram display Div. Catches click events UNIQUE to the graph background */}
@@ -172,13 +197,15 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
             <div style={{width: "100%", height: "100%" }} onClick={() => (setSelectionBuffer(updateElementSelection(selectionBuffer, null)))}></div>
             {/*Wrapper for Xarrows*/}
             <Xwrapper>
-            {/*Absolute positioning forces diagram to be drawn over the above click-catching Div.*/}
-            <div style={{position: "absolute", left: "0px", top: "0px"}}>
-                {/* Draw arrows BELOW element boxes */}
+                {/*Absolute positioning forces diagram to be drawn over the above click-catching Div.*/}
+                <div style={{position: "absolute", left: "0px", top: "0px"}}>
+                    {/* Draw arrows BELOW element boxes */}
                     {dependencyArrows}
                     {diagramElements}
                 </div>
             </Xwrapper>
+            {/*Info box in the top-left for model name, etc.*/}
+            {modelMetaInfo}
         </div>
         
         

@@ -63,11 +63,39 @@ body {
     cursor: pointer;
 }
 
+.diagram-meta {
+    position: absolute;
+    left: 5px;
+    top: 5px;
+    line-height: 25px;
+    /* Colors */
+    background-color: rgba(0, 0, 0, 0.75);
+    color: white;
+    /* Shape */
+    max-width: 350px;
+    border-radius: 10px;
+    padding: 10px;
+    border: 2px solid #000000
+}
+
+.diagram-meta-summary {
+    padding: 3px;
+    font-size: smaller;
+    color: #dddddd;
+}
+.diagram-meta-summary:hover {
+    text-decoration: underline;
+    cursor: pointer;
+    color: white;
+}
+
 .diagram-element {
     border: 2px solid #000000;
     color: #ffffff;
     padding: 0px;
     width: 300px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
 }
 
 .diagram-element-drag-handle {
