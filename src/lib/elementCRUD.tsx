@@ -1,14 +1,14 @@
 import { v4 as uuidv4 } from 'uuid';
 
-function addNewElement(model: any, setSelectionBuffer: Function, diagramIndex = 0)
+export function addNewElement(model: any, setSelectionBuffer: Function, diagramIndex = 0)
 {
     let workingModel = structuredClone(model);
     if(workingModel.diagrams[diagramIndex])
     {
         const defaultX = 100;
-        const defaultY = 100;
+        const defaultY = 250;
         
-        const fuzzInt = (intToFuzz = 0, fuzzAmount = 10) => {
+        const fuzzInt = (intToFuzz = 0, fuzzAmount = 25) => {
             const max = intToFuzz + (fuzzAmount / 2);
             const min = intToFuzz - (fuzzAmount / 2)
 
@@ -24,7 +24,7 @@ function addNewElement(model: any, setSelectionBuffer: Function, diagramIndex = 
                 "uuid": newElementUUID,
                 "name": "New Element"
             },
-            "causalType": "CUSTOM_No-Causal-Type",
+            "causalType": "CUSTOM_(No causal type)",
             "position": {
                 "x": newElementX,
                 "y": newElementY,

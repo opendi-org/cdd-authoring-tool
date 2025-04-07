@@ -7,6 +7,7 @@ import { causalTypeColors } from "../lib/causalTypeColors";
 import { updateElementSelection } from "../lib/updateElementSelection";
 import { useCollapse } from "react-collapsed";
 import { getExpandedPathsForSelectedElements } from "../lib/getExpandedPathsForSelectedElements";
+import ElementCRUDPanel from "./ElementCRUDPanel";
 
 type CausalDecisionDiagramProps = {
     model: any;
@@ -232,6 +233,11 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
             </Xwrapper>
             {/*Info box in the top-left for model name, etc.*/}
             {modelMetaInfo}
+            <ElementCRUDPanel
+                setModelJSON={setModelJSON}
+                selectionBuffer={selectionBuffer}
+                setSelectionBuffer={setSelectionBuffer}
+            />
         </div>
         
         

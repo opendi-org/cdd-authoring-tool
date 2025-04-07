@@ -63,6 +63,26 @@ const DiagramElement: React.FC<DiagramElementProps> = ({
       </div>
     }
 
+    // Construct the causal type label.
+    // This goes in the black draggable handle at the top of each element.
+    // If causal type begins with "CUSTOM_", only render the portion after that prefix.
+    // If causal type is null, this label will be null.
+    const customPrefix = "CUSTOM_"
+    let processedCausalTypeName = String(elementData.causalType).startsWith(customPrefix) ?
+      String(elementData.causalType).slice(customPrefix.length) :
+      String(elementData.causalType);
+    let causalTypeLabel = (elementData.causalType &&
+      <div
+        style= {{
+          marginTop:"3px",
+          fontSize:"12px",
+          paddingLeft:"5px",
+        }}
+      >
+        {processedCausalTypeName}
+      </div>
+    )
+
     // Construct Display sections
     let nonInteractiveDisplays = new Array<JSX.Element>();
     let displayContents = new Array<JSX.Element>();
@@ -136,21 +156,15 @@ const DiagramElement: React.FC<DiagramElementProps> = ({
           <div 
             className={`diagram-element-drag-handle ${isSelected ? selectedElementClass : ""}`}
           >
-            <label
-              style= {{
-                height:"5px",
-                fontSize:"12px",
-                paddingLeft:"5px",
-              }}
-            >
-              {elementData.causalType}
-            </label>
+            {causalTypeLabel}
             <div style={{position: "absolute", right: "2px", top: "1px"}}>
               {(selectionBuffer.indexOf(elementData.meta.uuid) != -1) ? selectionBuffer.indexOf(elementData.meta.uuid) + 1 : null}
               <input type="checkbox" className="hoverable" onChange={toggleMySelection} checked={isSelected}></input>
             </div>
           </div>
-          {innerContent}
+          <div>
+            {innerContent}
+          </div>
         </div>
       </Draggable>
     )

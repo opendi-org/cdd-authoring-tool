@@ -65,8 +65,8 @@ body {
 
 .diagram-meta {
     position: absolute;
-    left: 5px;
-    top: 5px;
+    left: 15px;
+    top: 15px;
     line-height: 25px;
     /* Colors */
     background-color: rgba(0, 0, 0, 0.75);
@@ -114,6 +114,45 @@ body {
 
 .selected-diagram-element {
     border: 2px solid #ffffff;
+}
+
+.element-crud-panel {
+    position: absolute;
+    left: 15px;
+    bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.35);
+    padding: 2px;
+}
+.element-crud-row {
+    display: flex;
+    flex-direction: row;
+}
+.element-crud-button {
+    padding: 2px;
+    width: 100px;
+    font-size: smaller;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.45);
+    border: 2px solid rgb(77, 77, 77);
+    color: rgb(217, 217, 217);
+    border-radius: 10px;
+    margin: 2px;
+}
+.element-crud-button:hover {
+    cursor:default
+}
+.element-crud-button.button-active {
+    color: white;
+    border: 2px solid black;
+    background-color: rgba(0, 0, 0, 0.75);
+}
+.element-crud-button.button-active:hover {
+    background-color: rgb(86, 86, 86);
+    text-decoration: underline;
+    cursor: pointer;
 }
 
 /* Entire menu */
@@ -274,6 +313,10 @@ body {
     }
     .info-menu{
         height: 100%;
+    }
+
+    .element-crud-panel {
+        bottom: 45px;
     }
 
     #menu-toggle-button {
