@@ -10,6 +10,8 @@ function App() {
     useEffect(() => {
         localStorage.setItem("menu", menuIsOpen ? "open" : "closed");
     }, [menuIsOpen])
+    const [expandedPaths, setExpandedPaths] = useState([]);
+    
 
     return (
         <div style={{ paddingRight:"0.75%" }}>
@@ -17,7 +19,11 @@ function App() {
             <div className="cdd-editor">
                 {/* Diagram view / engine */}
                 <div className="cdd-editor left">
-                    <CausalDecisionDiagram model={modelJSON} setModelJSON={setModelJSON} />
+                    <CausalDecisionDiagram
+                        model={modelJSON}
+                        setModelJSON={setModelJSON}
+                        setExpandedPaths={setExpandedPaths}
+                    />
                     <div id="controls-legend">
                         <b>Move element:</b> Click and drag element's top bar.<br/>
                         <b>Select element(s):</b> Toggle element's top-right checkbox.<br/>
@@ -38,6 +44,7 @@ function App() {
                             setMenuIsOpen={setMenuIsOpen}
                             modelJSON={modelJSON}
                             setModelJSON={setModelJSON}
+                            expandedPaths={expandedPaths}
                         />
                     </div>
                 }

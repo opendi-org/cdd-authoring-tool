@@ -9,7 +9,13 @@ import {
   } from 'vanilla-jsoneditor';
 import { useEffect, useRef } from 'react';
 
-export default function SvelteJSONEditor(props: JSONEditorPropsOptional) {
+//Additional props outside of the default ones
+type SvelteJSONEditorProps = JSONEditorPropsOptional & {
+  expandedPaths?: Array<Array<string>>; //2D array of strings -- Array of paths, where paths are arrays of strings.
+}
+
+
+export default function SvelteJSONEditor(props: SvelteJSONEditorProps) {
   const refContainer = useRef<HTMLDivElement | null>(null);
   const refEditor = useRef<JsonEditor | null>(null);
   const refPrevProps = useRef<JSONEditorPropsOptional>(props);
@@ -44,18 +50,31 @@ export default function SvelteJSONEditor(props: JSONEditorPropsOptional) {
     }
   }, [props]);
 
+  // Update expanded/collapsed sections
+  useEffect(() => {
+    const editor = refEditor.current;
+    const paths = props.expandedPaths;
+    if (editor && paths) {
+      editor.collapse([], true); //collapse all
+      paths.forEach((path) => editor.expand(path, () => true)); //Expand requested paths
+      if(paths.length > 0)
+      {
+        editor.scrollTo(paths[paths.length - 1]); //Scroll to the last path given
+      }
+    }
+  }, [props.expandedPaths])
+
   return <div className="vanilla-jsoneditor-react" ref={refContainer}></div>;
 }
 
 function filterUnchangedProps(
-  props: JSONEditorPropsOptional,
-  prevProps: JSONEditorPropsOptional
-): JSONEditorPropsOptional {
+  props: SvelteJSONEditorProps,
+  prevProps: SvelteJSONEditorProps
+): SvelteJSONEditorProps {
   return Object.fromEntries(
-    Object.entries(props).filter(
-      ([key, value]) =>
-        value !== prevProps[key as keyof JSONEditorPropsOptional]
-    )
+    Object.entries(props)
+    .filter(([key]) => key !== "expandedPaths")
+    .filter(([key, value]) => value !== prevProps[key as keyof SvelteJSONEditorProps])
   );
 }
 

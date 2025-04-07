@@ -6,15 +6,18 @@ import { getIOMapFromModelJSON } from "../lib/getIOMapFromModelJSON";
 import { causalTypeColors } from "../lib/causalTypeColors";
 import { updateElementSelection } from "../lib/updateElementSelection";
 import { useCollapse } from "react-collapsed";
+import { getExpandedPathsForSelectedElements } from "../lib/getExpandedPathsForSelectedElements";
 
 type CausalDecisionDiagramProps = {
     model: any;
     setModelJSON: Function;
+    setExpandedPaths: Function;
 }
 
 const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
     model,
     setModelJSON,
+    setExpandedPaths,
 }) => {
 
     //Re-draws dependency arrows between elements
@@ -118,13 +121,29 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
     }, [model]);
 
     //Maps diagram element UUIDs to their JSON information
-    //Currently only used to color dependency arrows based on their source element's causal type
     const diagramElementMap = useMemo(() => {
         const diaElems = new Map<string, any>();
         model.diagrams[0].elements.forEach((elem: any) => {
             diaElems.set(elem.meta.uuid, elem);
         })
         return diaElems;
+    }, [model])
+
+    //Maps diagram element UUIDs to a list of UUIDs for dependencies associated with that element
+    //"associated" means that the dia elem is either a "source" or "target" for the dependency
+    const elementAssociatedDependenciesMap = useMemo(() => {
+        const elemAssociatedDeps = new Map<string, Set<string>>();
+        const addEntry = (elemUUID: string, depUUID: string) => {
+            let currentDeps = elemAssociatedDeps.get(elemUUID) ?? new Set<string>();
+            currentDeps.add(depUUID);
+            elemAssociatedDeps.set(elemUUID, currentDeps);
+        }
+        model.diagrams[0]?.dependencies.forEach((dep: any) => {
+            addEntry(dep.source, dep.meta.uuid);
+            addEntry(dep.target, dep.meta.uuid);
+        })
+
+        return elemAssociatedDeps;
     }, [model])
 
     //Holds a simple list of the UUIDs of selected elements, in the order they were selected.
@@ -134,6 +153,13 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
     const updateBuffer = (selectionUUID: string, select = true) => {
         setSelectionBuffer(updateElementSelection(selectionBuffer, selectionUUID, select));
     }
+
+    //Mirror graphical element selections in the JSON editor
+    useEffect(() => {
+        setExpandedPaths(
+            getExpandedPathsForSelectedElements(selectionBuffer, model, elementAssociatedDependenciesMap)
+        );
+    }, [selectionBuffer])
 
     //Generate HTML for dependency arrows
     const dependencyArrows = model.diagrams[0].dependencies.map((dep: any) => (

@@ -9,6 +9,7 @@ type EditorAndHelpMenuProps = {
     modelJSON: any;
     setModelJSON: Function;
     setMenuIsOpen: Function;
+    expandedPaths: Array<Array<string>>;
 }
 
 const TABS = {
@@ -21,6 +22,7 @@ const EditorAndHelpMenu: React.FC<EditorAndHelpMenuProps> = ({
     modelJSON,
     setModelJSON,
     setMenuIsOpen,
+    expandedPaths,
 }) => {
     const [activeTab, setActiveTab] = useState(() => localStorage.getItem("tab") || TABS.JSON);
 
@@ -99,6 +101,7 @@ const EditorAndHelpMenu: React.FC<EditorAndHelpMenuProps> = ({
                             }}
                             readOnly={false}
                             validator={getValidator()}
+                            expandedPaths={expandedPaths}
                         />
                     )}
                 </div>
