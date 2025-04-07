@@ -59,7 +59,6 @@ const DiagramElement: React.FC<DiagramElementProps> = ({
         <div style={{wordWrap: "break-word", width: "95%"}}>
           <label>{elementData.meta.name ?? "Untitled Element"}</label>
           <div style={{height:"5px"}}></div>
-          <label style={{fontSize:"12px"}}>{elementData.causalType}</label>
         </div>
       </div>
     }
@@ -102,7 +101,7 @@ const DiagramElement: React.FC<DiagramElementProps> = ({
       >
         <div style={{margin:"0px", padding:"0px"}}>
           <div style={{
-            padding:"5px"
+            padding:"5px",
           }}>
             {headerContent}
           </div>
@@ -137,11 +136,19 @@ const DiagramElement: React.FC<DiagramElementProps> = ({
           <div 
             className={`diagram-element-drag-handle ${isSelected ? selectedElementClass : ""}`}
           >
-            <div style={{position: "absolute", right: "2px", top: "0px", color:"#000000"}}>
+            <label
+              style= {{
+                height:"5px",
+                fontSize:"12px",
+                paddingLeft:"5px",
+              }}
+            >
+              {elementData.causalType}
+            </label>
+            <div style={{position: "absolute", right: "2px", top: "1px"}}>
               {(selectionBuffer.indexOf(elementData.meta.uuid) != -1) ? selectionBuffer.indexOf(elementData.meta.uuid) + 1 : null}
               <input type="checkbox" className="hoverable" onChange={toggleMySelection} checked={isSelected}></input>
             </div>
-            {/**/}
           </div>
           {innerContent}
         </div>
