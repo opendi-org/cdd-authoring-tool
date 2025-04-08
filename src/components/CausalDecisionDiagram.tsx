@@ -59,7 +59,6 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
     //Used to check whether incoming model JSON has an edited IO values list.
     //We can't let React check this itself because it just checks refs. This is a value comparison.
     const [initialIOValues, setInitialIOValues] = useState(() => getIOMapFromModelJSON(model));
-
     useEffect(() => {
         const incomingIOMap = getIOMapFromModelJSON(model);
 

@@ -65,7 +65,7 @@ export function getExpandedPathsForSelectedElements(
         //Construct JSON paths for dependencies associated with the selected elements
         depsUUIDsToExpand.forEach((depUUID: string) => {
             const depIdx = findIdx(depUUID, true);
-            if(depIdx)
+            if(depIdx !== undefined)
             {
                 depsPathsToExpand.push(["diagrams", "0", "dependencies", depIdx.toString()]);
             }
