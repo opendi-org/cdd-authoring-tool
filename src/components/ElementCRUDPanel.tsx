@@ -4,6 +4,7 @@ type ElementCrudPanelProps = {
     setModelJSON: Function;
     selectionBuffer: Array<string>;
     setSelectionBuffer: Function;
+    diagramElementsMap: Map<string, any>;
 }
 
 /**
@@ -24,11 +25,12 @@ const ElementCRUDPanel: React.FC<ElementCrudPanelProps> = ({
     setModelJSON,
     selectionBuffer,
     setSelectionBuffer,
+    diagramElementsMap,
 }) => {
     const activeButtonClassName = "button-active";
 
     const addELement = () => {
-        setModelJSON((prevModel: any) => addNewElement(prevModel, setSelectionBuffer, 0));
+        setModelJSON((prevModel: any) => addNewElement(prevModel, selectionBuffer, setSelectionBuffer, diagramElementsMap, 0));
     }
 
     return (

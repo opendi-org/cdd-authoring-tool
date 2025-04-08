@@ -237,6 +237,7 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
                 setModelJSON={setModelJSON}
                 selectionBuffer={selectionBuffer}
                 setSelectionBuffer={setSelectionBuffer}
+                diagramElementsMap={diagramElementMap}
             />
         </div>
         

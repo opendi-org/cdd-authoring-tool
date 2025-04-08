@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 
-export function addNewElement(model: any, setSelectionBuffer: Function, diagramIndex = 0)
+export function addNewElement(model: any, selectionBuffer: Array<string>, setSelectionBuffer: Function, diagramElementMap: Map<string, any>, diagramIndex = 0)
 {
     let workingModel = structuredClone(model);
     if(workingModel.diagrams[diagramIndex])
@@ -33,6 +33,25 @@ export function addNewElement(model: any, setSelectionBuffer: Function, diagramI
 
         const elemsList = workingModel.diagrams[diagramIndex].elements ?? [];
         elemsList.push(newElementJSON);
+
+        //Add dependencies for selected elements
+        if(selectionBuffer.length > 0)
+        {
+            const depsList = workingModel.diagrams[diagramIndex].dependencies ?? [];
+            selectionBuffer.forEach((selectedUUID: string) => {
+                const newDependencyUUID = uuidv4();
+                const newDependencyJSON = {
+                    "meta": {
+                        "uuid": newDependencyUUID,
+                        "name": `New Element --> ${diagramElementMap.get(selectedUUID).name ?? "Unnamed"}`
+                    },
+                    "source": selectedUUID,
+                    "target": newElementUUID,
+                }
+                depsList.push(newDependencyJSON);
+            })
+            workingModel.diagrams[diagramIndex].dependencies = depsList;
+        }
 
         workingModel.diagrams[diagramIndex].elements = elemsList;
         setSelectionBuffer([newElementUUID]);
