@@ -1,3 +1,5 @@
+import { findIndexOfDependency, findIndexOfElement } from "./elementCRUD";
+
 /**
  * Returns a list of JSON paths related to the selected diagram elements.
  * These paths will be expanded in the JSON editor. The last path in the list will be the scroll anchor.
@@ -15,30 +17,6 @@ export function getExpandedPathsForSelectedElements(
 
     if(selectionBuffer.length > 0)
     {
-        const elemsList = model.diagrams[0]?.elements;
-        const depsList = model.diagrams[0]?.dependencies;
-        /**
-         * Get array index of an element or dependency by its UUID.
-         * svelte-jsoneditor uses array index for JSON path stuff.
-         * 
-         * @param {string} uuid UUID of element or dependency to find
-         * @param {boolean} idIsDependency Whether to look for this UUID in the list of elements or dependencies
-         * @returns {number} The array index of the given element/dependency
-         */
-        const findIdx = (uuid: string, idIsDependency = false) => {
-            const listToSearch = idIsDependency ? depsList : elemsList;
-
-            // Find UUID in list, get the index.
-            for(let i = 0; i < listToSearch.length; i++)
-            {
-                if(listToSearch[i].meta.uuid === uuid)
-                {
-                    return i;
-                }
-            }
-            return undefined;
-        }
-
         let depsUUIDsToExpand = new Set<string>();
 
         let elemPathsToExpand = new Array<Array<string>>();
@@ -48,7 +26,7 @@ export function getExpandedPathsForSelectedElements(
         //Construct JSON paths for the selected elements while we're at it
         selectionBuffer.forEach((elemUUID: string) => {
             //Path
-            const elemIdx = findIdx(elemUUID, false);
+            const elemIdx = findIndexOfElement(elemUUID, model);
             if(elemIdx !== undefined)
             {
                 elemPathsToExpand.push(["diagrams", "0", "elements", elemIdx.toString()]);
@@ -64,7 +42,7 @@ export function getExpandedPathsForSelectedElements(
 
         //Construct JSON paths for dependencies associated with the selected elements
         depsUUIDsToExpand.forEach((depUUID: string) => {
-            const depIdx = findIdx(depUUID, true);
+            const depIdx = findIndexOfDependency(depUUID, model);
             if(depIdx !== undefined)
             {
                 depsPathsToExpand.push(["diagrams", "0", "dependencies", depIdx.toString()]);

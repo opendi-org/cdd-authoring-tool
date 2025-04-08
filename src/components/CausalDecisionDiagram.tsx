@@ -162,35 +162,40 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
     }, [selectionBuffer])
 
     //Generate HTML for dependency arrows
-    const dependencyArrows = model.diagrams[0].dependencies.map((dep: any) => (
-        <Xarrow
-        key={dep.meta.uuid}
-        start={dep.source}
-        end={dep.target}
-        strokeWidth={2}
-        curveness={0.4}
-        color={
-            ((selectionBuffer.includes(dep.source) || selectionBuffer.includes(dep.target)) ? causalTypeColors.Selected : null) ??
-            causalTypeColors[diagramElementMap.get(dep.source).causalType] ?? 
-            causalTypeColors.Unknown}
-        />
-    ))
+    const dependencyArrows = useMemo(() => {
+        return (
+            model.diagrams[0].dependencies.map((dep: any) =>
+                <Xarrow
+                key={dep.meta.uuid}
+                start={dep.source}
+                end={dep.target}
+                strokeWidth={2}
+                curveness={0.4}
+                color={
+                    ((selectionBuffer.includes(dep.source) || selectionBuffer.includes(dep.target)) ? causalTypeColors.Selected : null) ??
+                    causalTypeColors[diagramElementMap.get(dep.source).causalType] ?? 
+                    causalTypeColors.Unknown}
+                />
+        ))
+    }, [model, selectionBuffer]);
 
     //Generate HTML for diagram elements
     //Diagram elements wrap inner content in a consistent draggable outer shell
-    const diagramElements = model.diagrams[0].elements.map((elem: any) => {
-        return <DiagramElement
-        elementData={elem}
-        computedIOValues={computedIOValues}
-        IOValues={IOValues}
-        setIOValues={setIOValues}
-        controlsMap={controlsMap}
-        updateXarrow={updateXarrow}
-        onPositionChange={handlePositionChange}
-        selectionBuffer={selectionBuffer}
-        updateElementSelection={updateBuffer}
-        />
-    })
+    const diagramElements = 
+        model.diagrams[0].elements.map((elem: any) => {
+            return <DiagramElement
+            key={elem.meta.uuid}
+            elementData={elem}
+            computedIOValues={computedIOValues}
+            IOValues={IOValues}
+            setIOValues={setIOValues}
+            controlsMap={controlsMap}
+            updateXarrow={updateXarrow}
+            onPositionChange={handlePositionChange}
+            selectionBuffer={selectionBuffer}
+            updateElementSelection={updateBuffer}
+            />
+        });
 
     //State and props for expanding/collapsing the summary in the meta info box (top left)
     const [summaryIsExpanded, setSummaryIsExpanded] = useState(false);
@@ -237,6 +242,7 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
                 selectionBuffer={selectionBuffer}
                 setSelectionBuffer={setSelectionBuffer}
                 diagramElementsMap={diagramElementMap}
+                elementAssociatedDependenciesMap={elementAssociatedDependenciesMap}
             />
         </div>
         

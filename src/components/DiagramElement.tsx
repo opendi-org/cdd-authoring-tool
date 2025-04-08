@@ -90,6 +90,7 @@ const DiagramElement: React.FC<DiagramElementProps> = ({
       const DisplayComponentType = DisplayTypeRegistry[elemDisplay.displayType ?? ""];
       const displayJSX = DisplayComponentType ? (
       <DisplayComponentType
+        key={elemDisplay.meta.uuid}
         displayJSON={elemDisplay}
         computedIOValues={computedIOValues}
         IOValues={IOValues}
