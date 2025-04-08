@@ -3,6 +3,7 @@ import VanillaJSONEditor from "./VanillaJSONEditor";
 import GlossaryTab from "./GlossaryTab";
 import HelpTab from "./HelpTab";
 import { getValidator, validateGraphData } from "../../lib/validation";
+import { Mode } from "vanilla-jsoneditor";
 
 
 type EditorAndHelpMenuProps = {
@@ -29,6 +30,11 @@ const EditorAndHelpMenu: React.FC<EditorAndHelpMenuProps> = ({
     useEffect(() => {
         localStorage.setItem("tab", activeTab);
     }, [activeTab]);
+
+    /**
+     * Tracks whether the JSON editor is in tree, text, or table mode.
+     */
+    const [editorMode, setEditorMode] = useState(Mode.tree);
 
     /**
      * Memoized copy of the input model JSON.
@@ -99,9 +105,13 @@ const EditorAndHelpMenu: React.FC<EditorAndHelpMenuProps> = ({
                                     }
                                 }
                             }}
+                            onChangeMode={(newMode) => {
+                                setEditorMode(newMode);
+                            }}
                             readOnly={false}
                             validator={getValidator()}
                             expandedPaths={expandedPaths}
+                            mode={editorMode}
                         />
                     )}
                 </div>

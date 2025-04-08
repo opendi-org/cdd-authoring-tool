@@ -6,6 +6,7 @@ import {
     createJSONEditor,
     JSONEditorPropsOptional,
     JsonEditor,
+    Mode,
   } from 'vanilla-jsoneditor';
 import { useEffect, useRef } from 'react';
 
@@ -51,7 +52,7 @@ export default function SvelteJSONEditor(props: SvelteJSONEditorProps) {
   useEffect(() => {
     const editor = refEditor.current;
     const paths = props.expandedPaths;
-    if (editor && paths) {
+    if (editor && paths && props.mode == Mode.tree) {
       editor.collapse([], true); //collapse all
       paths.forEach((path) => editor.expand(path, () => true)); //Expand requested paths
       if(paths.length > 0)
