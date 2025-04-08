@@ -9,10 +9,11 @@
  * @param funcMap For accessing script functions from model JSON. Maps name of function to the function itself
  * @param ioMap For accessing I/O values from model JSON. Maps I/O Value UUID to the data for that value
  * @param runnableModelNumber The index for the runnable model to evaluate, in the model's runnableModels list
+ * @param debugLogs Flag for whether to log lots of debug stuff to console
  * @returns A fresh copy of ioMap, with I/O values updated based on the results of one step of the decision simulation
  */
-export function evaluateModel(model: any, funcMap: Map<string, Function>, ioMap: Map<string, any>, runnableModelNumber = 0): Map<string, any> {
-    console.log("Eval start.");
+export function evaluateModel(model: any, funcMap: Map<string, Function>, ioMap: Map<string, any>, runnableModelNumber = 0, debugLogs = false): Map<string, any> {
+    if(debugLogs) console.log("Eval start.");
 
     //Handle case where there's nothing to evaluate (Return a copy of IO Map unedited)
     if(!model.runnableModels) return new Map(ioMap);
@@ -61,50 +62,50 @@ export function evaluateModel(model: any, funcMap: Map<string, Function>, ioMap:
 
     while(evalInProgress)
     {
-    console.log("Step started. To eval: ", unevaluated);
+        if(debugLogs) console.log("Step started. To eval: ", unevaluated);
 
-    //Try to evaluate unevaluated elements. If successful, remove them from unevaluated list.
-    let toRemoveFromUnevaluated = new Set<string>();
-    unevaluated.forEach((uuid: string) => {
-        const evalElem = evals.get(uuid);
-        const evalInputs = evalElem.inputs.map((uuid: string) => workingIOMap.get(uuid));
+        //Try to evaluate unevaluated elements. If successful, remove them from unevaluated list.
+        let toRemoveFromUnevaluated = new Set<string>();
+        unevaluated.forEach((uuid: string) => {
+            const evalElem = evals.get(uuid);
+            const evalInputs = evalElem.inputs.map((uuid: string) => workingIOMap.get(uuid));
 
-        //This element can be evaluated if we have a known value for all of its requested inputs
-        const isReadyToEval = evalElem.inputs.every((inputUUID: string) => knownIOValues.has(inputUUID));
-        if(isReadyToEval)
-        {
-        console.log("Evaluating ", uuid, " - Populated IO Values: ", knownIOValues);
+            //This element can be evaluated if we have a known value for all of its requested inputs
+            const isReadyToEval = evalElem.inputs.every((inputUUID: string) => knownIOValues.has(inputUUID));
+            if(isReadyToEval)
+            {
+                if(debugLogs) console.log("Evaluating ", uuid, " - Populated IO Values: ", knownIOValues);
 
-        //Get the function from our function map and run it to get our new outputs
-        const evalFunction = funcMap.get(`${evalElem.evaluatableAsset}_${evalElem.functionName}`) ?? (() => {return []})
-        const evaluatedOutputs = evalFunction(evalInputs)
-    
-        //Function outputs are assumed to be given in the same order as they're listed in the eval element
-        for(let i = 0; i < evalElem.outputs.length && i < evaluatedOutputs.length; i++) {
-            workingIOMap.set(evalElem.outputs[i], evaluatedOutputs[i]);
-            knownIOValues.add(evalElem.outputs[i]);
+                //Get the function from our function map and run it to get our new outputs
+                const evalFunction = funcMap.get(`${evalElem.evaluatableAsset}_${evalElem.functionName}`) ?? (() => {return []})
+                const evaluatedOutputs = evalFunction(evalInputs)
+            
+                //Function outputs are assumed to be given in the same order as they're listed in the eval element
+                for(let i = 0; i < evalElem.outputs.length && i < evaluatedOutputs.length; i++) {
+                    workingIOMap.set(evalElem.outputs[i], evaluatedOutputs[i]);
+                    knownIOValues.add(evalElem.outputs[i]);
+                }
+
+                //Right now there's no validation step to confirm that an element evaluated successfully.
+                //It's just assumed successful after we load and run the function.
+                toRemoveFromUnevaluated.add(uuid);
+            }
+        })
+
+        unevaluated = unevaluated.filter((unevalUUID: string) => !toRemoveFromUnevaluated.has(unevalUUID)); //Remove the elements that we evaluated this iteration
+
+        if(debugLogs) console.log("Step complete. Evaluated: ", toRemoveFromUnevaluated);
+
+        //Determine whether we need another eval iteration
+        evalInProgress = unevaluated.length > 0;
+        if(unevaluated.length == prevUnevalLength) {
+            console.error("List of unevaluated elements has not changed between evaluation iterations. Terminating evaluation.");
+            evalInProgress = false;
         }
-
-        //Right now there's no validation step to confirm that an element evaluated successfully.
-        //It's just assumed successful after we load and run the function.
-        toRemoveFromUnevaluated.add(uuid);
+        prevUnevalLength = unevaluated.length;
         }
-    })
+        if(debugLogs) console.log("Eval Complete! IO Values: ", workingIOMap);
 
-    unevaluated = unevaluated.filter((unevalUUID: string) => !toRemoveFromUnevaluated.has(unevalUUID)); //Remove the elements that we evaluated this iteration
-
-    console.log("Step complete. Evaluated: ", toRemoveFromUnevaluated);
-
-    //Determine whether we need another eval iteration
-    evalInProgress = unevaluated.length > 0;
-    if(unevaluated.length == prevUnevalLength) {
-        console.error("List of unevaluated elements has not changed between evaluation iterations. Terminating evaluation.");
-        evalInProgress = false;
+        return workingIOMap;
+        
     }
-    prevUnevalLength = unevaluated.length;
-    }
-    console.log("Eval Complete! IO Values: ", workingIOMap);
-
-    return workingIOMap;
-    
-}

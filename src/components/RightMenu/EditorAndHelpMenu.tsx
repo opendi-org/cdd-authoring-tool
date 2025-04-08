@@ -89,8 +89,8 @@ const EditorAndHelpMenu: React.FC<EditorAndHelpMenuProps> = ({
                                         const validationResults = validateGraphData(newContent.json);
                                         if(validationResults.errors.length > 0)
                                         {
-                                            console.log("Graph rendering validation errors:");
-                                            console.log(validationResults.errors);
+                                            console.error("Graph rendering validation errors:");
+                                            console.error(validationResults.errors);
                                         }
                                         if(validationResults.canRender)
                                         {

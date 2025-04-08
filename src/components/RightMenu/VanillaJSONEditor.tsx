@@ -22,7 +22,6 @@ export default function SvelteJSONEditor(props: SvelteJSONEditorProps) {
 
   useEffect(() => {
     // create editor
-    console.log('create editor', refContainer.current);
     refEditor.current = createJSONEditor({
       target: refContainer.current as HTMLDivElement,
       props,
@@ -31,7 +30,6 @@ export default function SvelteJSONEditor(props: SvelteJSONEditorProps) {
     return () => {
       // destroy editor
       if (refEditor.current) {
-        console.log('destroy editor');
         refEditor.current.destroy();
         refEditor.current = null;
       }
@@ -44,7 +42,6 @@ export default function SvelteJSONEditor(props: SvelteJSONEditorProps) {
       // only pass the props that actually changed
       // since the last time to prevent syncing issues
       const changedProps = filterUnchangedProps(props, refPrevProps.current);
-      console.log('update props', changedProps);
       refEditor.current.updateProps(changedProps);
       refPrevProps.current = props;
     }
