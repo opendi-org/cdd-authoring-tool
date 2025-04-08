@@ -9,7 +9,6 @@ import { Mode } from "vanilla-jsoneditor";
 type EditorAndHelpMenuProps = {
     modelJSON: any;
     setModelJSON: Function;
-    setMenuIsOpen: Function;
     expandedPaths: Array<Array<string>>;
 }
 
@@ -19,10 +18,14 @@ const TABS = {
     JSON: "jsoneditor",
 };
 
+/**
+ * Renders the right-side menu for the authoring tool. Holds the
+ * JSON editor, a help menu for controls, and a glossary for
+ * relevant DI modeling terms.
+ */
 const EditorAndHelpMenu: React.FC<EditorAndHelpMenuProps> = ({
     modelJSON,
     setModelJSON,
-    setMenuIsOpen,
     expandedPaths,
 }) => {
     const [activeTab, setActiveTab] = useState(() => localStorage.getItem("tab") || TABS.JSON);
@@ -71,13 +74,6 @@ const EditorAndHelpMenu: React.FC<EditorAndHelpMenuProps> = ({
                         >
                             JSON Editor
                         </div>
-                    </div>
-                    <div
-                        id="exit-btn"
-                        className="menu-tab"
-                        onClick={() => setMenuIsOpen(false)}
-                    >
-                        Close
                     </div>
                 </div>
                 <div id="menu-contents"> {/* Actual menu content */}

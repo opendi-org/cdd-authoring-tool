@@ -41,7 +41,6 @@ function App() {
                     <div className="cdd-editor right">
                         {/*JSON Editor*/}
                         <EditorAndHelpMenu
-                            setMenuIsOpen={setMenuIsOpen}
                             modelJSON={modelJSON}
                             setModelJSON={setModelJSON}
                             expandedPaths={expandedPaths}
