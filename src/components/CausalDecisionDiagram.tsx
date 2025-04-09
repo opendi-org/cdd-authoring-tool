@@ -15,6 +15,34 @@ type CausalDecisionDiagramProps = {
     setExpandedPaths: Function;
 }
 
+/**
+ * Role of an element within a dependency.
+ * It's either listed as the source or the target
+ * of the dependency.
+ */
+export enum DependencyRole {
+    source = "source",
+    target = "target",
+}
+
+/**
+ * For elementAssociatedDependenciesMap.
+ * uuid: UUID of the dependency associated with an element in the map.
+ * role: Role of the element within the dependency it's associated with.
+ * otherElement: UUID of the other element involved in the dependency.
+ */
+export type AssociatedDependencyData = {
+    uuid: string;
+    role: DependencyRole;
+    otherElement: string;
+}
+
+/**
+ * Renders an interactive simulation of a Causal Decision Diagram, constructing
+ * it dynamically out of the given model JSON, using other components like DiagramElement.
+ * Also allows editing via the ElementCrud panel. Will dynamically re-render the CDD whenever
+ * the source JSON changes.
+ */
 const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
     model,
     setModelJSON,
@@ -129,18 +157,20 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
         return diaElems;
     }, [model])
 
-    //Maps diagram element UUIDs to a list of UUIDs for dependencies associated with that element
-    //"associated" means that the dia elem is either a "source" or "target" for the dependency
+    //Maps element UUIDs to a set of information about all dependencies associated with that element.
+    //"Associated" means that the dia elem is either a "source" or "target" for the dependency.
+    //AssociatedDependencyData contains dep UUID, the key element's role in the dep, and UUID of
+    //the other element involved in the dependency, whether source or target
     const elementAssociatedDependenciesMap = useMemo(() => {
-        const elemAssociatedDeps = new Map<string, Set<string>>();
-        const addEntry = (elemUUID: string, depUUID: string) => {
-            let currentDeps = elemAssociatedDeps.get(elemUUID) ?? new Set<string>();
-            currentDeps.add(depUUID);
+        const elemAssociatedDeps = new Map<string, Set<AssociatedDependencyData>>();
+        const addEntry = (elemUUID: string, depUUID: string, role: DependencyRole, otherElemUUID: string) => {
+            let currentDeps = elemAssociatedDeps.get(elemUUID) ?? new Set<AssociatedDependencyData>();
+            currentDeps.add({uuid: depUUID, role: role, otherElement: otherElemUUID});
             elemAssociatedDeps.set(elemUUID, currentDeps);
         }
         model.diagrams[0]?.dependencies.forEach((dep: any) => {
-            addEntry(dep.source, dep.meta.uuid);
-            addEntry(dep.target, dep.meta.uuid);
+            addEntry(dep.source, dep.meta.uuid, DependencyRole.source, dep.target);
+            addEntry(dep.target, dep.meta.uuid, DependencyRole.target, dep.source);
         })
 
         return elemAssociatedDeps;

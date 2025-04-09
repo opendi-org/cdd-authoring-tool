@@ -1,3 +1,4 @@
+import { AssociatedDependencyData } from "../components/CausalDecisionDiagram";
 import { findIndexOfDependency, findIndexOfElement } from "./elementCRUD";
 
 /**
@@ -12,7 +13,7 @@ import { findIndexOfDependency, findIndexOfElement } from "./elementCRUD";
 export function getExpandedPathsForSelectedElements(
     selectionBuffer: Array<string>,
     model: any,
-    associatedDependenciesMap: Map<string, Set<string>>
+    associatedDependenciesMap: Map<string, Set<AssociatedDependencyData>>
 ): Array<Array<string>> {
 
     if(selectionBuffer.length > 0)
@@ -33,10 +34,14 @@ export function getExpandedPathsForSelectedElements(
             }
 
             //Associated dependencies
-            const associatedDeps = associatedDependenciesMap.get(elemUUID);
-            if(associatedDeps)
+            const associatedDepsData = associatedDependenciesMap.get(elemUUID);
+            if(associatedDepsData)
             {
-                depsUUIDsToExpand = new Set<string>([...depsUUIDsToExpand, ...associatedDeps]);
+                const associatedDepsUUIDs = new Set<string>();
+                associatedDepsData.forEach((depData: AssociatedDependencyData) => {
+                    associatedDepsUUIDs.add(depData.uuid);
+                })
+                depsUUIDsToExpand = new Set<string>([...depsUUIDsToExpand, ...associatedDepsUUIDs]);
             }
         })
 

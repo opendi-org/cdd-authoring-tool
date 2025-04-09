@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import { AssociatedDependencyData, DependencyRole } from '../components/CausalDecisionDiagram';
 
 /**
  * Get index of an element or dependency within its JSON array by its UUID.
@@ -67,7 +68,7 @@ export function findIndexOfDependency(uuid: string, model: any, diagramIndex = 0
 export function addNewElement(model: any, selectionBuffer: Array<string>, setSelectionBuffer: Function, diagramElementMap: Map<string, any>, diagramIndex = 0)
 {
     let workingModel = structuredClone(model);
-    if(workingModel.diagrams[diagramIndex])
+    if(workingModel.diagrams[diagramIndex] !== undefined)
     {
         const defaultX = 100;
         const defaultY = 250;
@@ -158,18 +159,20 @@ export function addNewElement(model: any, selectionBuffer: Array<string>, setSel
  * @param model Model JSON to delete the element from
  * @param selectionBuffer Array of UUIDs for selected diagram elements
  * @param setSelectionBuffer The React useState set function for selectionBuffer
- * @param elementAssociatedDependenciesMap Maps element UUIDs to the set of UUIDs for dependencies associated with them
+ * @param elementAssociatedDependenciesMap Maps element UUIDs to a set of information about all dependencies associated with that element
  * @param diagramIndex Index for which diagram we're using in the model JSON
  * @returns Updated model JSON, with the selected elements and all associated dependencies removed
  */
-export function deleteElement(model: any, selectionBuffer: Array<string>, setSelectionBuffer: Function, elementAssociatedDependenciesMap: Map<string, Set<string>>, diagramIndex = 0)
+export function deleteElement(model: any, selectionBuffer: Array<string>, setSelectionBuffer: Function, elementAssociatedDependenciesMap: Map<string, Set<AssociatedDependencyData>>, diagramIndex = 0)
 {
     let workingModel = structuredClone(model);
-    if(selectionBuffer.length > 0 && workingModel.diagrams[diagramIndex])
+    if(selectionBuffer.length > 0 && workingModel.diagrams[diagramIndex] !== undefined)
     {
         let dependenciesToDelete: Set<string> = new Set();
         selectionBuffer.forEach((elemUUID: string) => {
-            dependenciesToDelete = new Set([...dependenciesToDelete, ...(elementAssociatedDependenciesMap.get(elemUUID) ?? [])]);
+            const associatedDepsUUIDs = new Set<string>();
+            elementAssociatedDependenciesMap.get(elemUUID)?.forEach((depData: AssociatedDependencyData) => {associatedDepsUUIDs.add(depData.uuid)});
+            dependenciesToDelete = new Set([...dependenciesToDelete, ...associatedDepsUUIDs]);
         })
 
         const numElemsToDelete = selectionBuffer.length;
@@ -191,6 +194,115 @@ export function deleteElement(model: any, selectionBuffer: Array<string>, setSel
 
             setSelectionBuffer([]);
         }
+    }
+    return workingModel;
+}
+
+/**
+ * Pure/immutable: Updates the given model JSON to toggle dependencies between the selected elements.
+ * 
+ * Has two possible behaviors:
+ * 1) "Chain" behavior (groupBehavior = false) for connecting dependencies along a chain  
+ * For selection buffer [1, 2, 3, 4], dependencies connect/disconnect (1 -> 2), (2 -> 3), (3 -> 4)
+ * 
+ * 2) "Group" behavior (groupBehavior = true) for connecting a group of elements to a single target  
+ * For selection buffer [1, 2, 3, 4], dependencies connect/disconnect (1 -> 4), (2 -> 4), (3 -> 4)
+ * 
+ * For partially-filled chains or groups, both behaviors will prefer to fill in gaps, and will only
+ * remove dependencies when the selection already COMPLETELY satisfies the chain or group.
+ * 
+ * @param model Model JSON to add/remove dependencies from
+ * @param selectionBuffer Array of UUIDs for selected diagram elements
+ * @param diagramElementMap Map from element UUIDs to their JSON data
+ * @param elementAssociatedDependenciesMap Maps element UUIDs to a set of information about all dependencies associated with that element
+ * @param groupBehavior Flag for whether dependencies are toggled in a "chain" or a "group" behavior
+ * @param diagramIndex Index for which diagram we're using in the model JSON
+ * @returns Updated model JSON, with the toggled dependencies added or removed as relevant
+ */
+export function toggleDependency(model: any, selectionBuffer: Array<string>, diagramElementMap: Map<string, any>, elementAssociatedDependenciesMap: Map<string, Set<AssociatedDependencyData>>, groupBehavior = false, diagramIndex = 0)
+{
+    let workingModel = structuredClone(model);
+    if(selectionBuffer.length > 1 && workingModel.diagrams[diagramIndex] !== undefined)
+    {
+        /**
+         * Checks to see if a dependency exists between the given source and target diagram elements.
+         * If found, returns UUID for the dependency. Otherwise, returns null.
+         * @param sourceElementUUID Source element to check
+         * @param targetElementUUID Target element to check
+         * @returns UUID of found existing dependency. null if no dependency found.
+         */
+        const getDependency = (sourceElementUUID: string, targetElementUUID: string) => {
+            let result = null;
+            elementAssociatedDependenciesMap.get(sourceElementUUID)?.forEach((depData: AssociatedDependencyData) => {
+                if(depData.role == DependencyRole.source && depData.otherElement == targetElementUUID)
+                {
+                    result = depData.uuid;
+                }
+            })
+            return result;
+        }
+
+        /*
+         * Maintain two lists of dependencies. Traversing the selection, assume we will be
+         * removing all dependencies UNTIL we reach a missing dependency in the chain/group.
+         * If we find missing deps, clear the depsToRemove set and only fill the hole(s)
+         */
+        let depsToAdd = new Set<any>();
+        let depsToRemove = new Set<string>();
+        for(let bufferIdx = 0; bufferIdx + 1 < selectionBuffer.length; bufferIdx++)
+        {
+            const thisSource = selectionBuffer[bufferIdx];
+            
+            //"Chain" behavior: Target is the next index along the chain
+            let thisTarget = selectionBuffer[bufferIdx + 1];
+            //"Group" behavior: Target is always the last index in the selection
+            if(groupBehavior) thisTarget = selectionBuffer[selectionBuffer.length - 1];
+
+            const existingDepUUID = getDependency(thisSource, thisTarget); //Null if no dependency found btw. source and target
+            if(existingDepUUID !== null)
+            {
+                //Dependency found. If we're not already patching holes, we'll remove this.
+                if(depsToAdd.size == 0)
+                {
+                    depsToRemove.add(existingDepUUID);
+                }
+            }
+            else
+            {
+                //Dependency missing!
+                //Generate new dependency and clear the depsToRemove set, since we won't be using it.
+                const newDepUUID = uuidv4();
+                const sourceName = diagramElementMap.get(thisSource).meta.name ?? "Unnamed";
+                const targetName = diagramElementMap.get(thisTarget).meta.name ?? "Unnamed";
+                const depToAdd = {
+                    "meta": {
+                        "uuid": newDepUUID,
+                        "name": `${sourceName} --> ${targetName}`
+                    },
+                    "source": thisSource,
+                    "target": thisTarget,
+                }
+                depsToAdd.add(depToAdd);
+
+                if(depsToRemove.size > 0)
+                {
+                    depsToRemove.clear();
+                }
+            }
+        }
+        
+        //Remove any dependencies slated for removal (does nothing if depsToRemove is cleared)
+        let newDeps = workingModel.diagrams[diagramIndex].dependencies
+        .filter((depData: any) => {
+            return !depsToRemove.has(depData.meta.uuid)
+        });
+
+        //Add any new dependencies (does nothing if we didn't have any to add)
+        depsToAdd.forEach((depToAdd: any) => newDeps.push(depToAdd))
+
+        //Overwrite deps in the working model
+        workingModel.diagrams[diagramIndex].dependencies = newDeps;
+
     }
     return workingModel;
 }

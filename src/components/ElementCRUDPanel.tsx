@@ -1,12 +1,13 @@
 import { useMemo } from "react";
-import { addNewElement, deleteElement } from "../lib/elementCRUD";
+import { addNewElement, deleteElement, toggleDependency } from "../lib/elementCRUD";
+import { AssociatedDependencyData } from "./CausalDecisionDiagram";
 
 type ElementCrudPanelProps = {
     setModelJSON: Function;
     selectionBuffer: Array<string>;
     setSelectionBuffer: Function;
     diagramElementsMap: Map<string, any>;
-    elementAssociatedDependenciesMap: Map<string, Set<string>>;
+    elementAssociatedDependenciesMap: Map<string, Set<AssociatedDependencyData>>;
 }
 
 /**
@@ -43,14 +44,20 @@ const ElementCRUDPanel: React.FC<ElementCrudPanelProps> = ({
         }
     }
 
-    // Active state and click callback for: Toggle Dependency
+    // Active state and click callback for: Dependency Chain and Dependency Group
     const toggleDependencyIsActive = useMemo(() => {
         return selectionBuffer.length > 1;
     }, [selectionBuffer]);
-    const toggleDependencyClick = () => {
+    const toggleDependencyChainClick = () => {
         if(toggleDependencyIsActive)
         {
-            //TODO: Implement
+            setModelJSON((prevModel: any) => toggleDependency(prevModel, selectionBuffer, diagramElementsMap, elementAssociatedDependenciesMap, false, 0));
+        }
+    }
+    const toggleDependencyGroupClick = () => {
+        if(toggleDependencyIsActive)
+        {
+            setModelJSON((prevModel: any) => toggleDependency(prevModel, selectionBuffer, diagramElementsMap, elementAssociatedDependenciesMap, true, 0));
         }
     }
 
@@ -76,6 +83,15 @@ const ElementCRUDPanel: React.FC<ElementCrudPanelProps> = ({
         }
     }
 
+    // Active state and click callback for: Select All
+    const selectAllIsActive = true;
+    const selectAllClick = () => {
+        if(selectAllIsActive)
+        {
+            setSelectionBuffer(Array.from(diagramElementsMap.keys()));
+        }
+    }
+
     return (
         <div className="element-crud-panel">
             <div className="element-crud-row">
@@ -86,24 +102,38 @@ const ElementCRUDPanel: React.FC<ElementCrudPanelProps> = ({
                     {selectionBuffer.length === 0 ?<>New<br/>Element</> : <>New Element (Connected)</>}
                 </div>
                 <div
-                    className={`element-crud-button ${toggleDependencyIsActive ? activeButtonClassName : ""}`}
-                    onClick={toggleDependencyClick}
-                >
-                    Toggle<br/>{`Dependenc${selectionBuffer.length > 2 ? "ies" : "y"}`}
-                </div>
-            </div>
-            <div className="element-crud-row">
-                <div
                     className={`element-crud-button ${deleteElementIsActive ? activeButtonClassName : ""}`}
                     onClick={deleteElementClick}
                 >
                     Delete<br/>{`Element${selectionBuffer.length > 1 ? "s" : ""}`}
                 </div>
+            </div>
+            <div className="element-crud-row">
+                <div
+                    className={`element-crud-button ${toggleDependencyIsActive ? activeButtonClassName : ""}`}
+                    onClick={toggleDependencyChainClick}
+                >
+                    Dependency<br/>Chain
+                </div>
+                <div
+                    className={`element-crud-button ${toggleDependencyIsActive ? activeButtonClassName : ""}`}
+                    onClick={toggleDependencyGroupClick}
+                >
+                    Dependency<br/>Group
+                </div>
+            </div>
+            <div className="element-crud-row">
                 <div
                     className={`element-crud-button ${addDisplayIsActive ? activeButtonClassName : ""}`}
                     onClick={addDisplayClick}
                 >
                     Add Display<br/>to Element
+                </div>
+                <div
+                    className={`element-crud-button ${selectAllIsActive ? activeButtonClassName : ""}`}
+                    onClick={selectAllClick}
+                >
+                    Select All<br/>Elements
                 </div>
             </div>
         </div>
