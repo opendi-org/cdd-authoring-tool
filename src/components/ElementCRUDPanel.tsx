@@ -1,6 +1,7 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { addNewElement, deleteElement, toggleDependency } from "../lib/elementCRUD";
 import { AssociatedDependencyData } from "../lib/cddTypes";
+import DisplayTypeRegistry from "./DisplayTypeRegistry";
 
 type ElementCrudPanelProps = {
     setModelJSON: Function;
@@ -36,28 +37,31 @@ const ElementCRUDPanel: React.FC<ElementCrudPanelProps> = ({
 
     // Active state and click callback for: Add Element
     const addElementIsActive = true;
+    //Flag for whether to connect new element to selected existing elements
+    //Controlled by a textbox in the options entry next to the new element button
+    const [connectNewElement, setConnectNewElement] = useState(false);
     const addELementClick = () => {
         if(addElementIsActive)
         {
             setModelJSON((prevModel: any) =>
-                addNewElement(prevModel, selectionBuffer, setSelectionBuffer, diagramElementsMap, 0));
+                addNewElement(prevModel, selectionBuffer, setSelectionBuffer, diagramElementsMap, connectNewElement, 0));
         }
     }
 
-    // Active state and click callback for: Dependency Chain and Dependency Group
+    //State and click callback for: Dependency Chain and Dependency Group
     const toggleDependencyIsActive = useMemo(() => {
         return selectionBuffer.length > 1;
     }, [selectionBuffer]);
-    const toggleDependencyChainClick = () => {
-        if(toggleDependencyIsActive)
-        {
-            setModelJSON((prevModel: any) => toggleDependency(prevModel, selectionBuffer, diagramElementsMap, elementAssociatedDependenciesMap, false, 0));
-        }
+    //Used to populate the dropdown for dependnecy toggle behavior
+    const dependencyBehaviors: Record<string, string> = {
+        chain: "Chain",
+        group: "Group",
     }
-    const toggleDependencyGroupClick = () => {
+    const [dependencyBehavior, setDependencyBehavior] = useState(dependencyBehaviors[0]); //Which dep behavior, for group/chain flag
+    const toggleDependencyClick = () => {
         if(toggleDependencyIsActive)
         {
-            setModelJSON((prevModel: any) => toggleDependency(prevModel, selectionBuffer, diagramElementsMap, elementAssociatedDependenciesMap, true, 0));
+            setModelJSON((prevModel: any) => toggleDependency(prevModel, selectionBuffer, diagramElementsMap, elementAssociatedDependenciesMap, dependencyBehavior === dependencyBehaviors.group, 0));
         }
     }
 
@@ -72,15 +76,29 @@ const ElementCRUDPanel: React.FC<ElementCrudPanelProps> = ({
         }
     }
 
-    // Active state and click callback for: Add Display to Element
+    // State and click callback for: Add Display to Element
     const addDisplayIsActive = useMemo(() => {
         return selectionBuffer.length == 1;
     }, [selectionBuffer]);
+    const [displayType, setDisplayType] = useState(Object.keys(DisplayTypeRegistry)[0]); //Display type to add
     const addDisplayClick = () => {
         if(addDisplayIsActive)
         {
             //TODO: Implement
         }
+    }
+    /**
+     * Clean up display type label from the original camelCase of the
+     * display type registry to Title Case with other adjustments.
+     * @param originalName Original display name from the display type record
+     * @returns Cleaned up selection option title for the display type
+     */
+    const cleanDisplayTypeName = (originalName: string) => {
+        //Convert string from camelCase to Title Format
+        return originalName
+            .replace(/([A-Z])/g, ' $1') //Adds a space before each capital letter
+            .replace(/^./, s => s.toUpperCase()) //Capitalizes the first character in the string
+            .replace(/^Control/, 'Ctrl:'); //Shorten common prefix
     }
 
     // Active state and click callback for: Select All
@@ -99,7 +117,19 @@ const ElementCRUDPanel: React.FC<ElementCrudPanelProps> = ({
                     className={`element-crud-button ${addElementIsActive ? activeButtonClassName : ""}`}
                     onClick={addELementClick}
                 >
-                    {selectionBuffer.length === 0 ?<>New<br/>Element</> : <>New Element (Connected)</>}
+                    {selectionBuffer.length === 0 || !connectNewElement ?<>New<br/>Element</> : <>New Element (Connected)</>}
+                </div>
+                <div className="element-crud-options">
+                    <label>(Connect New?)</label>
+                    <input type="checkbox" className="hoverable" onChange={() => {setConnectNewElement(prev => !prev)}} checked={connectNewElement}/>
+                </div>
+            </div>
+            <div className="element-crud-row">
+                <div
+                    className={`element-crud-button ${selectAllIsActive ? activeButtonClassName : ""}`}
+                    onClick={selectAllClick}
+                >
+                    Select All<br/>Elements
                 </div>
                 <div
                     className={`element-crud-button ${deleteElementIsActive ? activeButtonClassName : ""}`}
@@ -111,15 +141,17 @@ const ElementCRUDPanel: React.FC<ElementCrudPanelProps> = ({
             <div className="element-crud-row">
                 <div
                     className={`element-crud-button ${toggleDependencyIsActive ? activeButtonClassName : ""}`}
-                    onClick={toggleDependencyChainClick}
+                    onClick={toggleDependencyClick}
                 >
-                    Dependency<br/>Chain
+                    Toggle<br/>Dependenc{selectionBuffer.length > 2 ? "ies" : "y"}
                 </div>
-                <div
-                    className={`element-crud-button ${toggleDependencyIsActive ? activeButtonClassName : ""}`}
-                    onClick={toggleDependencyGroupClick}
-                >
-                    Dependency<br/>Group
+                <div className="element-crud-options">
+                    <label>(Dep Behavior)</label>
+                    <select name="Dependency Behavior" value={dependencyBehavior} onChange={(event) => {setDependencyBehavior(event.target.value)}}>
+                        {Object.keys(dependencyBehaviors).map((behaviorKey: string) => {
+                            return <option value={dependencyBehaviors[behaviorKey]} key={`option-${dependencyBehaviors[behaviorKey]}`}>{dependencyBehaviors[behaviorKey]}</option>
+                        })}
+                    </select>
                 </div>
             </div>
             <div className="element-crud-row">
@@ -129,11 +161,15 @@ const ElementCRUDPanel: React.FC<ElementCrudPanelProps> = ({
                 >
                     Add Display<br/>to Element
                 </div>
-                <div
-                    className={`element-crud-button ${selectAllIsActive ? activeButtonClassName : ""}`}
-                    onClick={selectAllClick}
-                >
-                    Select All<br/>Elements
+                <div className="element-crud-options">
+                    <label>(Display type)</label>
+                    <select name="Display Type" value={displayType} onChange={(event) => setDisplayType(event.target.value)}>
+                        {Object.keys(DisplayTypeRegistry).map((displayType: string) => {
+                            return (
+                                <option value={displayType} key={`option-${displayType}`}>{cleanDisplayTypeName(displayType)}</option>
+                            )
+                        })} 
+                    </select>
                 </div>
             </div>
         </div>

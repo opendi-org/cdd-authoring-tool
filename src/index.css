@@ -125,34 +125,68 @@ body {
     border-radius: 10px;
     background-color: rgba(0, 0, 0, 0.35);
     padding: 2px;
+    user-select: none;
+    --crud-panel-entry-width: 100px;
+    --crud-panel-font-color: rgb(217, 217, 217);
+    --crud-panel-font-size: smaller;
+    --crud-panel-font-align: center;
+    --crud-panel-entry-padding: 2px;
+    --crud-panel-entry-active-border: 2px solid black;
+    --crud-panel-entry-inactive-border: 2px solid rgb(77, 77, 77);
 }
 .element-crud-row {
     display: flex;
     flex-direction: row;
 }
 .element-crud-button {
-    padding: 2px;
-    width: 100px;
-    font-size: smaller;
-    text-align: center;
+    padding: var(--crud-panel-entry-padding);
+    width: var(--crud-panel-entry-width);
+    font-size: var(--crud-panel-font-size);
+    text-align: var(--crud-panel-font-align);
+    margin: var(--crud-panel-entry-padding);
+    color: var(--crud-panel-font-color);
     background-color: rgba(0, 0, 0, 0.45);
-    border: 2px solid rgb(77, 77, 77);
-    color: rgb(217, 217, 217);
-    border-radius: 10px;
-    margin: 2px;
+    border: var(--crud-panel-entry-inactive-border);
+    border-radius: 13px;
 }
 .element-crud-button:hover {
     cursor:default
 }
 .element-crud-button.button-active {
     color: white;
-    border: 2px solid black;
+    border: var(--crud-panel-entry-active-border);
     background-color: rgba(0, 0, 0, 0.75);
 }
 .element-crud-button.button-active:hover {
     background-color: rgb(86, 86, 86);
     text-decoration: underline;
     cursor: pointer;
+}
+.element-crud-options {
+    display: flex;
+    flex-direction: column;
+    align-items: var(--crud-panel-font-align);
+    width: var(--crud-panel-entry-width);
+    font-size: var(--crud-panel-font-size);
+    text-align: var(--crud-panel-font-align);
+    color: var(--crud-panel-font-color);
+    padding: var(--crud-panel-entry-padding);
+    margin: var(--crud-panel-entry-padding);
+    background-color: rgba(0, 0, 0, 0.541);
+    border: var(--crud-panel-entry-active-border);
+    border-radius: 2px;
+}
+.element-crud-options input {
+    margin: 0px;
+}
+.element-crud-options select {
+    border: 0px;
+    font-size: var(--crud-panel-font-size);
+    width: calc(var(--crud-panel-entry-width) * 0.93)
+}
+
+.element-crud-options label {
+    padding-bottom: 0.2rem;   
 }
 
 /* Entire menu */

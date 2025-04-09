@@ -62,10 +62,11 @@ export function findIndexOfDependency(uuid: string, model: any, diagramIndex = 0
  * @param selectionBuffer Array of UUIDs for selected diagram elements
  * @param setSelectionBuffer The React useState set function for selectionBuffer
  * @param diagramElementMap Map from element UUIDs to their JSON data
+ * @param connectNewElement Flag for whether the new element should be connected to selected elements
  * @param diagramIndex Index for which diagram we're using in the model JSON
  * @returns Updated model JSON, with the new element added
  */
-export function addNewElement(model: any, selectionBuffer: Array<string>, setSelectionBuffer: Function, diagramElementMap: Map<string, any>, diagramIndex = 0)
+export function addNewElement(model: any, selectionBuffer: Array<string>, setSelectionBuffer: Function, diagramElementMap: Map<string, any>, connectNewElement = false, diagramIndex = 0)
 {
     let workingModel = structuredClone(model);
     if(workingModel.diagrams[diagramIndex] !== undefined)
@@ -92,7 +93,7 @@ export function addNewElement(model: any, selectionBuffer: Array<string>, setSel
         let newElementX = fuzzInt(defaultX);
         let newElementY = fuzzInt(defaultY);
 
-        if(selectionBuffer.length > 0)
+        if(connectNewElement && selectionBuffer.length > 0)
         {
             //We're creating a connected element.
             //Place it to the right of the selected elements,
@@ -106,8 +107,8 @@ export function addNewElement(model: any, selectionBuffer: Array<string>, setSel
             });
 
             const elementGap = defaultX + 300;
-            newElementX = fuzzInt(rightmostX + elementGap);
-            newElementY = fuzzInt(sumOfYValues / selectionBuffer.length); //~average Y value
+            newElementX = rightmostX + elementGap;
+            newElementY = sumOfYValues / selectionBuffer.length; //average Y value
         }
 
         const newElementUUID = uuidv4();
@@ -127,7 +128,7 @@ export function addNewElement(model: any, selectionBuffer: Array<string>, setSel
         elemsList.push(newElementJSON);
 
         //Add dependencies for selected elements
-        if(selectionBuffer.length > 0)
+        if(connectNewElement && selectionBuffer.length > 0)
         {
             const depsList = workingModel.diagrams[diagramIndex].dependencies ?? [];
             selectionBuffer.forEach((selectedUUID: string) => {
