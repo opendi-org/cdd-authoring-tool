@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import DisplayTypeRegistry from "./DisplayTypeRegistry";
 import DisplaysSection from "./DisplaysSection";
 import Draggable from "react-draggable";
-import { causalTypeColors } from "../lib/causalTypeColors";
+import { causalTypeColors } from "../lib/cddTypes";
 
 type DiagramElementProps = {
     elementData: any;

@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { AssociatedDependencyData, DependencyRole } from '../components/CausalDecisionDiagram';
+import { AssociatedDependencyData, DependencyRole } from './cddTypes';
 
 /**
  * Get index of an element or dependency within its JSON array by its UUID.

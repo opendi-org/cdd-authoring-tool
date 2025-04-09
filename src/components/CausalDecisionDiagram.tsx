@@ -3,7 +3,7 @@ import Xarrow, { useXarrow, Xwrapper } from "react-xarrows";
 import DiagramElement from "./DiagramElement";
 import { evaluateModel } from "../lib/evaluateModel"
 import { getIOMapFromModelJSON } from "../lib/getIOMapFromModelJSON";
-import { causalTypeColors } from "../lib/causalTypeColors";
+import { AssociatedDependencyData, causalTypeColors, DependencyRole } from "../lib/cddTypes";
 import { updateElementSelection } from "../lib/updateElementSelection";
 import { useCollapse } from "react-collapsed";
 import { getExpandedPathsForSelectedElements } from "../lib/getExpandedPathsForSelectedElements";
@@ -13,28 +13,6 @@ type CausalDecisionDiagramProps = {
     model: any;
     setModelJSON: Function;
     setExpandedPaths: Function;
-}
-
-/**
- * Role of an element within a dependency.
- * It's either listed as the source or the target
- * of the dependency.
- */
-export enum DependencyRole {
-    source = "source",
-    target = "target",
-}
-
-/**
- * For elementAssociatedDependenciesMap.
- * uuid: UUID of the dependency associated with an element in the map.
- * role: Role of the element within the dependency it's associated with.
- * otherElement: UUID of the other element involved in the dependency.
- */
-export type AssociatedDependencyData = {
-    uuid: string;
-    role: DependencyRole;
-    otherElement: string;
 }
 
 /**
@@ -191,6 +169,53 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
         );
     }, [selectionBuffer])
 
+    /**
+     * Get style information for dependency arrows,
+     * based on the dependency JSON and its place in the
+     * selectionBuffer.
+     * 
+     * When only one element is selected, all dependencies
+     * connected to the selected element are highlighted
+     * and enlarged.
+     * 
+     * When multiple elements are selected, depenencies
+     * that are connected to a selected element at BOTH
+     * source and target are highlighted and enlarged.
+     * Elements connected only at one end (source OR target)
+     * are semi-highlighted, but normal sized.
+     * 
+     * Returns a simple object with properties:
+     * - color: Holds a color hex code as a string
+     * - size: Holds a stroke width as a number
+     */
+    const getDependencyStyle = (dep: any): any => {
+        const sizeSelected = 3;
+        const sizeDefault = 2;
+        //Default color is based on causal type
+        const colorDefault = causalTypeColors[diagramElementMap.get(dep.source).causalType] ?? causalTypeColors.Unknown;
+
+        //Both source AND target are in the selection buffer
+        const bothSelected = selectionBuffer.includes(dep.source) && selectionBuffer.includes(dep.target);
+        //Either source OR target are in the selection buffer
+        const eitherSelected = selectionBuffer.includes(dep.source) || selectionBuffer.includes(dep.target);
+
+        if(selectionBuffer.length > 1)
+        {
+            return ({
+                "color": (
+                    bothSelected ? causalTypeColors.Highlighted
+                    : eitherSelected ? causalTypeColors.SemiHighlighted
+                    : colorDefault
+                ),
+                "size": bothSelected ? sizeSelected : sizeDefault,
+            })
+        }
+        return ({
+            "color": eitherSelected ? causalTypeColors.Highlighted : colorDefault,
+            "size": eitherSelected ? sizeSelected : sizeDefault,
+        });
+    }
+
     //Generate HTML for dependency arrows
     const dependencyArrows = useMemo(() => {
         return (
@@ -199,12 +224,9 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
                 key={dep.meta.uuid}
                 start={dep.source}
                 end={dep.target}
-                strokeWidth={2}
+                strokeWidth={getDependencyStyle(dep).size}
                 curveness={0.4}
-                color={
-                    ((selectionBuffer.includes(dep.source) || selectionBuffer.includes(dep.target)) ? causalTypeColors.Selected : null) ??
-                    causalTypeColors[diagramElementMap.get(dep.source).causalType] ?? 
-                    causalTypeColors.Unknown}
+                color={getDependencyStyle(dep).color}
                 />
         ))
     }, [model, selectionBuffer]);

@@ -1,4 +1,4 @@
-import { AssociatedDependencyData } from "../components/CausalDecisionDiagram";
+import { AssociatedDependencyData } from "./cddTypes";
 import { findIndexOfDependency, findIndexOfElement } from "./elementCRUD";
 
 /**

@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { addNewElement, deleteElement, toggleDependency } from "../lib/elementCRUD";
-import { AssociatedDependencyData } from "./CausalDecisionDiagram";
+import { AssociatedDependencyData } from "../lib/cddTypes";
 
 type ElementCrudPanelProps = {
     setModelJSON: Function;
