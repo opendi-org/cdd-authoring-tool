@@ -102,6 +102,8 @@ const ElementCRUDPanel: React.FC<ElementCrudPanelProps> = ({
         if(addDisplayIsActive)
         {
             setModelJSON((prevModel: any) => addDisplayToElement(prevModel, selectionBuffer, displayType, 0));
+            //Set selection buffer to a copy of itself. Effectively re-selects the selected elements. Re-triggers the JSON path expansion useEffect in CausalDecisionDiagram
+            setSelectionBuffer((prev: Array<string>) => structuredClone(prev));
         }
     }
     /**
@@ -135,6 +137,8 @@ const ElementCRUDPanel: React.FC<ElementCrudPanelProps> = ({
             {
                 setModelJSON((prevModel: any) => deleteDisplayFromElement(prevModel, selectionBuffer, displayToDelete, 0));
                 setDisplayToDelete("");
+                //Set selection buffer to a copy of itself. Effectively re-selects the selected elements. Re-triggers the JSON path expansion useEffect in CausalDecisionDiagram
+                setSelectionBuffer((prev: Array<string>) => structuredClone(prev));
             }
             else
             {
