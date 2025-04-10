@@ -3,6 +3,7 @@ import DisplayTypeRegistry from "./DisplayTypeRegistry";
 import DisplaysSection from "./DisplaysSection";
 import Draggable from "react-draggable";
 import { causalTypeColors } from "../lib/cddTypes";
+import {v4 as uuidv4} from "uuid"
 
 type DiagramElementProps = {
     elementData: any;
@@ -87,7 +88,7 @@ const DiagramElement: React.FC<DiagramElementProps> = ({
     let nonInteractiveDisplays = new Array<JSX.Element>();
     let displayContents = new Array<JSX.Element>();
     elementData.displays?.forEach((elemDisplay: any) => {
-      const DisplayComponentType = DisplayTypeRegistry[elemDisplay.displayType ?? ""];
+      const DisplayComponentType = DisplayTypeRegistry[elemDisplay.displayType ?? ""].component;
       const displayJSX = DisplayComponentType ? (
       <DisplayComponentType
         key={elemDisplay.meta.uuid}
@@ -170,5 +171,23 @@ const DiagramElement: React.FC<DiagramElementProps> = ({
       </Draggable>
     )
   };
+
+  /**
+   * Generate schema-compliant JSON for a new diagram element
+   * @param position Position of the new element
+   * @returns JSON for a new diagram element, formatted for schema compliance
+   */
+  export function defaultDiagramElementJSON(
+    position={ x: 100, y: 250 }
+  ): any {
+    return {
+      meta: {
+        uuid: uuidv4(),
+        name: "New Element"
+      },
+      causalType: "CUSTOM_(No causal type)",
+      position,
+    };
+  }
 
   export default DiagramElement;

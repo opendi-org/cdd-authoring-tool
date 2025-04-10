@@ -1,5 +1,7 @@
-import { v4 as uuidv4 } from 'uuid';
 import { AssociatedDependencyData, DependencyRole } from './cddTypes';
+import DisplayTypeRegistry from '../components/DisplayTypeRegistry';
+import { defaultDiagramElementJSON } from '../components/DiagramElement';
+import { defaultDependencyJSON } from './dependencyUtil';
 
 /**
  * Get index of an element or dependency within its JSON array by its UUID.
@@ -53,76 +55,85 @@ export function findIndexOfDependency(uuid: string, model: any, diagramIndex = 0
 }
 
 /**
+ * Calculates initial placement for a new Diagram Element. Element is either placed near
+ * a default location (with some randomness to avoid perfectly stacking elements if the user
+ * places multiple at once), or is placed in a location relative to the list of selected
+ * elements. Relative location is vertically centered among the selected elements, and
+ * horizontally off the right side of the selected elements.
+ * 
+ * @param selectionBuffer Array of UUIDs for selected diagram elements
+ * @param diagramElementMap Map from element UUIDs to their JSON data
+ * @param isConnectedToSelection Flag for whether the new element should be connected to selected elements
+ * @param defaultX If not connected to selection, the element will be placed near this default X position
+ * @param defaultY If not connected to selection, the element will be placed near this default X position
+ * @param gap If connected to selection, the element will be placed this distance from the rightmost X of the selected elements
+ * @returns Position object for the new element, with X and Y values
+ */
+function calculateNewElementPosition(selectionBuffer: Array<string>, diagramElementMap: Map<string, any>, isConnectedToSelection: boolean, defaultX = 100, defaultY = 250, gap = 400): {x: number, y: number}
+{
+    /**
+     * Slightly randomizes an int. Returns a number near intToFuzz, in a range
+     * of width fuzzAmount, centered at intToFuzz.
+     * For slightly randomizing the placement of the new element, so that unconnected
+     * elements placed one after the other won't hide each other.
+     * @param intToFuzz Base number. Resulting number will average around this value.
+     * @param fuzzAmount The width of the fuzz range.
+     * @returns Fuzzed int in the range (intToFuzz - (fuzzAmount / 2)) to (intToFuzz + (fuzzAmount / 2))
+     */
+    const fuzzInt = (intToFuzz = 0, fuzzAmount = 25) => {
+        const max = intToFuzz + (fuzzAmount / 2);
+        const min = intToFuzz - (fuzzAmount / 2)
+
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    let newElementX = fuzzInt(defaultX);
+    let newElementY = fuzzInt(defaultY);
+
+    if(isConnectedToSelection && selectionBuffer.length > 0)
+    {
+        //We're creating a connected element.
+        //Place it to the right of the selected elements,
+        //roughly in the middle vertically
+        let rightmostX = defaultX;
+        let sumOfYValues = 0;
+        selectionBuffer.forEach((selectedUUID) => {
+            const selectedJSONData = diagramElementMap.get(selectedUUID);
+            rightmostX = Math.max(rightmostX, selectedJSONData.position.x ?? 0);
+            sumOfYValues += selectedJSONData.position.y ?? 0;
+        });
+
+        newElementX = rightmostX + gap;
+        newElementY = sumOfYValues / selectionBuffer.length; //average Y value
+    }
+
+    return {x: newElementX, y: newElementY};
+}
+
+/**
  * Pure/immutable: Updates the given model JSON to include a new element.
+ * Also updates the given selection buffer, with the new element selected.
+ * 
  * If elements are selected in the selectionBuffer, this new element will be connected
  * to those selected elements, and placed near them. If not, this element will be placed
  * around a default location (100, 250).
  * Does not mutate model JSON. Instead, returns the updated JSON with the new element added.
  * @param model Model JSON to add the element to
  * @param selectionBuffer Array of UUIDs for selected diagram elements
- * @param setSelectionBuffer The React useState set function for selectionBuffer
  * @param diagramElementMap Map from element UUIDs to their JSON data
  * @param connectNewElement Flag for whether the new element should be connected to selected elements
  * @param diagramIndex Index for which diagram we're using in the model JSON
- * @returns Updated model JSON, with the new element added
+ * @returns [updated model JSON, updated selection buffer], updated as a result of the add action
  */
-export function addNewElement(model: any, selectionBuffer: Array<string>, setSelectionBuffer: Function, diagramElementMap: Map<string, any>, connectNewElement = false, diagramIndex = 0)
+export function addNewElement(model: any, selectionBuffer: Array<string>, diagramElementMap: Map<string, any>, connectNewElement = false, diagramIndex = 0)
 {
     let workingModel = structuredClone(model);
+    let newSelectionBuffer = structuredClone(selectionBuffer);
     if(workingModel.diagrams[diagramIndex] !== undefined)
     {
-        const defaultX = 100;
-        const defaultY = 250;
-        
-        /**
-         * Slightly randomizes an int. Returns a number near intToFuzz, in a range
-         * of width fuzzAmount, centered at intToFuzz.
-         * For slightly randomizing the placement of the new element, so that unconnected
-         * elements placed one after the other won't hide each other.
-         * @param intToFuzz Base number. Resulting number will average around this value.
-         * @param fuzzAmount The width of the fuzz range.
-         * @returns Fuzzed int in the range (intToFuzz - (fuzzAmount / 2)) to (intToFuzz + (fuzzAmount / 2))
-         */
-        const fuzzInt = (intToFuzz = 0, fuzzAmount = 25) => {
-            const max = intToFuzz + (fuzzAmount / 2);
-            const min = intToFuzz - (fuzzAmount / 2)
-
-            return Math.floor(Math.random() * (max - min + 1)) + min;
-        }
-
-        let newElementX = fuzzInt(defaultX);
-        let newElementY = fuzzInt(defaultY);
-
-        if(connectNewElement && selectionBuffer.length > 0)
-        {
-            //We're creating a connected element.
-            //Place it to the right of the selected elements,
-            //roughly in the middle vertically
-            let rightmostX = defaultX;
-            let sumOfYValues = 0;
-            selectionBuffer.forEach((selectedUUID) => {
-                const selectedJSONData = diagramElementMap.get(selectedUUID);
-                rightmostX = Math.max(rightmostX, selectedJSONData.position.x ?? 0);
-                sumOfYValues += selectedJSONData.position.y ?? 0;
-            });
-
-            const elementGap = defaultX + 300;
-            newElementX = rightmostX + elementGap;
-            newElementY = sumOfYValues / selectionBuffer.length; //average Y value
-        }
-
-        const newElementUUID = uuidv4();
-        const newElementJSON = {
-            "meta": {
-                "uuid": newElementUUID,
-                "name": "New Element"
-            },
-            "causalType": "CUSTOM_(No causal type)",
-            "position": {
-                "x": newElementX,
-                "y": newElementY,
-            },
-        };
+        const newElementJSON = defaultDiagramElementJSON(
+            calculateNewElementPosition(selectionBuffer, diagramElementMap, connectNewElement)
+        );
 
         const elemsList = workingModel.diagrams[diagramIndex].elements ?? [];
         elemsList.push(newElementJSON);
@@ -132,25 +143,20 @@ export function addNewElement(model: any, selectionBuffer: Array<string>, setSel
         {
             const depsList = workingModel.diagrams[diagramIndex].dependencies ?? [];
             selectionBuffer.forEach((selectedUUID: string) => {
-                const newDependencyUUID = uuidv4();
-                const newDependencyJSON = {
-                    "meta": {
-                        "uuid": newDependencyUUID,
-                        "name": `${diagramElementMap.get(selectedUUID).meta.name ?? "Unnamed"} --> New Element`
-                    },
-                    "source": selectedUUID,
-                    "target": newElementUUID,
-                }
-                depsList.push(newDependencyJSON);
+                const sourceUUID = selectedUUID;
+                const targetUUID = newElementJSON.meta.uuid;
+                const sourceName = diagramElementMap.get(selectedUUID).meta.name ?? "Unnamed";
+                const targetName = newElementJSON.meta.name;
+                depsList.push(defaultDependencyJSON(sourceUUID, targetUUID, sourceName, targetName))
             })
             workingModel.diagrams[diagramIndex].dependencies = depsList;
         }
 
         workingModel.diagrams[diagramIndex].elements = elemsList;
-        setSelectionBuffer([newElementUUID]);
+        newSelectionBuffer = [newElementJSON.meta.uuid];
     }
 
-    return workingModel;
+    return [workingModel, newSelectionBuffer]
 }
 
 /**
@@ -159,12 +165,11 @@ export function addNewElement(model: any, selectionBuffer: Array<string>, setSel
  * Does not mutate model JSON. Instead, returns the updated JSON with the elements/dependencies deleted.
  * @param model Model JSON to delete the element from
  * @param selectionBuffer Array of UUIDs for selected diagram elements
- * @param setSelectionBuffer The React useState set function for selectionBuffer
  * @param elementAssociatedDependenciesMap Maps element UUIDs to a set of information about all dependencies associated with that element
  * @param diagramIndex Index for which diagram we're using in the model JSON
  * @returns Updated model JSON, with the selected elements and all associated dependencies removed
  */
-export function deleteElement(model: any, selectionBuffer: Array<string>, setSelectionBuffer: Function, elementAssociatedDependenciesMap: Map<string, Set<AssociatedDependencyData>>, diagramIndex = 0)
+export function deleteElement(model: any, selectionBuffer: Array<string>, elementAssociatedDependenciesMap: Map<string, Set<AssociatedDependencyData>>, diagramIndex = 0)
 {
     let workingModel = structuredClone(model);
     if(selectionBuffer.length > 0 && workingModel.diagrams[diagramIndex] !== undefined)
@@ -192,8 +197,6 @@ export function deleteElement(model: any, selectionBuffer: Array<string>, setSel
 
             workingModel.diagrams[diagramIndex].elements = newElementsListJSON;
             workingModel.diagrams[diagramIndex].dependencies = newDependenciesListJSON;
-
-            setSelectionBuffer([]);
         }
     }
     return workingModel;
@@ -272,18 +275,9 @@ export function toggleDependency(model: any, selectionBuffer: Array<string>, dia
             {
                 //Dependency missing!
                 //Generate new dependency and clear the depsToRemove set, since we won't be using it.
-                const newDepUUID = uuidv4();
                 const sourceName = diagramElementMap.get(thisSource).meta.name ?? "Unnamed";
                 const targetName = diagramElementMap.get(thisTarget).meta.name ?? "Unnamed";
-                const depToAdd = {
-                    "meta": {
-                        "uuid": newDepUUID,
-                        "name": `${sourceName} --> ${targetName}`
-                    },
-                    "source": thisSource,
-                    "target": thisTarget,
-                }
-                depsToAdd.add(depToAdd);
+                depsToAdd.add(defaultDependencyJSON(thisSource, thisTarget, sourceName, targetName));
 
                 if(depsToRemove.size > 0)
                 {
@@ -304,6 +298,38 @@ export function toggleDependency(model: any, selectionBuffer: Array<string>, dia
         //Overwrite deps in the working model
         workingModel.diagrams[diagramIndex].dependencies = newDeps;
 
+    }
+    return workingModel;
+}
+
+/**
+ * Pure/immutable: Updates the given model JSON to add a new instance of the requested
+ * Display type to the selected Diagram Element.
+ * @param model Model JSON to add display to
+ * @param selectionBuffer Array of UUIDs for selected diagram elements
+ * @param displayType String determining type of Display to add. @see {DisplayTypeRegistry}
+ * @param diagramIndex Index for which diagram we're using in the model JSON
+ * @returns Updated model JSON, with the Display added to the selected diagram element
+ */
+export function addDisplayToElement(model: any, selectionBuffer: Array<string>, displayType: string, diagramIndex = 0)
+{
+    let workingModel = structuredClone(model);
+    if(selectionBuffer.length == 1 && workingModel.diagrams[diagramIndex] !== undefined)
+    {
+        const newDisplayJSON = DisplayTypeRegistry[displayType].defaultJSON();
+
+        if(!newDisplayJSON) return workingModel;
+
+        const elemToModify = workingModel.diagrams[diagramIndex].elements.find(
+            (elemJSON: any) => elemJSON.meta.uuid === selectionBuffer[0]
+        );
+
+        if(elemToModify !== undefined)
+        {
+            if(!elemToModify.displays) elemToModify.displays = [];
+
+            elemToModify.displays.push(newDisplayJSON);
+        }
     }
     return workingModel;
 }

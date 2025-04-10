@@ -1,7 +1,14 @@
 import React from "react";
 import Slider from "./interactivePieces/Slider";
 import { CommonDisplayProps } from "../DisplayTypeRegistry"
+import { v4 as uuidv4 } from "uuid";
 
+/**
+ * Renders a Controllable Numeric Range Display. These attach
+ * to DisplaysSection components in a DiagramElement component,
+ * in a CausalDecisionDiagram.
+ * A Numeric Range Display looks like a slider, with a label.
+ */
 const ControlRange: React.FC<CommonDisplayProps> = ({
     displayJSON,
     computedIOValues,
@@ -44,5 +51,26 @@ const ControlRange: React.FC<CommonDisplayProps> = ({
         </div>
     );
 };
+
+/**
+ * Generate schema-compliant JSON for a new Controllable Numeric Range Display
+ * @returns JSON for a new Controllable Numeric Range Display, formatted for schema compliance
+ */
+export const defaultControlRangeJSON = (): any => ({
+    meta: {
+        uuid: uuidv4(),
+        name: "New Range"
+    },
+    displayType: "controlRange",
+    content: {
+        controlParameters: {
+            min: 0,
+            max: 100,
+            step: 1,
+            value: 50,
+            isInteractive: false
+        }
+    }
+});
 
 export default ControlRange;

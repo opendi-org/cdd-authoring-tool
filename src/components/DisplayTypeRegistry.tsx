@@ -1,7 +1,7 @@
 import React from "react";
-import ControlRange from "./displayTypes/ControlRange";
-import ControlText from "./displayTypes/ControlText";
-import ControlBoolean from "./displayTypes/ControlBoolean";
+import ControlRange, { defaultControlRangeJSON } from "./displayTypes/ControlRange";
+import ControlText, { defaultControlTextJSON } from "./displayTypes/ControlText";
+import ControlBoolean, { defaultControlBooleanJSON } from "./displayTypes/ControlBoolean";
 
 export type CommonDisplayProps = {
     displayJSON: any;
@@ -11,10 +11,15 @@ export type CommonDisplayProps = {
     controlsMap: Map<string, string[]>;
 };
 
-const DisplayTypeRegistry: Record<string, React.FC<CommonDisplayProps>> = {
-    controlRange: ControlRange,
-    controlText: ControlText,
-    controlBoolean: ControlBoolean,
+export type DisplayRegistryEntry = {
+    component: React.FC<CommonDisplayProps>;
+    defaultJSON: () => any; //This function returns JSON for a new instance of the display
+}
+
+const DisplayTypeRegistry: Record<string, DisplayRegistryEntry> = {
+    controlRange: {component: ControlRange, defaultJSON: defaultControlRangeJSON},
+    controlText: {component: ControlText, defaultJSON: defaultControlTextJSON},
+    controlBoolean: {component: ControlBoolean, defaultJSON: defaultControlBooleanJSON},
 };
 
 export default DisplayTypeRegistry;

@@ -1,6 +1,13 @@
 import React from "react";
-import { CommonDisplayProps } from "../DisplayTypeRegistry"
+import { CommonDisplayProps } from "../DisplayTypeRegistry";
+import { v4 as uuidv4 } from "uuid";
 
+/**
+ * Renders a Controllable Boolean Display. These attach
+ * to DisplaysSection components in a DiagramElement component,
+ * in a CausalDecisionDiagram.
+ * A Boolean Display looks like a checkbox, with a label.
+ */
 const ControlBoolean: React.FC<CommonDisplayProps> = ({
     displayJSON,
     computedIOValues,
@@ -40,5 +47,23 @@ const ControlBoolean: React.FC<CommonDisplayProps> = ({
         </div>
     );
 };
+
+/**
+ * Generate schema-compliant JSON for a new Controllable Boolean Display
+ * @returns JSON for a new Controllable Boolean Display, formatted for schema compliance
+ */
+export const defaultControlBooleanJSON = (): any => ({
+    meta: {
+        uuid: uuidv4(),
+        name: "New Boolean"
+    },
+    displayType: "controlBoolean",
+    content: {
+        controlParameters: {
+            value: false,
+            isInteractive: false
+        }
+    }
+})
 
 export default ControlBoolean;

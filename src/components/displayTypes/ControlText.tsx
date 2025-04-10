@@ -1,6 +1,15 @@
 import React from "react";
-import { CommonDisplayProps } from "../DisplayTypeRegistry"
+import { CommonDisplayProps } from "../DisplayTypeRegistry";
+import { v4 as uuidv4 } from "uuid";
 
+/**
+ * Renders a Controllable Text Display. These attach
+ * to DisplaysSection components in a DiagramElement component,
+ * in a CausalDecisionDiagram.
+ * A Text Display looks like a textbox for input, or a simple text
+ * label with a grey background for output. There is also a label
+ * for the display name.
+ */
 const ControlText: React.FC<CommonDisplayProps> = ({
     displayJSON,
     computedIOValues,
@@ -51,5 +60,23 @@ const ControlText: React.FC<CommonDisplayProps> = ({
         </div>
     );
 };
+
+/**
+ * Generate schema-compliant JSON for a new Controllable Text Display
+ * @returns JSON for a new Controllable Text Display, formatted for schema compliance
+ */
+export const defaultControlTextJSON = (): any => ({
+    meta: {
+        uuid: uuidv4(),
+        name: "New Text"
+    },
+    displayType: "controlText",
+    content: {
+        controlParameters: {
+            value: " ",
+            isInteractive: false
+        }
+    }
+})
 
 export default ControlText;

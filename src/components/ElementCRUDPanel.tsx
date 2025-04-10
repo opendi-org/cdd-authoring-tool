@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { addNewElement, deleteElement, toggleDependency } from "../lib/elementCRUD";
+import { addDisplayToElement, addNewElement, deleteElement, toggleDependency } from "../lib/elementCRUD";
 import { AssociatedDependencyData } from "../lib/cddTypes";
 import DisplayTypeRegistry from "./DisplayTypeRegistry";
 
@@ -44,7 +44,11 @@ const ElementCRUDPanel: React.FC<ElementCrudPanelProps> = ({
         if(addElementIsActive)
         {
             setModelJSON((prevModel: any) =>
-                addNewElement(prevModel, selectionBuffer, setSelectionBuffer, diagramElementsMap, connectNewElement, 0));
+            {
+                const [newModelJSON, newSelectionBuffer] = addNewElement(prevModel, selectionBuffer, diagramElementsMap, connectNewElement, 0);
+                setSelectionBuffer(newSelectionBuffer);
+                return newModelJSON;
+            });
         }
     }
 
@@ -62,6 +66,8 @@ const ElementCRUDPanel: React.FC<ElementCrudPanelProps> = ({
         if(toggleDependencyIsActive)
         {
             setModelJSON((prevModel: any) => toggleDependency(prevModel, selectionBuffer, diagramElementsMap, elementAssociatedDependenciesMap, dependencyBehavior === dependencyBehaviors.group, 0));
+            //Set selection buffer to a copy of itself. Effectively re-selects the selected elements. Re-triggers the JSON path expansion useEffect in CausalDecisionDiagram
+            setSelectionBuffer((prev: Array<string>) => structuredClone(prev));
         }
     }
 
@@ -72,7 +78,8 @@ const ElementCRUDPanel: React.FC<ElementCrudPanelProps> = ({
     const deleteElementClick = () => {
         if(deleteElementIsActive)
         {
-            setModelJSON((prevModel: any) => deleteElement(prevModel, selectionBuffer, setSelectionBuffer, elementAssociatedDependenciesMap, 0))
+            setModelJSON((prevModel: any) => deleteElement(prevModel, selectionBuffer, elementAssociatedDependenciesMap, 0));
+            setSelectionBuffer([]);
         }
     }
 
@@ -84,7 +91,7 @@ const ElementCRUDPanel: React.FC<ElementCrudPanelProps> = ({
     const addDisplayClick = () => {
         if(addDisplayIsActive)
         {
-            //TODO: Implement
+            setModelJSON((prevModel: any) => addDisplayToElement(prevModel, selectionBuffer, displayType, 0));
         }
     }
     /**
