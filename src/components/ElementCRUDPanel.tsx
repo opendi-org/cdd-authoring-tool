@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { addDisplayToElement, addNewElement, deleteElement, toggleDependency } from "../lib/elementCRUD";
+import { useEffect, useMemo, useState } from "react";
+import { addDisplayToElement, addNewElement, deleteDisplayFromElement, deleteElement, toggleDependency } from "../lib/elementCRUD";
 import { AssociatedDependencyData } from "../lib/cddTypes";
 import DisplayTypeRegistry from "./DisplayTypeRegistry";
 
@@ -35,7 +35,8 @@ const ElementCRUDPanel: React.FC<ElementCrudPanelProps> = ({
     //For style, to differentiate between active and inactive buttons
     const activeButtonClassName = "button-active";
 
-    // Active state and click callback for: Add Element
+
+    // Active state and click callback for: New Element
     const addElementIsActive = true;
     //Flag for whether to connect new element to selected existing elements
     //Controlled by a textbox in the options entry next to the new element button
@@ -52,7 +53,7 @@ const ElementCRUDPanel: React.FC<ElementCrudPanelProps> = ({
         }
     }
 
-    //State and click callback for: Dependency Chain and Dependency Group
+    //State and click callback for: Toggle Dependency (and related options)
     const toggleDependencyIsActive = useMemo(() => {
         return selectionBuffer.length > 1;
     }, [selectionBuffer]);
@@ -71,6 +72,15 @@ const ElementCRUDPanel: React.FC<ElementCrudPanelProps> = ({
         }
     }
 
+    // Active state and click callback for: Select All
+    const selectAllIsActive = true;
+    const selectAllClick = () => {
+        if(selectAllIsActive)
+        {
+            setSelectionBuffer(Array.from(diagramElementsMap.keys()));
+        }
+    }
+
     // Active state and click callback for: Delete Element
     const deleteElementIsActive = useMemo(() => {
         return selectionBuffer.length > 0;
@@ -83,7 +93,7 @@ const ElementCRUDPanel: React.FC<ElementCrudPanelProps> = ({
         }
     }
 
-    // State and click callback for: Add Display to Element
+    // State and click callback for: Add Display to Element (and related options)
     const addDisplayIsActive = useMemo(() => {
         return selectionBuffer.length == 1;
     }, [selectionBuffer]);
@@ -108,13 +118,64 @@ const ElementCRUDPanel: React.FC<ElementCrudPanelProps> = ({
             .replace(/^Control/, 'Ctrl:'); //Shorten common prefix
     }
 
-    // Active state and click callback for: Select All
-    const selectAllIsActive = true;
-    const selectAllClick = () => {
-        if(selectAllIsActive)
+    //State and click callback for: Del. Display from Element (and related options)
+    const delDisplayIsActive = useMemo(() => {
+        if(selectionBuffer.length == 1)
         {
-            setSelectionBuffer(Array.from(diagramElementsMap.keys()));
+            const elem = diagramElementsMap.get(selectionBuffer[0]);
+            return elem && elem.displays && elem.displays.length > 0
         }
+        return false;
+    }, [selectionBuffer, diagramElementsMap]);
+    const [displayToDelete, setDisplayToDelete] = useState("");
+    const delDisplayClick = () => {
+        if(delDisplayIsActive)
+        {
+            if(displayToDelete)
+            {
+                setModelJSON((prevModel: any) => deleteDisplayFromElement(prevModel, selectionBuffer, displayToDelete, 0));
+                setDisplayToDelete("");
+            }
+            else
+            {
+                confirm("Please pick a Display to delete from the selected Diagram Element.")
+            }
+        }
+    }
+
+    //Make sure the display to delete dropdown always starts on (Select)
+    useEffect(() => {
+        setDisplayToDelete("");
+    }, [selectionBuffer, diagramElementsMap])
+
+    /**
+     * Generate a <select> with options for all of the Displays attached to
+     * the requested Diagram Element. For Del. Display from Element
+     * 
+     * @param elem The selected Diagram Element to generate options for
+     * @returns A <select> tag with options for all the Displays attached to the given Diagram Element
+     */
+    const generateDisplayOptionsForElement = (elem: any) =>
+    {
+        if(elem && elem.displays && elem.displays.length > 0)
+        {
+            const options = [
+                <option value={undefined} key={`option-delElem-none`}>(Pick)</option>
+            ];
+
+            elem.displays.forEach((displayJSON: any) => {
+                const optionDisplay = `"${displayJSON.meta.name ?? "Unnamed Display"}" (uuid=${String(displayJSON.meta.uuid).substring(0, 5)}...)`
+                options.push(
+                    <option value={displayJSON.meta.uuid} key={`option-delElem-${displayJSON.meta.uuid}`}>{optionDisplay}</option>
+                )
+            })
+            return (
+                <select name="Display to Delete" value={displayToDelete} onChange={(event) => {setDisplayToDelete(event.target.value)}}>
+                    {options}
+                </select>
+            )
+        }
+        return null;
     }
 
     return (
@@ -177,6 +238,18 @@ const ElementCRUDPanel: React.FC<ElementCrudPanelProps> = ({
                             )
                         })} 
                     </select>
+                </div>
+            </div>
+            <div className="element-crud-row">
+                <div
+                    className={`element-crud-button ${delDisplayIsActive ? activeButtonClassName : ""}`}
+                    onClick={delDisplayClick}
+                >
+                    Del. Display<br/>from Element
+                </div>
+                <div className="element-crud-options">
+                    <label>(to delete)</label>
+                    {selectionBuffer.length == 1 && generateDisplayOptionsForElement(diagramElementsMap.get(selectionBuffer[0]))}
                 </div>
             </div>
         </div>

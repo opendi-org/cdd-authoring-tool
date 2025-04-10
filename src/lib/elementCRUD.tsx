@@ -333,3 +333,35 @@ export function addDisplayToElement(model: any, selectionBuffer: Array<string>, 
     }
     return workingModel;
 }
+
+/**
+ * Pure/immutable: Updates the given model JSON to delete the requested display
+ * from the selected Diagram Element.
+ * @param model Model JSON to remove display from
+ * @param selectionBuffer Array of UUIDs for selected diagram elements
+ * @param displayUUID UUID identifying the display to delete
+ * @param diagramIndex Index for which diagram we're using in the model JSON
+ * @returns Updated model JSON, with the requested Display deleted from the selected element
+ */
+export function deleteDisplayFromElement(model: any, selectionBuffer: Array<string>, displayUUID: string, diagramIndex = 0)
+{
+    let workingModel = structuredClone(model);
+    if(selectionBuffer.length == 1 && workingModel.diagrams[diagramIndex] !== undefined && displayUUID)
+    {
+        const elemToModify = workingModel.diagrams[diagramIndex].elements.find(
+            (elemJSON: any) => elemJSON.meta.uuid === selectionBuffer[0]
+        );
+
+        if(elemToModify !== undefined && elemToModify.displays)
+        {
+            elemToModify.displays = elemToModify.displays.filter(
+                (displayJSON: any) => !(displayJSON.meta.uuid === displayUUID)
+            );
+            if(elemToModify.displays.length === 0)
+            {
+                delete elemToModify.displays;
+            }
+        }
+    }
+    return workingModel;
+}
