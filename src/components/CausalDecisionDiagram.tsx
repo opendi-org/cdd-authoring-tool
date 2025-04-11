@@ -169,6 +169,19 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
         );
     }, [selectionBuffer])
 
+    //Filter now-nonexistant elements from the selection buffer
+    //For when model changes come directly from JSON
+    useEffect(() => {
+        setSelectionBuffer((prev: Array<string>) => {
+            const newBuffer = structuredClone(prev).filter(
+                (selectedUUID: string) => {
+                    return diagramElementMap.has(selectedUUID);
+                }
+            )
+            return newBuffer;
+        })
+    }, [diagramElementMap])
+
     /**
      * Get style information for dependency arrows,
      * based on the dependency JSON and its place in the
