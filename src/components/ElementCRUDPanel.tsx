@@ -60,13 +60,13 @@ const ElementCRUDPanel: React.FC<ElementCrudPanelProps> = ({
     //Used to populate the dropdown for dependnecy toggle behavior
     const dependencyBehaviors: Record<string, string> = {
         chain: "Chain",
-        group: "Group",
+        combine: "Combine",
     }
-    const [dependencyBehavior, setDependencyBehavior] = useState(dependencyBehaviors[0]); //Which dep behavior, for group/chain flag
+    const [dependencyBehavior, setDependencyBehavior] = useState(dependencyBehaviors[0]); //Which dep behavior, for combine/chain flag
     const toggleDependencyClick = () => {
         if(toggleDependencyIsActive)
         {
-            setModelJSON((prevModel: any) => toggleDependency(prevModel, selectionBuffer, diagramElementsMap, elementAssociatedDependenciesMap, dependencyBehavior === dependencyBehaviors.group, 0));
+            setModelJSON((prevModel: any) => toggleDependency(prevModel, selectionBuffer, diagramElementsMap, elementAssociatedDependenciesMap, dependencyBehavior === dependencyBehaviors.combine, 0));
             //Set selection buffer to a copy of itself. Effectively re-selects the selected elements. Re-triggers the JSON path expansion useEffect in CausalDecisionDiagram
             setSelectionBuffer((prev: Array<string>) => structuredClone(prev));
         }

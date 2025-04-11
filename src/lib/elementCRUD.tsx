@@ -206,10 +206,10 @@ export function deleteElement(model: any, selectionBuffer: Array<string>, elemen
  * Pure/immutable: Updates the given model JSON to toggle dependencies between the selected elements.
  * 
  * Has two possible behaviors:
- * 1) "Chain" behavior (groupBehavior = false) for connecting dependencies along a chain  
+ * 1) "Chain" behavior (combineBehavior = false) for connecting dependencies along a chain  
  * For selection buffer [1, 2, 3, 4], dependencies connect/disconnect (1 -> 2), (2 -> 3), (3 -> 4)
  * 
- * 2) "Group" behavior (groupBehavior = true) for connecting a group of elements to a single target  
+ * 2) "Combine" behavior (combineBehavior = true) for connecting a group of elements to a single target ("combining")  
  * For selection buffer [1, 2, 3, 4], dependencies connect/disconnect (1 -> 4), (2 -> 4), (3 -> 4)
  * 
  * For partially-filled chains or groups, both behaviors will prefer to fill in gaps, and will only
@@ -219,11 +219,11 @@ export function deleteElement(model: any, selectionBuffer: Array<string>, elemen
  * @param selectionBuffer Array of UUIDs for selected diagram elements
  * @param diagramElementMap Map from element UUIDs to their JSON data
  * @param elementAssociatedDependenciesMap Maps element UUIDs to a set of information about all dependencies associated with that element
- * @param groupBehavior Flag for whether dependencies are toggled in a "chain" or a "group" behavior
+ * @param combineBehavior Flag for whether dependencies are toggled in a "chain" or a "combine" behavior
  * @param diagramIndex Index for which diagram we're using in the model JSON
  * @returns Updated model JSON, with the toggled dependencies added or removed as relevant
  */
-export function toggleDependency(model: any, selectionBuffer: Array<string>, diagramElementMap: Map<string, any>, elementAssociatedDependenciesMap: Map<string, Set<AssociatedDependencyData>>, groupBehavior = false, diagramIndex = 0)
+export function toggleDependency(model: any, selectionBuffer: Array<string>, diagramElementMap: Map<string, any>, elementAssociatedDependenciesMap: Map<string, Set<AssociatedDependencyData>>, combineBehavior = false, diagramIndex = 0)
 {
     let workingModel = structuredClone(model);
     if(selectionBuffer.length > 1 && workingModel.diagrams[diagramIndex] !== undefined)
@@ -259,8 +259,8 @@ export function toggleDependency(model: any, selectionBuffer: Array<string>, dia
             
             //"Chain" behavior: Target is the next index along the chain
             let thisTarget = selectionBuffer[bufferIdx + 1];
-            //"Group" behavior: Target is always the last index in the selection
-            if(groupBehavior) thisTarget = selectionBuffer[selectionBuffer.length - 1];
+            //"combine" behavior: Target is always the last index in the selection
+            if(combineBehavior) thisTarget = selectionBuffer[selectionBuffer.length - 1];
 
             const existingDepUUID = getDependency(thisSource, thisTarget); //Null if no dependency found btw. source and target
             if(existingDepUUID !== null)
