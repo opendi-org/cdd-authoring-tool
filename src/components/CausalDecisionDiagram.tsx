@@ -5,9 +5,9 @@ import { evaluateModel } from "../lib/evaluateModel"
 import { getIOMapFromModelJSON } from "../lib/getIOMapFromModelJSON";
 import { AssociatedDependencyData, causalTypeColors, DependencyRole } from "../lib/cddTypes";
 import { updateElementSelection } from "../lib/updateElementSelection";
-import { useCollapse } from "react-collapsed";
 import { getExpandedPathsForSelectedElements } from "../lib/getExpandedPathsForSelectedElements";
 import ElementCRUDPanel from "./ElementCRUDPanel";
+import ModelMetaInfoPanel from "./ModelMetaInfoPanel";
 
 type CausalDecisionDiagramProps = {
     model: any;
@@ -249,29 +249,6 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
             />
         });
 
-    //State and props for expanding/collapsing the summary in the meta info box (top left)
-    const [summaryIsExpanded, setSummaryIsExpanded] = useState(false);
-    const {getCollapseProps: getSummaryCollapseProps, getToggleProps: getSummaryToggleProps} = useCollapse({isExpanded: summaryIsExpanded})
-
-    //Generate HTML for the meta info box
-    //This hovers in the top-left of the diagram window
-    //Currently shows model name, diagram name, and summary.
-    //Does not break if any of those are missing.
-    const modelMetaInfo = (
-        <div className="diagram-meta">
-            <b><u>{model.meta.name || "(Unnamed Model)"}</u></b><br/>{model.diagrams[0].meta.name || "(Unnamed Diagram)"}
-            {model.meta.summary && (
-                <>
-                <div
-                    className="diagram-meta-summary"
-                    {...getSummaryToggleProps({ onClick: () => setSummaryIsExpanded((prev) => !prev) })}
-                >
-                    {summaryIsExpanded ? "(Hide summary)" : "(Show summary)"}
-                </div><div {...getSummaryCollapseProps()}>{model.meta.summary}</div>
-                </>
-            )}
-        </div>
-    )
 
     return (
         <div className="diagram-contents">
@@ -288,7 +265,7 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
                 </div>
             </Xwrapper>
             {/*Info box in the top-left for model name, etc.*/}
-            {modelMetaInfo}
+            <ModelMetaInfoPanel model={model} diagramIndex={0}/>
             <ElementCRUDPanel
                 setModelJSON={setModelJSON}
                 selectionBuffer={selectionBuffer}

@@ -2,8 +2,8 @@
   "$schema": "./schemas/Causal-Decision-Model.json",
   "meta": {
     "uuid": "28eefdc9-d38c-458d-a0b1-cba3706a09e4",
-    "name": "Example/Test Model",
-    "summary": "An example CDM for testing/demonstrating the CDM JSON schema.",
+    "name": "Example/Test Model: Basic Adder",
+    "summary": "An example CDM for testing/demonstrating the CDM JSON schema. This model demonstrates a working script. The model contains a \"sum\" script that adds together inputs, returning their sum as an output. In this model, the user can edit the two ranges in the Levers. The model adds the numbers from these ranges together and displays their sum in the range in the Output. The model also shows that diagram elements need not be related to any of the Runnable components, and that diagram elements may use custom Causal Type names.",
     "status": "Draft",
     "version": "0.0.1",
     "creator": "9744a75e-6339-43ad-beec-b1a4f23e7e26",
@@ -35,57 +35,58 @@
     }
   ],
   "evaluatableAssets": [
-      {
-          "meta": {
-              "uuid": "a14ae3d2-c070-4485-b6d1-3af8e1a87cad",
-              "name": "Add script"
-          },
-          "evalType": "Script",
-          "content": {
-              "script": "KGZ1bmN0aW9uICgpIHsKICBjb25zdCBhZGQgPSBmdW5jdGlvbiAodmFscykgewogICAgY29uc29sZS5sb2coIkFERCBSVU5OSU5HISEhISIpOwogICAgbGV0IHN1bSA9IDA7CiAgICB2YWxzLmZvckVhY2goKHZhbCkgPT4gewogICAgICBzdW0gKz0gdmFsOwogICAgfSk7CiAgICByZXR1cm4gW3N1bV07CiAgfTsKCiAgcmV0dXJuIHsgZnVuY01hcDogeyAiYWRkIjogYWRkIH0gfTsKfSkoKTs=",
-              "language": "javascript"
-          }
+    {
+      "meta": {
+        "uuid": "a14ae3d2-c070-4485-b6d1-3af8e1a87cad",
+        "name": "Add script"
+      },
+      "evalType": "Script",
+      "content": {
+        "script": "KGZ1bmN0aW9uICgpIHsKICBjb25zdCBhZGQgPSBmdW5jdGlvbiAodmFscykgewogICAgY29uc29sZS5sb2coIkFERCBSVU5OSU5HISEhISIpOwogICAgbGV0IHN1bSA9IDA7CiAgICB2YWxzLmZvckVhY2goKHZhbCkgPT4gewogICAgICBzdW0gKz0gdmFsOwogICAgfSk7CiAgICByZXR1cm4gW3N1bV07CiAgfTsKCiAgcmV0dXJuIHsgZnVuY01hcDogeyAiYWRkIjogYWRkIH0gfTsKfSkoKTs=",
+        "language": "javascript"
       }
+    }
   ],
   "inputOutputValues": [
-      {
-          "meta": {
-              "uuid": "0dd65d95-d90a-454e-9489-34237d740afd",
-              "title": "Add_Input_1"
-          },
-          "data": 30
+    {
+      "meta": {
+        "uuid": "0dd65d95-d90a-454e-9489-34237d740afd",
+        "title": "Add_Input_1"
       },
-      {
-          "meta": {
-              "uuid": "b5a14d60-3abc-4306-bc12-3c0678851279",
-              "title": "Add_Input_2"
-          },
-          "data": 27
+      "data": 30
+    },
+    {
+      "meta": {
+        "uuid": "b5a14d60-3abc-4306-bc12-3c0678851279",
+        "title": "Add_Input_2"
       },
-      {
-          "meta": {
-              "uuid": "74c6b8cf-ea6b-4ae0-bc52-dc67e0efe630",
-              "title": "Add_Output"
-          },
-          "data": null
-      }
+      "data": 27
+    },
+    {
+      "meta": {
+        "uuid": "74c6b8cf-ea6b-4ae0-bc52-dc67e0efe630",
+        "title": "Add_Output"
+      },
+      "data": null
+    }
   ],
   "diagrams": [
     {
       "meta": {
         "uuid": "999cad87-3323-4919-b870-1b91170abe0d",
-        "name": "Example diagram associated with the causal decision model."
+        "name": "Diagram for Basic Adder"
       },
       "elements": [
         {
           "meta": {
             "uuid": "b7dac5d9-5c33-45bd-b30e-752f04997c1f",
-            "name": "A constraint"
+            "name": "A constraint",
+            "summary": "This element uses a custom causal type name. Any custom causal type name is valid, as long as it begins with \"CUSTOM_\"."
           },
           "causalType": "CUSTOM_Constraint",
           "position": {
-            "x": 50,
-            "y": 510
+            "x": 560,
+            "y": 530
           }
         },
         {
@@ -96,7 +97,7 @@
           "causalType": "Lever",
           "position": {
             "x": 120,
-            "y": 85
+            "y": 285
           },
           "displays": [
             {
@@ -124,7 +125,7 @@
           "causalType": "Lever",
           "position": {
             "x": 120,
-            "y": 250
+            "y": 450
           },
           "displays": [
             {
@@ -152,7 +153,7 @@
           "causalType": "Outcome",
           "position": {
             "x": 560,
-            "y": 150
+            "y": 350
           },
           "displays": [
             {
@@ -176,12 +177,12 @@
           "meta": {
             "uuid": "4feca1ad-8ebd-4817-852b-03ae277213c9",
             "name": "Diagram-only Element",
-            "description": "This element is not related to any evaluatable assets via any controls. It also has a null causal type."
+            "summary": "This element is not related to anything in the runnable model. It is for diagram purposes only."
           },
           "causalType": "Intermediate",
           "position": {
             "x": 650,
-            "y": 0
+            "y": 200
           }
         }
       ],
@@ -219,24 +220,36 @@
         "uuid": "94e5a529-ca27-4c1f-92a7-0c5fafa4fe18",
         "name": "Control: Add Input 1"
       },
-      "inputOutputValues": ["0dd65d95-d90a-454e-9489-34237d740afd"],
-      "displays": ["8392886a-84ab-4623-9b53-2c571b88ddca"]
+      "inputOutputValues": [
+        "0dd65d95-d90a-454e-9489-34237d740afd"
+      ],
+      "displays": [
+        "8392886a-84ab-4623-9b53-2c571b88ddca"
+      ]
     },
     {
       "meta": {
         "uuid": "96c8f736-dc2f-4302-9da3-b249b8045e7b",
         "name": "Control: Add Input 2"
       },
-      "inputOutputValues": ["b5a14d60-3abc-4306-bc12-3c0678851279"],
-      "displays": ["83639f65-0fb8-4ec2-a031-7a3c5238d6f6"]
+      "inputOutputValues": [
+        "b5a14d60-3abc-4306-bc12-3c0678851279"
+      ],
+      "displays": [
+        "83639f65-0fb8-4ec2-a031-7a3c5238d6f6"
+      ]
     },
     {
       "meta": {
         "uuid": "c08f2810-9825-4fc8-946c-85d77d61a960",
         "name": "Control: Add Output"
       },
-      "inputOutputValues": ["74c6b8cf-ea6b-4ae0-bc52-dc67e0efe630"],
-      "displays": ["0214a5a2-8379-4aa0-94cb-776bdcc40738"]
+      "inputOutputValues": [
+        "74c6b8cf-ea6b-4ae0-bc52-dc67e0efe630"
+      ],
+      "displays": [
+        "0214a5a2-8379-4aa0-94cb-776bdcc40738"
+      ]
     }
   ]
 }

@@ -2,8 +2,8 @@
   "$schema": "./schemas/Causal-Decision-Model.json",
   "meta": {
     "uuid": "98f56597-75d8-441a-bd19-239db7d1b4f4",
-    "name": "Coffee purchasing decision",
-    "summary": "Static pack-in model, loaded by default. For deciding whether to purchase regular or fair trade coffee, and how much. CDD models the impact to workers and environment, to ultimately track social/environmental and financial impacts as main outcomes.",
+    "name": "Coffee CDM (non-interactive)",
+    "summary": "See Coffee Purchasing Decision. This non-interactive version of the Coffee Purchasing Decision model shows one step in the authoring process. This model contains only the diagram portion of the overall decision model, with no Evaluatable Assets, Runnable Models, Controls, or Input/Output Values.",
     "documentation": {
       "content": "This CDD was authored by Dr. Lorien Pratt.\nSource: https://www.lorienpratt.com/a-framework-for-how-data-informs-decisions/\n\nAdapted for OpenDI schema compliance by Isaac Kellogg.",
       "MIMEType": "text/plain"
@@ -254,7 +254,7 @@
           "causalType": "Lever",
           "position": {
             "x": 20,
-            "y": 110
+            "y": 150
           },
           "displays": [
             {

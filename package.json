@@ -22,6 +22,7 @@
     "react-collapsed": "^4.2.0",
     "react-dom": "^18.2.0",
     "react-draggable": "^4.4.6",
+    "react-markdown": "^10.1.0",
     "react-xarrows": "^2.0.2",
     "uuid": "^11.1.0",
     "vanilla-jsoneditor": "^3.3.0"
