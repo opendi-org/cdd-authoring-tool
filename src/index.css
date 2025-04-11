@@ -217,7 +217,9 @@ body {
 
 /* Menu tab button */
 .menu-tab {
-    padding: 15px;
+    padding-inline: 15px;
+    padding-top: 8px;
+    padding-bottom:7px;
     display: inline-block;
 }
 
@@ -238,7 +240,7 @@ body {
     flex-direction: column;
     overflow-x: hidden;
     overflow-y: scroll;
-    background-color: #041059;
+    background-color: #0b042d;
     color: white;
     padding: 0;
     width: 100%;
@@ -247,24 +249,34 @@ body {
 
 /* H2 acts like a section divider */
 .info-menu h2 {
-    background-color: #010a40;
+    background-color: #0d0d67;
     margin: 0;
-    padding: 25px;
-    font-weight: normal;
+    padding: 20px;
+    font-weight: bold;
 }
 
 .info-menu * {
     font-size: 15px;
 }
+.info-menu div {
+    padding: 20px;
+}
+
+.info-menu button {
+    margin-inline-end: 10px;
+}
+.info-menu select {
+    margin-inline-end: 10px;
+}
 
 /* Make link colors stand out better against the blue background */
 .info-menu a:link {
-    color: #00e1ff
+    color: #0099ff
 }
 
 /* Make link colors stand out better against the blue background */
 .info-menu a:visited {
-    color: #ff13d8
+    color: #c813ff
 }
 
 .info-menu p {
@@ -275,6 +287,8 @@ body {
 /* Highlight currently selected menu tab */
 .selected-tab {
     background-color: #2f3ba1;
+    border-top: 3px solid rgba(0, 0, 0, 0.65);
+    border-bottom: 3px solid rgba(0, 0, 0, 0.65);
 }
 
 /* Shows description of graph controls, hovers over graph */
@@ -300,8 +314,8 @@ body {
     height:28px;
     padding-right: 15px;
     padding-left: 10px;
-    padding-top: 7px;
-    padding-bottom: 2px;
+    padding-top: 6px;
+    padding-bottom: 0px;
     display: inline-block;
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
@@ -309,7 +323,7 @@ body {
     border-right: 0px;
     position: absolute;
     z-index: 10;
-    top: 2px;
+    top: 0px;
     right: 0px;
 }
 #menu-toggle-button:hover {
@@ -358,10 +372,10 @@ body {
         color: white;
         height: 20px;
         width: 10px;
-        padding-right: 15px;
-        padding-left: 10px;
-        padding-top: 7px;
-        padding-bottom: 2px;
+        padding-right: 17px;
+        padding-left: 22px;
+        padding-top: 4px;
+        padding-bottom: 1px;
         display: inline-block;
         border-top-left-radius: 10px;
         border-bottom-left-radius: 0px;
@@ -372,7 +386,7 @@ body {
         z-index: 10;
         right: auto;
         top: auto;
-        left: 4px;
+        left: 0px;
         bottom: 0px;
     }
 }

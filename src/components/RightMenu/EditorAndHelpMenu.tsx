@@ -4,6 +4,7 @@ import GlossaryTab from "./GlossaryTab";
 import HelpTab from "./HelpTab";
 import { getValidator, validateGraphData } from "../../lib/validation";
 import { Mode } from "vanilla-jsoneditor";
+import FileTab from "./FileTab";
 
 
 type EditorAndHelpMenuProps = {
@@ -16,6 +17,7 @@ const TABS = {
     HELP: "help",
     GLOSSARY: "glossary",
     JSON: "jsoneditor",
+    FILE: "file",
 };
 
 /**
@@ -54,6 +56,20 @@ const EditorAndHelpMenu: React.FC<EditorAndHelpMenuProps> = ({
                 <div id="menu-options"> {/* Menu buttons */}
                     <div id ="menu-tabs"> {/* Menu tab buttons */}
                         <div
+                            id="file-tab-btn"
+                            className={`menu-tab ${activeTab === TABS.FILE ? "selected-tab" : ""}`}
+                            onClick={() => setActiveTab(TABS.FILE)}
+                        >
+                            File
+                        </div>
+                        <div
+                            id="advanced-tab-btn"
+                            className={`menu-tab ${activeTab === TABS.JSON ? "selected-tab" : ""}`}
+                            onClick={() => setActiveTab(TABS.JSON)}
+                        >
+                            JSON Editor
+                        </div>
+                        <div
                             id="help-tab-btn"
                             className={`menu-tab ${activeTab === TABS.HELP ? "selected-tab" : ""}`}
                             onClick={() => setActiveTab(TABS.HELP)}
@@ -67,18 +83,10 @@ const EditorAndHelpMenu: React.FC<EditorAndHelpMenuProps> = ({
                         >
                             Glossary
                         </div>
-                        <div
-                            id="advanced-tab-btn"
-                            className={`menu-tab ${activeTab === TABS.JSON ? "selected-tab" : ""}`}
-                            onClick={() => setActiveTab(TABS.JSON)}
-                        >
-                            JSON Editor
-                        </div>
                     </div>
                 </div>
                 <div id="menu-contents"> {/* Actual menu content */}
-                    {activeTab === TABS.HELP && <HelpTab />}
-                    {activeTab === TABS.GLOSSARY && <GlossaryTab />}
+                    {activeTab === TABS.FILE && <FileTab />}
                     {activeTab === TABS.JSON && (
                         <VanillaJSONEditor
                             content={content}
@@ -110,6 +118,8 @@ const EditorAndHelpMenu: React.FC<EditorAndHelpMenuProps> = ({
                             mode={editorMode}
                         />
                     )}
+                    {activeTab === TABS.HELP && <HelpTab />}
+                    {activeTab === TABS.GLOSSARY && <GlossaryTab />}
                 </div>
                 
             </div>
