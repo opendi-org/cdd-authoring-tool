@@ -69,10 +69,12 @@ body {
     top: 15px;
     line-height: 25px;
     /* Colors */
-    background-color: rgba(0, 0, 0, 0.75);
+    background-color: rgba(0, 0, 0, 0.85);
     color: white;
     /* Shape */
-    max-width: 350px;
+    max-width: 65%;
+    max-height: 65%;
+    overflow-y: scroll;
     border-radius: 10px;
     padding: 10px;
     border: 2px solid #000000
@@ -388,5 +390,9 @@ body {
         top: auto;
         left: 0px;
         bottom: 0px;
+    }
+
+    .diagram-meta {
+        max-height: 50%;
     }
 }
