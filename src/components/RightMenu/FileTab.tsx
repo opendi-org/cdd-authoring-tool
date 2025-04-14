@@ -1,7 +1,13 @@
 import React from "react";
+import { downloadModel } from "../../lib/api/fileIO";
 
+type FileTabProps = {
+    model: any;
+}
 
-const FileTab: React.FC = () => {
+const FileTab: React.FC<FileTabProps> = ({
+    model,
+}) => {
     return (
         <div className="info-menu">
             <h2>File Settings</h2>
@@ -9,7 +15,9 @@ const FileTab: React.FC = () => {
                 <button>New Model</button>Create a new model file, with an empty diagram.
             </div>
             <div>
-                <button>Save Model</button><button>Save as New</button><button>Download JSON</button>
+                <button>Save Model</button>
+                <button>Save as New</button>
+                <button onClick={() => {downloadModel(model)}}>Download JSON</button>
             </div>
             <div>
                 <select>

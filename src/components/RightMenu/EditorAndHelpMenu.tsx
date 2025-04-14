@@ -86,7 +86,7 @@ const EditorAndHelpMenu: React.FC<EditorAndHelpMenuProps> = ({
                     </div>
                 </div>
                 <div id="menu-contents"> {/* Actual menu content */}
-                    {activeTab === TABS.FILE && <FileTab />}
+                    {activeTab === TABS.FILE && <FileTab model={modelJSON} />}
                     {activeTab === TABS.JSON && (
                         <VanillaJSONEditor
                             content={content}
