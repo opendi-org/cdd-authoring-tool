@@ -1,7 +1,7 @@
 {
-  "$schema": "./schemas/Causal-Decision-Model.json",
+  "$schema": "../schemas/Causal-Decision-Model.json",
   "meta": {
-    "uuid": "28eefdc9-d38c-458d-a0b1-cba3706a09e4",
+    "uuid": "95088c2a-7737-4288-844c-b4f486ada6e0",
     "name": "Example/Test Model: Multistep adder",
     "summary": "An example CDM for testing/demonstrating the CDM JSON schema. This model shows a simple script being applied more than once on the same model. The model contains a \"sum\" script that adds together any inputs it receives, and returns the output. The user can edit the ranges in the two Levers and the External. The numbers from the ranges in the two Levers are summed and displayed in the range in the Intermediate. Then, that number and the number from the range in the External are summed and displayed in the Outcome.",
     "status": "Draft",

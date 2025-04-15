@@ -247,6 +247,7 @@ body {
     padding: 0;
     width: 100%;
     height: 100%;
+    --info-menu-margin: 10px;
 }
 
 /* H2 acts like a section divider */
@@ -265,10 +266,13 @@ body {
 }
 
 .info-menu button {
-    margin-inline-end: 10px;
+    margin-inline-end: var(--info-menu-margin)
 }
 .info-menu select {
-    margin-inline-end: 10px;
+    margin-inline-end: var(--info-menu-margin);
+}
+.info-menu input {
+    margin-inline-end: var(--info-menu-margin);
 }
 
 /* Make link colors stand out better against the blue background */

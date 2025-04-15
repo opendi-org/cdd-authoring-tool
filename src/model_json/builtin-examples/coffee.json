@@ -1,7 +1,7 @@
 {
-  "$schema": "./schemas/Causal-Decision-Model.json",
+  "$schema": "../schemas/Causal-Decision-Model.json",
   "meta": {
-    "uuid": "98f56597-75d8-441a-bd19-239db7d1b4f4",
+    "uuid": "6553aba0-7711-4366-9d22-350a9f075a2d",
     "name": "Coffee Purchasing Decision",
     "summary": "Static pack-in model, loaded by default. For deciding whether to purchase regular or fair trade coffee, and how much. This CDM models the impact to workers and environment, to ultimately track social/environmental and financial impacts as main outcomes. This model is a working example of a complete, runnable decision model contained in schema-compliant JSON. It has multiple scripts, used as Evaluatable Assets in a single Runnable Model with 4 elements. It has many I/O values connected to various Diagram Elements via Controls.\n\n**NOTE:** This Decision Model is intended for demonstration purposes only. It does not accurately represent the real-world impacts of a coffee purchasing decision. The algorithms for determining environmental and social impacts are largely arbitrary. Prices are inaccurate. etc.",
     "documentation": {

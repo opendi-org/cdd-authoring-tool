@@ -1,7 +1,7 @@
 {
-  "$schema": "./schemas/Causal-Decision-Model.json",
+  "$schema": "../schemas/Causal-Decision-Model.json",
   "meta": {
-    "uuid": "28eefdc9-d38c-458d-a0b1-cba3706a09e4",
+    "uuid": "b878c4cf-b913-497d-8e0d-1a20f4a6df63",
     "name": "Example/Test Model: Basic Adder",
     "summary": "An example CDM for testing/demonstrating the CDM JSON schema. This model demonstrates a working script. The model contains a \"sum\" script that adds together inputs, returning their sum as an output. In this model, the user can edit the two ranges in the Levers. The model adds the numbers from these ranges together and displays their sum in the range in the Output. The model also shows that diagram elements need not be related to any of the Runnable components, and that diagram elements may use custom Causal Type names.",
     "status": "Draft",

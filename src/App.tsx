@@ -1,17 +1,31 @@
 import { useEffect, useState } from "react";
-import rawModelJSON from "./model_json/coffee.json" assert { type: "json" };
 import CausalDecisionDiagram from "./components/CausalDecisionDiagram";
 import EditorAndHelpMenu from "./components/RightMenu/EditorAndHelpMenu";
+import { APIHandler } from "./lib/api/api";
+import { NoAPI } from "./lib/api/noApi";
 
 function App() {
+    const apiHandler = new APIHandler();
     // This is the single source of truth for Model JSON, used by both VanillaJSONEditor and CausalDecisionDiagram.
-    const [modelJSON, setModelJSON] = useState(rawModelJSON);
+    const [modelJSON, setModelJSON] = useState(() => {
+        //Try to get the most recent model from the API
+        if(apiHandler.apiInstance.getModelMetas().length > 0)
+        {
+            return apiHandler.apiInstance.fetchFullModel(
+                apiHandler.apiInstance.getModelMetas()[0].uuid
+            )
+        }
+        //Fallback: Use the first pack-in model
+        const tempAPI = new NoAPI();
+        return tempAPI.fetchFullModel(
+            tempAPI.getModelMetas()[0].uuid
+        );
+    });
     const [menuIsOpen, setMenuIsOpen] = useState(() => localStorage.getItem("menu") !== "closed");
     useEffect(() => {
         localStorage.setItem("menu", menuIsOpen ? "open" : "closed");
     }, [menuIsOpen])
     const [expandedPaths, setExpandedPaths] = useState([]);
-    
 
     return (
         <div style={{ paddingRight:"0.75%" }}>
@@ -44,6 +58,7 @@ function App() {
                             modelJSON={modelJSON}
                             setModelJSON={setModelJSON}
                             expandedPaths={expandedPaths}
+                            apiHandler={apiHandler}
                         />
                     </div>
                 }

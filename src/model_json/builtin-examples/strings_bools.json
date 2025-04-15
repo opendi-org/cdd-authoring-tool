@@ -1,9 +1,9 @@
 {
-    "$schema": "./schemas/Causal-Decision-Model.json",
+    "$schema": "../schemas/Causal-Decision-Model.json",
     "meta": {
-      "uuid": "db1ae176-6734-4883-aa6e-96f9579d2f59",
-      "name": "Example Model: Word Combination (multi-display)",
-      "summary": "Model for testing controls: Multiple displays per element. (See summary for the other word combination model.) This word combination model removes the Externals and moves the boolean flag to a second boolean Display attached to each Intermediate and the Outcome. Intermediates and Outcomes now contain a mix of interactive and non-interactive displays. Some decision editing environments may choose to sort these into categories on an individual element.",
+      "uuid": "63d06698-45e9-413e-9a78-f936557da405",
+      "name": "Example Model: Word Combination",
+      "summary": "Model for testing controls: Text input and Boolean input. This model contains a script that takes two strings and concatenates them together. The script also takes a flag for the order of the words, allowing them to be reversed before concatenation. This demonstrates scripts accepting more than one type of input, as well as interactive and non-interactive text controls, and boolean controls.",
       "documentation": {
         "content": "",
         "MIMEType": "text/plain"
@@ -166,13 +166,39 @@
         "elements": [
           {
             "meta": {
+              "uuid": "2692d043-ca34-4fd7-8bd7-47a9c52d22b2",
+              "name": "Reverse Order?",
+              "summary": "(For Word 1+2)"
+            },
+            "causalType": "External",
+            "position": {
+              "x": 520,
+              "y": 305
+            },
+            "displays": [
+              {
+                "meta": {
+                  "uuid": "5a52e7bc-0749-482e-acd6-8ce93cb41cf1"
+                },
+                "displayType": "controlBoolean",
+                "content": {
+                  "controlParameters": {
+                    "value": false,
+                    "isInteractive": true
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "meta": {
               "uuid": "8c25dcf2-75c2-4294-83c3-d00cee8830ad",
               "name": "Word 2"
             },
             "causalType": "Lever",
             "position": {
               "x": 160,
-              "y": 260
+              "y": 235
             },
             "displays": [
               {
@@ -197,7 +223,7 @@
             "causalType": "Lever",
             "position": {
               "x": 160,
-              "y": 150
+              "y": 125
             },
             "displays": [
               {
@@ -216,13 +242,39 @@
           },
           {
             "meta": {
+              "uuid": "2e86b7af-1004-4269-9d63-7ab21ace8cf1",
+              "name": "Reverse Order?",
+              "summary": "(For Word 3+4)"
+            },
+            "causalType": "External",
+            "position": {
+              "x": 520,
+              "y": 555
+            },
+            "displays": [
+              {
+                "meta": {
+                  "uuid": "b3e9e1b2-b86a-4335-b3f7-483d50eaff57"
+                },
+                "displayType": "controlBoolean",
+                "content": {
+                  "controlParameters": {
+                    "value": false,
+                    "isInteractive": true
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "meta": {
               "uuid": "e7c190a7-b2ca-4f7a-abd2-a1f988d57141",
               "name": "Word 4"
             },
             "causalType": "Lever",
             "position": {
               "x": 160,
-              "y": 510
+              "y": 485
             },
             "displays": [
               {
@@ -247,7 +299,7 @@
             "causalType": "Lever",
             "position": {
               "x": 160,
-              "y": 400
+              "y": 375
             },
             "displays": [
               {
@@ -272,7 +324,7 @@
             "causalType": "Intermediate",
             "position": {
               "x": 520,
-              "y": 450
+              "y": 425
             },
             "displays": [
               {
@@ -286,19 +338,6 @@
                     "isInteractive": false
                   }
                 }
-              },
-              {
-                "meta": {
-                  "uuid": "b3e9e1b2-b86a-4335-b3f7-483d50eaff57",
-                  "name": "Reverse order?"
-                },
-                "displayType": "controlBoolean",
-                "content": {
-                  "controlParameters": {
-                    "value": false,
-                    "isInteractive": true
-                  }
-                }
               }
             ]
           },
@@ -310,7 +349,7 @@
             "causalType": "Intermediate",
             "position": {
               "x": 520,
-              "y": 200
+              "y": 175
             },
             "displays": [
               {
@@ -324,11 +363,24 @@
                     "isInteractive": false
                   }
                 }
-              },
+              }
+            ]
+          },
+          {
+            "meta": {
+              "uuid": "44a457e3-01ab-46fb-bc54-1154bb556d71",
+              "name": "Reverse Order?",
+              "summary": "(For Final Word)"
+            },
+            "causalType": "External",
+            "position": {
+              "x": 900,
+              "y": 445
+            },
+            "displays": [
               {
                 "meta": {
-                  "uuid": "5a52e7bc-0749-482e-acd6-8ce93cb41cf1",
-                  "name": "Reverse order?"
+                  "uuid": "3aeab456-ccb6-435e-90d7-1cd2c776ff4b"
                 },
                 "displayType": "controlBoolean",
                 "content": {
@@ -348,7 +400,7 @@
             "causalType": "Outcome",
             "position": {
               "x": 900,
-              "y": 340
+              "y": 315
             },
             "displays": [
               {
@@ -360,19 +412,6 @@
                   "controlParameters": {
                     "value": "",
                     "isInteractive": false
-                  }
-                }
-              },
-              {
-                "meta": {
-                  "uuid": "3aeab456-ccb6-435e-90d7-1cd2c776ff4b",
-                  "name": "Reverse order?"
-                },
-                "displayType": "controlBoolean",
-                "content": {
-                  "controlParameters": {
-                    "value": false,
-                    "isInteractive": true
                   }
                 }
               }
@@ -403,6 +442,30 @@
             },
             "source": "8c25dcf2-75c2-4294-83c3-d00cee8830ad",
             "target": "ee23ff36-0e6a-4ca3-af30-e9fb4704dae8"
+          },
+          {
+            "meta": {
+              "uuid": "2d2feb9d-31b3-4b3b-a8a5-4b97d58312d4",
+              "name": "Reverse Order? --> Word 1+2"
+            },
+            "source": "2692d043-ca34-4fd7-8bd7-47a9c52d22b2",
+            "target": "ee23ff36-0e6a-4ca3-af30-e9fb4704dae8"
+          },
+          {
+            "meta": {
+              "uuid": "785640c1-7270-480b-930f-939c23c6787c",
+              "name": "Reverse Order? --> Word 3+4"
+            },
+            "source": "2e86b7af-1004-4269-9d63-7ab21ace8cf1",
+            "target": "73ea7e76-1599-4c06-8cd8-902052e30b90"
+          },
+          {
+            "meta": {
+              "uuid": "8fbaceec-f9db-4b30-90e2-f5413872cf18",
+              "name": "Reverse Order? --> Final Word"
+            },
+            "source": "44a457e3-01ab-46fb-bc54-1154bb556d71",
+            "target": "cf7627e8-41de-405d-b19c-69efc8fc7ffc"
           },
           {
             "meta": {

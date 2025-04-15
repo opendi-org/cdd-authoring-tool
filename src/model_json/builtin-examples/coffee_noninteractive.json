@@ -1,7 +1,7 @@
 {
-  "$schema": "./schemas/Causal-Decision-Model.json",
+  "$schema": "../schemas/Causal-Decision-Model.json",
   "meta": {
-    "uuid": "98f56597-75d8-441a-bd19-239db7d1b4f4",
+    "uuid": "93862764-dcd0-4b81-8e7a-ad272ee8ac81",
     "name": "Coffee CDM (non-interactive)",
     "summary": "See Coffee Purchasing Decision. This non-interactive version of the Coffee Purchasing Decision model shows one step in the authoring process. This model contains only the diagram portion of the overall decision model, with no Evaluatable Assets, Runnable Models, Controls, or Input/Output Values.",
     "documentation": {
