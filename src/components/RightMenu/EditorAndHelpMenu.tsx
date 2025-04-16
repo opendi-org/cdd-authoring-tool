@@ -63,28 +63,28 @@ const EditorAndHelpMenu: React.FC<EditorAndHelpMenuProps> = ({
                             className={`menu-tab ${activeTab === TABS.FILE ? "selected-tab" : ""}`}
                             onClick={() => setActiveTab(TABS.FILE)}
                         >
-                            <label>File</label>
+                            File
                         </div>
                         <div
                             id="advanced-tab-btn"
                             className={`menu-tab ${activeTab === TABS.JSON ? "selected-tab" : ""}`}
                             onClick={() => setActiveTab(TABS.JSON)}
                         >
-                            <label>JSON Editor</label>
+                            JSON Editor
                         </div>
                         <div
                             id="help-tab-btn"
                             className={`menu-tab ${activeTab === TABS.HELP ? "selected-tab" : ""}`}
                             onClick={() => setActiveTab(TABS.HELP)}
                         >
-                           <label>Help</label>
+                            Help
                         </div>
                         <div
                             id="glossary-btn"
                             className={`menu-tab ${activeTab === TABS.GLOSSARY ? "selected-tab" : ""}`}
                             onClick={() => setActiveTab(TABS.GLOSSARY)}
                         >
-                            <label>Glossary</label>
+                            Glossary
                         </div>
                     </div>
                 </div>

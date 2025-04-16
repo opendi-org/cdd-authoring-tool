@@ -23,7 +23,7 @@
     --info-menu-tab-selected-background: #2f3ba1;
     --info-menu-tab-border: 3px solid #484848;
     --info-menu-banner-height: 1.5em;
-    --info-menu-banner-line-height-mult: 1.1;
+    --info-menu-font-size: normal;
 }
 
 .diagram-contents {
@@ -215,6 +215,7 @@ body {
     background-color: var(--info-menu-tab-background);
     border-top: var(--info-menu-tab-border);
     border-bottom: var(--info-menu-tab-border);
+    font-size: var(--info-menu-font-size);
     color: white;
     display: flex;
     flex-direction: row;
@@ -232,7 +233,7 @@ body {
 
 /* Menu tab button */
 .menu-tab {
-    line-height: calc(var(--info-menu-banner-height) * var(--info-menu-banner-line-height-mult));
+    line-height: var(--info-menu-banner-height);
     padding-inline: 15px;
     height: 100%;
     display: inline-block;
@@ -329,8 +330,9 @@ body {
     background-color: var(--info-menu-tab-background);
     color: white;
     height: var(--info-menu-banner-height);
-    padding-right: calc(var(--info-menu-banner-height) * 0.4);
-    padding-left: calc(var(--info-menu-banner-height) * 0.4);
+    font-size: var(--info-menu-font-size);
+    padding-right: 0.6em;
+    padding-left: 0.6em;
     line-height: var(--info-menu-banner-height);
     padding-bottom: 0.3px;
     display: inline-block;
@@ -388,10 +390,10 @@ body {
     .menu-toggle-button {
         color: white;
         height: calc(var(--info-menu-banner-height) * 0.6);
-        width: calc(var(--info-menu-banner-height) * 0.4);
+        width: 0.8em;
         line-height: calc(var(--info-menu-banner-height) * 0.5);
-        padding-right: calc(var(--info-menu-banner-height) * 0.5);
-        padding-left: calc(var(--info-menu-banner-height) * 0.5);
+        padding-right: 0.8em;
+        padding-left: 0.9em;
         padding-top: 4px;
         padding-bottom: 1px;
         display: inline-block;
