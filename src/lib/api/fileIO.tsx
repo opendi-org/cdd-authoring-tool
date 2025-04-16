@@ -1,6 +1,7 @@
 import { DateTime } from "luxon";
 import EmptyModel from "../../model_json/empty_cdd.json" assert { type: "json" };
 import { v4 as uuidv4 } from "uuid";
+import { saveAs } from "file-saver";
 
 /**
  * Generate the current time as a schema-compliant timestamp string.
@@ -68,15 +69,10 @@ export function downloadModel(modelJSON: any, fileName = "")
 {
     const modelFileName = getSafeFileName(fileName || getDisplayNameForModel(modelJSON));
 
-    //Make an anchor element with a URI for download containing the
-    //raw JSON data, where data is included in the URI as a UTF8 string..
-    //Then click the anchor element. "Download" achieved!
-    var elem = document.createElement('a');
-    elem.setAttribute("href", "data:application/octet-stream;charset=utf-8," + JSON.stringify(modelJSON)); //HREF with raw URI of the file contents
-    elem.setAttribute("download", modelFileName);
-    document.body.appendChild(elem);
-    elem.click();
-    document.body.removeChild(elem);
+    //Use file-saver to save a blob version of this file
+    const jsonString = JSON.stringify(modelJSON, null, 4);
+    const jsonBLOB = new Blob([jsonString], { type: "application/json;charset=utf-8" });
+    saveAs(jsonBLOB, modelFileName);
 }
 
 /**
