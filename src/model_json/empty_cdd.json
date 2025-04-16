@@ -10,15 +10,15 @@
       },
       "version": "0.1",
       "draft": true,
-      "updatedDate": ""
+      "createdDate": ""
     },
     "diagrams": [
         {
             "meta": {
                 "uuid": "",
-                "name": "CDD"
-            },
-            "elements": []
+                "name": "CDD",
+                "createdDate": ""
+            }
         }
     ]
 }

@@ -287,10 +287,10 @@ export function toggleDependency(model: any, selectionBuffer: Array<string>, dia
         }
         
         //Remove any dependencies slated for removal (does nothing if depsToRemove is cleared)
-        let newDeps = workingModel.diagrams[diagramIndex].dependencies
-        .filter((depData: any) => {
-            return !depsToRemove.has(depData.meta.uuid)
-        });
+        let newDeps = (workingModel.diagrams[diagramIndex].dependencies ?? [])
+            .filter((depData: any) => {
+                return !depsToRemove.has(depData.meta.uuid)
+            });
 
         //Add any new dependencies (does nothing if we didn't have any to add)
         depsToAdd.forEach((depToAdd: any) => newDeps.push(depToAdd))

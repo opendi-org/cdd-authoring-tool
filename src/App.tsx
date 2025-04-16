@@ -44,7 +44,7 @@ function App() {
                         <b>Deselect all:</b> Click diagram background.
                     </div>
                     <div
-                        id="menu-toggle-button"
+                        className="menu-toggle-button"
                         onClick={() => setMenuIsOpen(!menuIsOpen)}
                     >
                         {menuIsOpen ? "-" : "+"}

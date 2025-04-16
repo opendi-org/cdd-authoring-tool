@@ -1,4 +1,6 @@
 import { DateTime } from "luxon";
+import EmptyModel from "../../model_json/empty_cdd.json" assert { type: "json" };
+import { v4 as uuidv4 } from "uuid";
 
 /**
  * Generate the current time as a schema-compliant timestamp string.
@@ -75,4 +77,19 @@ export function downloadModel(modelJSON: any, fileName = "")
     document.body.appendChild(elem);
     elem.click();
     document.body.removeChild(elem);
+}
+
+/**
+ * Generate JSON for a new decision model,
+ * with an empty diagram
+ */
+export function getNewModel()
+{
+    let newModel = structuredClone(EmptyModel);
+    newModel.meta.uuid = uuidv4();
+    newModel.meta.createdDate = getCurrentTimeAsTimestamp();
+    newModel.diagrams[0].meta.uuid = uuidv4();
+    newModel.diagrams[0].meta.createdDate = getCurrentTimeAsTimestamp();
+
+    return newModel;
 }

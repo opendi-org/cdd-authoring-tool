@@ -129,9 +129,12 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
     //Maps diagram element UUIDs to their JSON information
     const diagramElementMap = useMemo(() => {
         const diaElems = new Map<string, any>();
-        model.diagrams[0].elements.forEach((elem: any) => {
-            diaElems.set(elem.meta.uuid, elem);
-        })
+        if(model.diagrams[0].elements)
+        {
+            model.diagrams[0].elements.forEach((elem: any) => {
+                diaElems.set(elem.meta.uuid, elem);
+            })
+        }
         return diaElems;
     }, [model])
 
@@ -146,7 +149,7 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
             currentDeps.add({uuid: depUUID, role: role, otherElement: otherElemUUID});
             elemAssociatedDeps.set(elemUUID, currentDeps);
         }
-        model.diagrams[0]?.dependencies.forEach((dep: any) => {
+        model.diagrams[0]?.dependencies?.forEach((dep: any) => {
             addEntry(dep.source, dep.meta.uuid, DependencyRole.source, dep.target);
             addEntry(dep.target, dep.meta.uuid, DependencyRole.target, dep.source);
         })
@@ -232,6 +235,7 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
     //Generate HTML for dependency arrows
     const dependencyArrows = useMemo(() => {
         return (
+            model.diagrams[0].dependencies &&
             model.diagrams[0].dependencies.map((dep: any) =>
                 <Xarrow
                 key={dep.meta.uuid}
@@ -247,6 +251,7 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
     //Generate HTML for diagram elements
     //Diagram elements wrap inner content in a consistent draggable outer shell
     const diagramElements = 
+        model.diagrams[0].elements && 
         model.diagrams[0].elements.map((elem: any) => {
             return <DiagramElement
             key={elem.meta.uuid}

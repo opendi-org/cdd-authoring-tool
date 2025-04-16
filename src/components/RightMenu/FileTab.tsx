@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { downloadModel, getDisplayNameForModel } from "../../lib/api/fileIO";
+import { downloadModel, getDisplayNameForModel, getNewModel } from "../../lib/api/fileIO";
 import { APIHandler } from "../../lib/api/api";
 import { v4 as uuidv4 } from "uuid";
 import { NoAPI } from "../../lib/api/noApi";
@@ -93,13 +93,18 @@ const FileTab: React.FC<FileTabProps> = ({
         apiHandler.updateApiPath(baseURL);
     }
 
+    const clickNewModel = () => {
+        const newModel = getNewModel();
+        setModel(newModel);
+    }
+
     
 
     return (
         <div className="info-menu">
             <h2>File Settings</h2>
             <div>
-                <button>New Model</button>Create a new model file, with an empty diagram.
+                <button onClick={clickNewModel}>New Model</button>Create a new model file, with an empty diagram.
             </div>
             <div>
                 <button onClick={() => {apiHandler.apiInstance.saveModel(model)}}>
