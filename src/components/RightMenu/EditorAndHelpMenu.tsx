@@ -5,14 +5,15 @@ import HelpTab from "./HelpTab";
 import { getValidator, validateGraphData } from "../../lib/validation";
 import { Mode } from "vanilla-jsoneditor";
 import FileTab from "./FileTab";
-import { APIHandler } from "../../lib/api/api";
+import { APIInterface } from "../../lib/api/api";
 
 
 type EditorAndHelpMenuProps = {
     modelJSON: any;
     setModelJSON: Function;
     expandedPaths: Array<Array<string>>;
-    apiHandler: APIHandler;
+    apiInstance: APIInterface;
+    setApiInstance: Function;
 }
 
 const TABS = {
@@ -31,7 +32,8 @@ const EditorAndHelpMenu: React.FC<EditorAndHelpMenuProps> = ({
     modelJSON,
     setModelJSON,
     expandedPaths,
-    apiHandler,
+    apiInstance,
+    setApiInstance,
 }) => {
     const [activeTab, setActiveTab] = useState(() => localStorage.getItem("tab") || TABS.JSON);
 
@@ -89,7 +91,7 @@ const EditorAndHelpMenu: React.FC<EditorAndHelpMenuProps> = ({
                     </div>
                 </div>
                 <div id="menu-contents"> {/* Actual menu content */}
-                    {activeTab === TABS.FILE && <FileTab model={modelJSON} apiHandler={apiHandler} setModel={setModelJSON} />}
+                    {activeTab === TABS.FILE && <FileTab model={modelJSON} setModel={setModelJSON} apiInstance={apiInstance} setApiInstance={setApiInstance} />}
                     {activeTab === TABS.JSON && (
                         <VanillaJSONEditor
                             content={content}

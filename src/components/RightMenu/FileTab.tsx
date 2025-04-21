@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { downloadModel, getDisplayNameForModel, getNewModel } from "../../lib/api/fileIO";
-import { APIHandler } from "../../lib/api/api";
+import { API, APIInterface } from "../../lib/api/api";
 import { v4 as uuidv4 } from "uuid";
 import { NoAPI } from "../../lib/api/noApi";
 
 type FileTabProps = {
     model: any;
-    apiHandler: APIHandler;
     setModel: Function;
+    apiInstance: APIInterface;
+    setApiInstance: Function;
 }
 
 /**
@@ -17,72 +18,86 @@ type FileTabProps = {
  */
 const FileTab: React.FC<FileTabProps> = ({
     model,
-    apiHandler,
     setModel,
+    apiInstance,
+    setApiInstance,
 }) => {
-    /**
-     * Populate the list of models to load/delete in the File menu.
-     * This list will contain all models retrieved via API call, followed by
-     * all of the built-in models. Adds non-functional "header" options to separate
-     * the API models from the built-ins. Built-in header is always present.
-     * @returns List of <option> elements for all models available w/ the current API
-     */
-    const getModelOptions = () => {
-        let options = [];
-        //Header marking the API-retrieved models
-        const apiHeaderOption = <option value={""} key={`option-models-api`}>===API MODELS===</option>
-        //Header marking the built-in models
-        const builtinHeaderOption = <option value={""} key={`option-models-builting`}>==BUILTIN MODELS==</option>
-        //Shorthand for whether we'll actually retrieve any models from the API
-        const noApiActive = apiHandler.apiInstance instanceof NoAPI;
 
-        //Generates an <option> tag for a model based on its meta object
-        const generateMetaOption = (meta: any) => {
-            const label = getDisplayNameForModel({meta: meta});
-            const value = meta.uuid;
-            return <option value={value} key={`option-models-${label}`}>{label}</option>
-        }
+     // Options list for the "Pick a model" dropdown menu
+    const [modelOptions, setModelOptions] = useState<JSX.Element[]>([]);
+    
+    // When the API class instance changes, update the options
+    // in the "Pick a model" dropdown menu
+    useEffect(() => {
+        const generateOptions = async () => {
+            let options: JSX.Element[] = [];
+            //Header marking the API-retrieved models
+            const apiHeaderOption = <option value={""} key={`option-models-api`}>===API MODELS===</option>
+            //Header marking the built-in models
+            const builtinHeaderOption = <option value={""} key={`option-models-builtin`}>==BUILTIN MODELS==</option>
 
-        //Add relevant header
-        options.push(noApiActive ? builtinHeaderOption : apiHeaderOption);
-        //Add API-retrieved options. If no api active, this will retrieve built-ins
-        options = [...options, ...apiHandler.apiInstance.getModelMetas().map(
-            generateMetaOption
-        )]
-        //If we had an API, we'll need to get the built-ins separately
-        if(!noApiActive)
-        {
-            options.push(builtinHeaderOption);
-            options = [...options, ...(new NoAPI().getModelMetas().map(
-                generateMetaOption
-            ))]
+            //Generates an <option> tag for a model based on its meta object
+            const generateMetaOption = (meta: any) => {
+                const label = getDisplayNameForModel({meta: meta});
+                const value = meta.uuid;
+                return <option value={value} key={`option-models-${label}`}>{label}</option>
+            }
+
+            //Add options for a given array of model meta objects
+            const addOptions = (modelMetas: Array<any>, useBuiltinsHeader: boolean) => {
+                options.push(useBuiltinsHeader ? builtinHeaderOption : apiHeaderOption);
+                options = [...options, ...(modelMetas.map(
+                    generateMetaOption
+                ))]
+            };
+
+            const apiFetchedMetas = await apiInstance.getModelMetas();
+            addOptions(apiFetchedMetas, apiInstance instanceof NoAPI);
+
+            if(!(apiInstance instanceof NoAPI))
+            {
+                const noAPIMetas = await (new NoAPI()).getModelMetas();
+                addOptions(noAPIMetas, true);
+            }
+
+            setModelOptions(options);
         }
-        return options;
-    }
+        generateOptions();
+    }, [apiInstance]);
+
+    // Always try to select the current model in the drop-down menu.
+    // If this isn't a valid option, it will just show the
+    // "Pick a model" option.
+    useEffect(() => {
+        setSelectedModel(model.meta?.uuid ?? "");
+    }, [model]);
 
     //Holds UUID of the model selected in the "Select a Model" dropdown
-    const [selectedModel, setSelectedModel] = useState("")
+    const [selectedModel, setSelectedModel] = useState(model.meta?.uuid ?? "")
     //Holds the contents of the "set base URL" text input box
-    const [baseURL, setBaseURL] = useState("");
+    const [urlInput, setUrlInput] = useState("");
 
     //OnClick for "Load Model" button
     //Try to fetch selected model, and set it if fetched.
     const clickLoad = () => {
-        const fetchedModel = apiHandler.apiInstance.fetchFullModel(selectedModel);
-        if(fetchedModel)
-        {
-            setModel(fetchedModel);
+        const fetchModel = async () => {
+            const fetchedModel = await apiInstance.fetchFullModel(selectedModel);
+            if(fetchedModel !== null && fetchedModel.meta !== undefined)
+            {
+                setModel(fetchedModel);
+            }
         }
+        fetchModel();
     }
 
     //OnClick for "Save As" button
     //Generate new UUID for model to save it as a new model
-    const clickSaveAs = () => {
+    const clickSaveAs = async () => {
         let newModel = structuredClone(model);
         const newModelUUID = uuidv4();
 
         newModel.meta.uuid = newModelUUID;
-        if(apiHandler.apiInstance.saveModel(newModel))
+        if(await apiInstance.saveModel(newModel))
         {
             setModel(newModel);
         }
@@ -90,12 +105,24 @@ const FileTab: React.FC<FileTabProps> = ({
 
     //OnClick for "Update Base URL" button
     const clickUpdateBaseURL = () => {
-        apiHandler.updateApiPath(baseURL);
+        if(urlInput === "")
+        {
+            setApiInstance(new NoAPI());
+        }
+        else
+        {
+            setApiInstance(new API(urlInput));
+        }
     }
 
+    //OnClick for "New model" button
     const clickNewModel = () => {
-        const newModel = getNewModel();
-        setModel(newModel);
+        if(confirm("This will overwrite the current model.\nAre you sure?"))
+        {
+            const newModel = getNewModel();
+            setModel(newModel);
+        }
+        
     }
 
     
@@ -107,7 +134,7 @@ const FileTab: React.FC<FileTabProps> = ({
                 <button onClick={clickNewModel}>New Model</button>Create a new model file, with an empty diagram.
             </div>
             <div>
-                <button onClick={() => {apiHandler.apiInstance.saveModel(model)}}>
+                <button onClick={() => {apiInstance.saveModel(model)}}>
                     Save Model
                 </button>
                 <button onClick={clickSaveAs}>
@@ -118,16 +145,17 @@ const FileTab: React.FC<FileTabProps> = ({
                 </button>
             </div>
             <div>
+                {"Pick a model: "}
                 <select name="Select a Model" value={selectedModel} onChange={(event) => {setSelectedModel(event.target.value)}}>
                     <option value={""}>Pick a model</option>
-                    {getModelOptions()}
+                    {modelOptions}
                 </select>
                 <button onClick={clickLoad}>Load Model</button>
-                <button onClick={() => apiHandler.apiInstance.deleteModel(selectedModel)}>Delete Model</button>
+                <button onClick={() => apiInstance.deleteModel(selectedModel)}>Delete Model</button>
             </div>
             <h2>API Settings</h2>
             <div>
-                Base URL: <input type="text" value={baseURL} onChange={(event) => setBaseURL(event.target.value)}></input>
+                Base URL: <input type="text" value={urlInput} onChange={(event) => setUrlInput(event.target.value)}></input>
                 <button onClick={clickUpdateBaseURL}>Update</button>
             </div>
         </div>

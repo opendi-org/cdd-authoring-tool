@@ -1,30 +1,62 @@
 import { useEffect, useState } from "react";
 import CausalDecisionDiagram from "./components/CausalDecisionDiagram";
 import EditorAndHelpMenu from "./components/RightMenu/EditorAndHelpMenu";
-import { APIHandler } from "./lib/api/api";
+import { getNewModel } from "./lib/api/fileIO";
+import { APIInterface } from "./lib/api/api";
 import { NoAPI } from "./lib/api/noApi";
 
 function App() {
-    const apiHandler = new APIHandler();
     // This is the single source of truth for Model JSON, used by both VanillaJSONEditor and CausalDecisionDiagram.
     const [modelJSON, setModelJSON] = useState(() => {
-        //Try to get the most recent model from the API
-        if(apiHandler.apiInstance.getModelMetas().length > 0)
-        {
-            return apiHandler.apiInstance.fetchFullModel(
-                apiHandler.apiInstance.getModelMetas()[0].uuid
-            )
-        }
-        //Fallback: Use the first pack-in model
-        const tempAPI = new NoAPI();
-        return tempAPI.fetchFullModel(
-            tempAPI.getModelMetas()[0].uuid
-        );
+        return getNewModel();
     });
+
+    const [apiInstance, setApiInstance] = useState<APIInterface>(new NoAPI());
+
+    // When the API instance changes, retrieve the latest model and set it
+    // as the active model
+    useEffect(() => {
+        const getLatestModel = async () => {
+            let newModel = null;
+            let modelMetas: Array<any> = await apiInstance.getModelMetas();
+            if(modelMetas.length > 0)
+            {
+                newModel = await apiInstance.fetchFullModel(
+                    modelMetas[0].uuid
+                );
+            }
+
+            //If anything went wrong, fall back on one of the built-in models
+            if(newModel === null)
+            {
+                const tempAPI = new NoAPI();
+                modelMetas = await tempAPI.getModelMetas();
+                if(modelMetas.length > 0)
+                {
+                    newModel = await tempAPI.fetchFullModel(
+                        modelMetas[0].uuid
+                    );
+                }
+            }
+
+            if(newModel !== null)
+            {
+                setModelJSON(newModel);
+            }
+        }
+
+        if(apiInstance instanceof NoAPI || confirm("New API detected.\nReplace current model with the most recently-edited API model?"))
+        {
+            getLatestModel();
+        }
+        
+    }, [apiInstance])
+
+
     const [menuIsOpen, setMenuIsOpen] = useState(() => localStorage.getItem("menu") !== "closed");
     useEffect(() => {
         localStorage.setItem("menu", menuIsOpen ? "open" : "closed");
-    }, [menuIsOpen])
+    }, [menuIsOpen]);
     const [expandedPaths, setExpandedPaths] = useState([]);
 
     return (
@@ -58,7 +90,8 @@ function App() {
                             modelJSON={modelJSON}
                             setModelJSON={setModelJSON}
                             expandedPaths={expandedPaths}
-                            apiHandler={apiHandler}
+                            apiInstance={apiInstance}
+                            setApiInstance={setApiInstance}
                         />
                     </div>
                 }

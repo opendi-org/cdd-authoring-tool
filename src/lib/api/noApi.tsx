@@ -1,4 +1,4 @@
-import { API } from "./api";
+import { APIInterface } from "./api";
 import { BuiltInModels } from "../../model_json/builtin-examples/builtinModels";
 import { downloadModel } from "./fileIO";
 
@@ -8,7 +8,7 @@ import { downloadModel } from "./fileIO";
  * where relevant for operations that aren't supported without a "real"
  * API. Save operations fall back on download functionality.
  */
-export class NoAPI implements API {
+export class NoAPI implements APIInterface {
   //API-less functionality uses NO base URL
   baseURL = "";
 
@@ -19,7 +19,7 @@ export class NoAPI implements API {
    * @param uuid UUID of model to fetch
    * @returns Full JSON object for the requested model
    */
-  fetchFullModel(uuid: string): any {
+  async fetchFullModel(uuid: string): Promise<any> {
     const modelRecord = BuiltInModels[uuid];
     if (!modelRecord) {
       console.warn(`No model found with UUID: ${uuid}`);
@@ -35,7 +35,7 @@ export class NoAPI implements API {
    * @param modelJSON Full JSON object of the model to save
    * @returns Boolean representing success/failure to save model
    */
-  saveModel(modelJSON: any): boolean {
+  async saveModel(modelJSON: any): Promise<boolean> {
     if(confirm(
       "Saving is disabled in No-API mode. Would you like to download the JSON instead?"
     ))
@@ -54,7 +54,7 @@ export class NoAPI implements API {
    * @param _uuid UUID of the model to delete from the database
    * @returns Boolean representing success/failure to delete model
    */
-  deleteModel(_uuid: string): boolean {
+  async deleteModel(_uuid: string): Promise<boolean> {
     console.warn("Deleting is not supported in No-API mode.");
     confirm("Deleting is disabled in No-API mode.");
     return false;
@@ -66,7 +66,7 @@ export class NoAPI implements API {
    * information for all built-in models.
    * @returns Array of the JSON objects for all models in the API database
    */
-  getModelMetas(): Array<any> {
+  async getModelMetas(): Promise<Array<any>> {
     return Object.values(BuiltInModels).map((record) => record.meta);
   }
 }
