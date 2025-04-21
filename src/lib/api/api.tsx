@@ -15,6 +15,22 @@ export interface APIInterface {
     getModelMetas(): Promise<Array<any>>;
 }  
 
+/**
+ * 
+ * @param uuid UUID to check for in the builtin list
+ * @returns Whether the model with the given UUID is a built-in model
+ */
+export async function modelIsBuiltIn(uuid: string): Promise<boolean> {
+    const builtInAPI = new NoAPI();
+    const builtInList = await builtInAPI.getModelMetas();
+    let modelIsBuiltIn = false;
+    builtInList.forEach((meta: any) => {
+        if(meta.uuid == uuid)
+            modelIsBuiltIn = true;
+    })
+    return modelIsBuiltIn;
+}
+
 
 export class API implements APIInterface{
     baseURL = "";
@@ -24,6 +40,13 @@ export class API implements APIInterface{
         this.baseURL = URL;
     }
 
+    /**
+     * Fetch the full model JSON associated with the given UUID from the API.
+     * Returns the raw JSON if the UUID is associated with a model in the database.
+     * If retrieval fails, returns empty JSON.
+     * @param uuid UUID used to construct model GET endpoint
+     * @returns Full model JSON for the given UUID, or empty JSON if retrieval fails
+     */
     async fetchFullModel(uuid: string): Promise<any>
     {
         if(!validate(uuid))
@@ -31,17 +54,11 @@ export class API implements APIInterface{
             return {};
         }
 
-        //Check if this model is built-in
-        const builtInAPI = new NoAPI();
-        const builtInList = await builtInAPI.getModelMetas();
-        let modelIsBuiltIn = false;
-        builtInList.forEach((meta: any) => {
-            if(meta.uuid == uuid)
-                modelIsBuiltIn = true;
-        })
+        const isBuiltIn = await modelIsBuiltIn(uuid);
 
-        if(modelIsBuiltIn)
+        if(isBuiltIn)
         {
+            const builtInAPI = new NoAPI();
             return await builtInAPI.fetchFullModel(uuid);
         }
 
@@ -62,6 +79,16 @@ export class API implements APIInterface{
         return {};
     }
     
+    /**
+     * Send an API request to save the given model. If this model has not been saved yet, sends a POST request.
+     * If it already exists, sends a PUT request. Checks for existing model based on the UUID. This method
+     * requires that the model be valid according to the OpenDI JSON Schema before sending the request.
+     * 
+     * For built-in models, this shows an error and requests the user re-generate UUIDs before saving.
+     * (Or they can use a "Save as New" option)
+     * @param modelJSON The complete JSON for the model to save
+     * @returns True if successfully saved, else false
+     */
     async saveModel(modelJSON: any): Promise<boolean> {
         //Validate model JSON
         const validationResults = getValidator()(modelJSON);
@@ -78,17 +105,24 @@ export class API implements APIInterface{
             const requestURL = this.baseURL + "/v0/models"
             const uuid = modelJSON.meta.uuid;
 
-            //Check if model exists to determine "Save As" or "Save (overwrite)" behavior
+            let modelExistsBuiltIn = await modelIsBuiltIn(uuid);
+            if(modelExistsBuiltIn)
+            {
+                confirm(`"Save Model" is disabled for built-in models. Please use "Save as New".`);
+                return false;
+            }
+
+            //Check if model exists in the API DB to determine "Save As" or "Save (overwrite)" behavior
+            let modelExistsInAPI = false;
             const existsResponse = await fetch(requestURL + "/" + String(uuid));
-            let exists = false;
             if(existsResponse.ok)
             {
                 const existsModelMeta = await existsResponse.json();
-                exists = existsModelMeta?.uuid === uuid;
+                modelExistsInAPI = existsModelMeta?.uuid === uuid;
             }
 
-            const method = exists ? 'PUT' : 'POST';
-            const confirmMessage = exists ?
+            const method = modelExistsInAPI ? 'PUT' : 'POST';
+            const confirmMessage = modelExistsInAPI ?
                 "Overwriting model " + uuid + ": " + (modelJSON.meta.name ?? "<unnamed>") + ".\nOK?" :
                 "Saving new model " + uuid + ": " + (modelJSON.meta.name ?? "<unnamed>") + ".\nOK?";
             
@@ -125,10 +159,59 @@ export class API implements APIInterface{
         }
     }
 
+    /**
+     * Send an API request to delete the requested model. Checks that the model exists
+     * before attempting to delete.
+     * @param uuid UUID used to construct model DELETE endpoint
+     * @returns True if successfully deleted, else false
+     */
     async deleteModel(uuid: string): Promise<boolean> {
-        throw new Error("Method not implemented.");
+        try {
+            const requestURL = this.baseURL + "/v0/models/" + String(uuid)
+            //Check if model exists
+            const existsResponse = await fetch(requestURL);
+            let exists = false;
+            let existsModelMeta: any = {};
+            if(existsResponse.ok)
+            {
+                existsModelMeta = await existsResponse.json();
+                exists = existsModelMeta?.uuid === uuid;
+            }
+
+            const modelName = existsModelMeta?.name ?? "<unnamed>";
+
+            if(!exists)
+            {
+                alert(`Cannot delete model (${uuid}): not found in API database.`);
+                return false;
+            }
+
+            if(confirm("Deleting model " + modelName + "(" + uuid +").\nOK?"))
+            {
+                const response = await fetch(requestURL, {method: 'DELETE'})
+
+                //API failure
+                if(!response.ok) {
+                    console.error(response);
+                    throw new Error("Failed to delete model");
+                }
+
+                return true;
+            }
+            return false;
+
+        } catch (error) {
+            alert(error);
+            console.error(error);
+            return false;
+        }
     }
 
+    /**
+     * Get a list of the Meta objects for the Causal Decision Models that the user
+     * has access to.
+     * @returns Array of OpenDI Meta objects
+     */
     async getModelMetas(): Promise<Array<any>> {
         try {
             const requestURL = this.baseURL + "/v0/models";

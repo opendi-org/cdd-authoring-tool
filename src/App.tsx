@@ -45,7 +45,10 @@ function App() {
             }
         }
 
-        if(apiInstance instanceof NoAPI || confirm("New API detected.\nReplace current model with the most recently-edited API model?"))
+        const confirmMessage = `New API URL detected: ${apiInstance.baseURL}`
+            + `\nWould you like to load the most recently-edited model from the API?`
+            + `\nAny unsaved progress will be lost.`;
+        if(apiInstance instanceof NoAPI || confirm(confirmMessage))
         {
             getLatestModel();
         }

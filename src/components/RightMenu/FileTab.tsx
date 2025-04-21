@@ -118,6 +118,19 @@ const FileTab: React.FC<FileTabProps> = ({
         }
     }
 
+    //OnClick for "Delete Model" button
+    //If deletion is successful, replaces model display with an empty CDM
+    const clickDelete = async () => {
+        if(await apiInstance.deleteModel(selectedModel))
+        {
+            if(selectedModel == model.meta.uuid)
+            {
+                setModel(getNewModel());
+            }
+            generateOptions();
+        }
+    }
+
     //OnClick for "Update Base URL" button
     const clickUpdateBaseURL = () => {
         if(urlInput === "")
@@ -166,7 +179,7 @@ const FileTab: React.FC<FileTabProps> = ({
                     {modelOptions}
                 </select>
                 <button onClick={clickLoad}>Load Model</button>
-                <button onClick={() => apiInstance.deleteModel(selectedModel)}>Delete Model</button>
+                <button onClick={clickDelete}>Delete Model</button>
             </div>
             <h2>API Settings</h2>
             <div>
