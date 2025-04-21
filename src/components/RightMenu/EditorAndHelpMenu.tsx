@@ -91,8 +91,10 @@ const EditorAndHelpMenu: React.FC<EditorAndHelpMenuProps> = ({
                     </div>
                 </div>
                 <div id="menu-contents"> {/* Actual menu content */}
-                    {activeTab === TABS.FILE && <FileTab model={modelJSON} setModel={setModelJSON} apiInstance={apiInstance} setApiInstance={setApiInstance} />}
-                    {activeTab === TABS.JSON && (
+                    <div className={`info-menu ${activeTab === TABS.FILE ? "" : "hidden"}`}>
+                        <FileTab model={modelJSON} setModel={setModelJSON} apiInstance={apiInstance} setApiInstance={setApiInstance} />
+                    </div>
+                    <div className={`${activeTab === TABS.JSON ? "" : "hidden"}`}>
                         <VanillaJSONEditor
                             content={content}
                             onChange={(newContent: any, _previousContent, { contentErrors, patchResult: _ }) => {
@@ -122,9 +124,13 @@ const EditorAndHelpMenu: React.FC<EditorAndHelpMenuProps> = ({
                             expandedPaths={expandedPaths}
                             mode={editorMode}
                         />
-                    )}
-                    {activeTab === TABS.HELP && <HelpTab />}
-                    {activeTab === TABS.GLOSSARY && <GlossaryTab />}
+                    </div>
+                    <div className={`info-menu ${activeTab === TABS.HELP ? "" : "hidden"}`}>
+                        <HelpTab />
+                    </div>
+                    <div className={`info-menu ${activeTab === TABS.GLOSSARY ? "" : "hidden"}`}>
+                        <GlossaryTab />
+                    </div>
                 </div>
                 
             </div>

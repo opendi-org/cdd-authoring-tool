@@ -265,6 +265,11 @@ body {
     height: 100%;
 }
 
+/* Currently for right-side menu items that are not selected */
+.hidden {
+    display: none !important;
+}
+
 /* H2 acts like a section divider */
 .info-menu h2 {
     background-color: #0d0d67;

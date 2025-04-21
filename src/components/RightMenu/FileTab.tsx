@@ -25,43 +25,48 @@ const FileTab: React.FC<FileTabProps> = ({
 
      // Options list for the "Pick a model" dropdown menu
     const [modelOptions, setModelOptions] = useState<JSX.Element[]>([]);
-    
+
+    /**
+     * Generate new <option> elements for all available models,
+     * via both the API (if relevant) and the built-in list
+     */
+    const generateOptions = async () => {
+        let options: JSX.Element[] = [];
+        //Header marking the API-retrieved models
+        const apiHeaderOption = <option value={""} key={`option-models-api`}>===API MODELS===</option>
+        //Header marking the built-in models
+        const builtinHeaderOption = <option value={""} key={`option-models-builtin`}>==BUILTIN MODELS==</option>
+
+        //Generates an <option> tag for a model based on its meta object
+        const generateMetaOption = (meta: any) => {
+            const label = getDisplayNameForModel({meta: meta});
+            const value = meta.uuid;
+            return <option value={value} key={`option-models-${label}`}>{label}</option>
+        }
+
+        //Add options for a given array of model meta objects
+        const addOptions = (modelMetas: Array<any>, useBuiltinsHeader: boolean) => {
+            options.push(useBuiltinsHeader ? builtinHeaderOption : apiHeaderOption);
+            options = [...options, ...(modelMetas.map(
+                generateMetaOption
+            ))]
+        };
+
+        const apiFetchedMetas = await apiInstance.getModelMetas();
+        addOptions(apiFetchedMetas, apiInstance instanceof NoAPI);
+
+        if(!(apiInstance instanceof NoAPI))
+        {
+            const noAPIMetas = await (new NoAPI()).getModelMetas();
+            addOptions(noAPIMetas, true);
+        }
+
+        setModelOptions(options);
+    }
+
     // When the API class instance changes, update the options
     // in the "Pick a model" dropdown menu
     useEffect(() => {
-        const generateOptions = async () => {
-            let options: JSX.Element[] = [];
-            //Header marking the API-retrieved models
-            const apiHeaderOption = <option value={""} key={`option-models-api`}>===API MODELS===</option>
-            //Header marking the built-in models
-            const builtinHeaderOption = <option value={""} key={`option-models-builtin`}>==BUILTIN MODELS==</option>
-
-            //Generates an <option> tag for a model based on its meta object
-            const generateMetaOption = (meta: any) => {
-                const label = getDisplayNameForModel({meta: meta});
-                const value = meta.uuid;
-                return <option value={value} key={`option-models-${label}`}>{label}</option>
-            }
-
-            //Add options for a given array of model meta objects
-            const addOptions = (modelMetas: Array<any>, useBuiltinsHeader: boolean) => {
-                options.push(useBuiltinsHeader ? builtinHeaderOption : apiHeaderOption);
-                options = [...options, ...(modelMetas.map(
-                    generateMetaOption
-                ))]
-            };
-
-            const apiFetchedMetas = await apiInstance.getModelMetas();
-            addOptions(apiFetchedMetas, apiInstance instanceof NoAPI);
-
-            if(!(apiInstance instanceof NoAPI))
-            {
-                const noAPIMetas = await (new NoAPI()).getModelMetas();
-                addOptions(noAPIMetas, true);
-            }
-
-            setModelOptions(options);
-        }
         generateOptions();
     }, [apiInstance]);
 
@@ -90,6 +95,15 @@ const FileTab: React.FC<FileTabProps> = ({
         fetchModel();
     }
 
+    //OnClick for "Save Model" button
+    //Save new model and refresh model options
+    const clickSave = async () => {
+        if(await apiInstance.saveModel(model))
+        {
+            generateOptions();
+        }
+    }
+
     //OnClick for "Save As" button
     //Generate new UUID for model to save it as a new model
     const clickSaveAs = async () => {
@@ -100,6 +114,7 @@ const FileTab: React.FC<FileTabProps> = ({
         if(await apiInstance.saveModel(newModel))
         {
             setModel(newModel);
+            generateOptions();
         }
     }
 
@@ -128,13 +143,13 @@ const FileTab: React.FC<FileTabProps> = ({
     
 
     return (
-        <div className="info-menu">
+        <>
             <h2>File Settings</h2>
             <div>
                 <button onClick={clickNewModel}>New Model</button>Create a new model file, with an empty diagram.
             </div>
             <div>
-                <button onClick={() => {apiInstance.saveModel(model)}}>
+                <button onClick={clickSave}>
                     Save Model
                 </button>
                 <button onClick={clickSaveAs}>
@@ -158,7 +173,7 @@ const FileTab: React.FC<FileTabProps> = ({
                 Base URL: <input type="text" value={urlInput} onChange={(event) => setUrlInput(event.target.value)}></input>
                 <button onClick={clickUpdateBaseURL}>Update</button>
             </div>
-        </div>
+        </>
     )
 };
 

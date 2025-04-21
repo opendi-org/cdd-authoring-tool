@@ -6,7 +6,7 @@ import React from "react";
  */
 const GlossaryTab: React.FC = () => {
     return (
-        <div className="info-menu">
+        <>
             <h2><a target="_blank" rel="noopener noreferrer" href="https://opendi.org/OpenDI%20Glossary#lever">Lever</a></h2>
             <p>Represents an <a target="_blank" rel="noopener noreferrer" href="https://opendi.org/OpenDI%20Glossary#action">Action</a> directly within the decision maker's control.</p>
             <h2><a target="_blank" rel="noopener noreferrer" href="https://opendi.org/OpenDI%20Glossary/#intermediate">Intermediate</a></h2>
@@ -15,7 +15,7 @@ const GlossaryTab: React.FC = () => {
             <p>A result of a decision the decision maker is interested in measuring.</p>
             <h2><a target="_blank" rel="noopener noreferrer" href="https://opendi.org/OpenDI%20Glossary/#external">External</a></h2>
             <p>Represents something outside the decision maker's control that have an impact on outcomes, either directly or indirectly.</p>
-        </div>
+        </>
     )
 };
 

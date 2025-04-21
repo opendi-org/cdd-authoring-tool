@@ -6,7 +6,7 @@ import React from "react";
  */
 const HelpTab: React.FC = () => {
     return (
-        <div className="info-menu">
+        <>
             <h2>UI Buttons (Graph view)</h2>
             <ul>
                 <li><b>New Elem</b>: Create a new decision element. The new element will be placed on the graph, with placeholder values.</li>
@@ -40,7 +40,7 @@ const HelpTab: React.FC = () => {
                 <li>Copy the entire text contents of your local JSON file.</li>
                 <li>Paste into this tool's JSON view.</li>
             </ol>
-        </div>
+        </>
     )
 };
 
