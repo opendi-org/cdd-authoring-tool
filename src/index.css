@@ -19,7 +19,8 @@
     background-color: #BBBBBB;
 
     --info-menu-margin: 10px;
-    --info-menu-tab-background: #000526;
+    --info-menu-background: #000526;
+    --info-menu-tab-background: #1e1346;
     --info-menu-tab-selected-background: #2f3ba1;
     --info-menu-tab-border: 3px solid #484848;
     --info-menu-banner-height: 1.7em;
@@ -256,7 +257,7 @@ body {
     flex-direction: column;
     overflow-x: hidden;
     overflow-y: scroll;
-    background-color: var(--info-menu-tab-background);
+    background-color: var(--info-menu-background);
     color: white;
     padding: 0;
     font-size: 14.5px;

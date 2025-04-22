@@ -86,18 +86,16 @@ function App() {
                     </div>
                 </div>
 
-                {menuIsOpen && 
-                    <div className="cdd-editor right">
-                        {/*JSON Editor*/}
-                        <EditorAndHelpMenu
-                            modelJSON={modelJSON}
-                            setModelJSON={setModelJSON}
-                            expandedPaths={expandedPaths}
-                            apiInstance={apiInstance}
-                            setApiInstance={setApiInstance}
-                        />
-                    </div>
-                }
+                <div className={`cdd-editor right ${menuIsOpen ? "" : "hidden"}`}>
+                    {/*JSON Editor*/}
+                    <EditorAndHelpMenu
+                        modelJSON={modelJSON}
+                        setModelJSON={setModelJSON}
+                        expandedPaths={expandedPaths}
+                        apiInstance={apiInstance}
+                        setApiInstance={setApiInstance}
+                    />
+                </div>
             </div>
         </div>
     )
