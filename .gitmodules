@@ -1,0 +1,4 @@
+[submodule "src/schema"]
+	path = src/model_json/schemas
+	url = git@github.com:opendi-org/cdm-json-schema.git
+	branch = dev-sourceonly
