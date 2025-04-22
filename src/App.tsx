@@ -97,6 +97,50 @@ function App() {
                     />
                 </div>
             </div>
+            <div className="instructions">
+                <p>
+                    This tool allows you to create and edit OpenDI standards-compliant
+                    Causal Decision Diagrams, using a graphical view and JSON editor.
+                    <br/>
+                    For more info about OpenDI, visit <a href="https://opendi.org" target="_blank">OpenDI.org</a>.
+                </p>
+                <p>
+                    <b>This tool is a prototype!</b><br/>We cannot guarantee that the system
+                    is bug-free. This tool may crash unexpectedly, and you may lose data.
+                    <br/>
+                    The tool provides a Download button to save your work as a JSON file.
+                    Use it often!
+                </p>
+                <p>
+                    Original coffee purchasing CDD by Nadine Malcolm and Dr. Lorien Pratt. See original on Dr. Pratt's blog: <a href="https://www.lorienpratt.com/a-framework-for-how-data-informs-decisions/" target="_blank">A Framework for How Data Informs Decisions</a>.
+                    <br/>Adaptations for simulation and simulation logic by Isaac Kellogg. All other built-in example models by Isaac Kellogg.
+                </p>
+                <h2>Source</h2>
+                <p>
+                    You can view and contribute to this project's source code on <a href="https://github.com/opendi-org/cdd-authoring-tool" target="_blank">GitHub</a>.
+                    <br/>Contributions are very welcome!
+                </p>
+                <br/><br/>
+                <hr/>
+                <h2>Acknowledgements</h2>
+                <ul>
+                    <li>Graphical view uses:
+                        <ul>
+                            <li><a href="https://www.npmjs.com/package/react-draggable" target="_blank"><b>react-draggable</b></a> for draggable elements.</li>
+                            <li><a href="https://www.npmjs.com/package/react-xarrows" target="_blank"><b>react-xarrows</b></a> for reactive, stylish dependency arrows.</li>
+                            <li><a href="https://www.npmjs.com/package/react-collapsed" target="_blank"><b>react-collapsed</b></a> for animated collapsible sections.</li>
+                            <li><a href="https://www.npmjs.com/package/react-markdown/v/8.0.6" target="_blank"><b>react-markdown</b></a> for nicely-rendered markdown in CDM summaries.</li>
+                        </ul>
+                    </li>
+                    <li>JSON Editor view and right-side menu uses:
+                        <ul>
+                            <li><a href="https://www.npmjs.com/package/vanilla-jsoneditor" target="_blank"><b>vanilla-jsoneditor</b></a> for fully-featured in-browser JSON editing. See their copyright notice in this project's source code.</li>
+                            <li><a href="https://www.npmjs.com/package/ajv/v/7.0.4" target="_blank"><b>ajv</b></a> for JSON Schema validation.</li>
+                            <li><a href="https://www.npmjs.com/package/file-saver" target="_blank"><b>file-saver</b></a> for saving large JSON files with nice formatting, using browser blobs.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
         </div>
     )
 };
