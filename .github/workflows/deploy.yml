@@ -37,12 +37,11 @@ jobs:
               run: npm run build
 
               # Put built site in the gh-pages branch for deployment
-            - name: Move static artifacts
+            - name: Move build artifacts
               # Move site files out of repo, switch branches, replace old site build files with new files
               run: |
-                cp ./static/* ./docs/
-                mkdir ../TEMP
-                mv ./docs ../TEMP/docs
+                mkdir -p ../TEMP/docs
+                cp -r ./dist/. ../TEMP/docs
                 git switch gh-pages
                 rm -rf ./docs/
                 mv ../TEMP/docs ./docs
