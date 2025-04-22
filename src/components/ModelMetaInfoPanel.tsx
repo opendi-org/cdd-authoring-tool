@@ -22,8 +22,9 @@ const ModelMetaInfoPanel: React.FC<ModelMetaInfoPanelProps> = ({
     const [summaryIsExpanded, setSummaryIsExpanded] = useState(false);
     const {getCollapseProps: getSummaryCollapseProps, getToggleProps: getSummaryToggleProps} = useCollapse({isExpanded: summaryIsExpanded})
     
-    const meta = model.meta;
-    const diagramMeta = (model.diagrams && model.diagrams[diagramIndex]) && model.diagrams[diagramIndex].meta;
+    const meta = model.meta ?? {name: null, summary: null};
+    const diagramMeta = ((model.diagrams && model.diagrams[diagramIndex]) && model.diagrams[diagramIndex].meta)
+        ?? {name: null, summary: null};
 
     const modelName = meta.name || "(Unnamed Model)";
     const diagramName = diagramMeta.name || "(Unnamed Diagram)";

@@ -61,11 +61,14 @@ export function getExpandedPathsForSelectedElements(
     else //No selected elements, expand the default paths
     {
         let defaultPaths: Array<Array<string>> = []
-        if(model.diagrams[0])
+        if(model.diagrams && model.diagrams[0])
         {
             defaultPaths.push(["diagrams", "0"]);
         }
-        defaultPaths.push(["meta"])
+        if(model.meta)
+        {
+            defaultPaths.push(["meta"])
+        }
         return(defaultPaths);
     }
 }
