@@ -30,7 +30,7 @@
 .diagram-contents {
     width: 100%;
     height: 100%;
-    overflow: scroll;
+    overflow: auto;
     position: relative;
 }
 
@@ -82,7 +82,7 @@ body {
     /* Shape */
     max-width: 65%;
     max-height: 65%;
-    overflow-y: scroll;
+    overflow-y: auto;
     border-radius: 10px;
     padding: 10px;
     border: 2px solid #000000
@@ -224,7 +224,7 @@ body {
 }
 
 #menu-contents {
-    overflow-y: scroll;
+    overflow-y: auto;
     height: 100%;
 }
 
@@ -256,7 +256,7 @@ body {
 .info-menu {
     flex-direction: column;
     overflow-x: hidden;
-    overflow-y: scroll;
+    overflow-y: auto;
     background-color: var(--info-menu-background);
     color: white;
     padding: 0;
