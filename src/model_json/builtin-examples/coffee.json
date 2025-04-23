@@ -1,0 +1,963 @@
+{
+  "$schema": "../schemas/Causal-Decision-Model.json",
+  "meta": {
+    "uuid": "6553aba0-7711-4366-9d22-350a9f075a2d",
+    "name": "Coffee Purchasing Decision",
+    "summary": "Static pack-in model, loaded by default. For deciding whether to purchase regular or fair trade coffee, and how much. This CDM models the impact to workers and environment, to ultimately track social/environmental and financial impacts as main outcomes. This model is a working example of a complete, runnable decision model contained in schema-compliant JSON. It has multiple scripts, used as Evaluatable Assets in a single Runnable Model with 4 elements. It has many I/O values connected to various Diagram Elements via Controls.\n\n**NOTE:** This Decision Model is intended for demonstration purposes only. It does not accurately represent the real-world impacts of a coffee purchasing decision. The algorithms for determining environmental and social impacts are largely arbitrary. Prices are inaccurate. etc.",
+    "documentation": {
+      "content": "This CDD was authored by Dr. Lorien Pratt.\nSource: https://www.lorienpratt.com/a-framework-for-how-data-informs-decisions/\n\nAdapted for OpenDI schema compliance and in-browser simulation by Isaac Kellogg.",
+      "MIMEType": "text/plain"
+    },
+    "version": "0.1",
+    "draft": true,
+    "updatedDate": "2024-11-14T15:13:50-05:00"
+  },
+  "evaluatableAssets": [
+    {
+      "meta": {
+        "uuid": "06c5377c-2a41-495b-a099-78b492e135e1",
+        "name": "Get Coffee Totals"
+      },
+      "evalType": "Script",
+      "content": {
+        "language": "javascript",
+        "script": "KGZ1bmN0aW9uICgpIHsKCiAgICAvL0lNUExFTUVOVCBZT1VSIEZVTkNUSU9OIEFTIEEgQ09OU1QgSEVSRToKICAgIGNvbnN0IGdldENvZmZlZVRvdGFscyA9IGZ1bmN0aW9uIChpbnB1dHMpIHsKICAgICAgICBjb25zdCBudW1BcmdzRXhwZWN0ZWQgPSA0OwogICAgICAgIGxldCB0b3RhbEFsbENvZmZlZSwgdG90YWxGVEJGLCB0b3RhbFJlZ3VsYXIgPSBbMCwgMCwgMF07CiAgICAgICAgaWYoIWlucHV0cy5sZW5ndGggPT0gNCkKICAgICAgICB7CiAgICAgICAgICAgIGNvbnNvbGUuZXJyb3IoIkVycm9yIGluIGF0dGFjaGVkIHNjcmlwdCBnZXRDb2ZmZWVUb3RhbHM6IEludmFsaWQgaW5wdXRzICIsIGlucHV0cyk7CiAgICAgICAgICAgIGNvbnNvbGUubG9nKHR5cGVvZiBpbnB1dHMsICIgIiwgQXJyYXksICIgIiwgaW5wdXRzLmxlbmd0aCk7CiAgICAgICAgICAgIHJldHVybiBbdG90YWxBbGxDb2ZmZWUsIHRvdGFsRlRCRiwgdG90YWxSZWd1bGFyXTsKICAgICAgICB9CgogICAgICAgIGNvbnN0IFtwcmljZVBlclBvdW5kRlRCRiwgcHJpY2VQZXJQb3VuZFJlZ3VsYXIsIGxic0JvdWdodEZUQkYsIGxic0JvdWdodFJlZ3VsYXJdID0gaW5wdXRzCiAgICAgICAgCiAgICAgICAgdG90YWxGVEJGID0gcHJpY2VQZXJQb3VuZEZUQkYgKiBsYnNCb3VnaHRGVEJGOwogICAgICAgIHRvdGFsUmVndWxhciA9IHByaWNlUGVyUG91bmRSZWd1bGFyICogbGJzQm91Z2h0UmVndWxhcjsKICAgICAgICB0b3RhbEFsbENvZmZlZSA9IHRvdGFsRlRCRiArIHRvdGFsUmVndWxhcjsKCiAgICAgICAgcmV0dXJuIFt0b3RhbEFsbENvZmZlZSwgdG90YWxGVEJGLCB0b3RhbFJlZ3VsYXJdOwogICAgfQoKICAgIC8vTUFQIFlPVVIgRlVOQ1RJT04gVE8gQSBTVFJJTkcgTkFNRSBIRVJFOgogICAgcmV0dXJuIHsgZnVuY01hcDogeyJnZXRDb2ZmZWVUb3RhbHMiOiBnZXRDb2ZmZWVUb3RhbHN9IH07Cgp9KSgpOwoKCi8vIFRvIGltcG9ydCBhIHNjcmlwdCwgaXQgbXVzdCB1c2UgYSBzaW1pbGFyIHN0cnVjdHVyZSB0byB0aGUgZXhhbXBsZSBjb2RlIGFib3ZlLiBJdCBzaG91bGQgdGFrZSB0aGUgZm9ybSBvZgovLyBhbiBpbW1lZGlhdGVseSBpbnZva2VkIGZ1bmN0aW9uIGV4cHJlc3Npb246IGh0dHBzOi8vZGV2ZWxvcGVyLm1vemlsbGEub3JnL2VuLVVTL2RvY3MvR2xvc3NhcnkvSUlGRSB3aGVyZSB0aGUKLy8gZnVuY3Rpb24gcmV0dXJucyBhIGZ1bmN0aW9uIG1hcCBjYWxsZWQgZnVuY01hcC4KLy8gCi8vIGZ1bmNNYXAgc2hvdWxkIGhhdmUgc3RyaW5nIGtleXMgYW5kIGZ1bmN0aW9uIHZhbHVlcy4gU3RyaW5nIGtleXMgd2lsbCBiZSB1c2VkIGJ5IEV2YWx1YXRhYmxlIEVsZW1lbnRzCi8vIHRvIHBhc3MgaW5wdXRzIHRvIGFuZCByZWNlaXZlIG91dHB1dHMgZnJvbSB0aGUgZnVuY3Rpb25zLgovLyAKLy8gRWFjaCBzY3JpcHQgbWF5IGRlZmluZSBhcmJpdHJhcmlseSBtYW55IGZ1bmN0aW9ucywgc28gbG9uZyBhcyB0aGV5J3JlIGFsbCBleHBvc2VkIHZpYSBmdW5jTWFwLgovLyAKLy8gRnVuY3Rpb24gaW5wdXRzIHdpbGwgdGFrZSB0aGUgZm9ybSBvZiBhIHNpbmdsZSBhcnJheSBvZiA8YW55PiB2YWx1ZXMuCi8vIEZ1bmN0aW9ucyBzaG91bGQgbGlrZXdpc2UgcmV0dXJuIGFuIGFycmF5IG9mIDxhbnk+IHZhbHVlcy4KLy8gTWVhbmluZyBmb3IgYXJndW1lbnRzIGFuZCByZXR1cm4gdmFsdWVzIGlzIGRldGVybWluZWQgYnkgdGhlaXIgb3JkZXIgaW4gdGhlIGFycmF5Lg=="
+      }
+    },
+    {
+      "meta": {
+        "uuid": "e3e14e44-f07d-424e-ae18-3647b4e62648",
+        "name": "Get Environmental Impact"
+      },
+      "evalType": "Script",
+      "content": {
+        "language": "javascript",
+        "script": "KGZ1bmN0aW9uICgpIHsKCiAgICAvL0lNUExFTUVOVCBZT1VSIEZVTkNUSU9OIEFTIEEgQ09OU1QgSEVSRToKICAgIGNvbnN0IGdldEVudmlyb25tZW50YWxJbXBhY3QgPSBmdW5jdGlvbiAoaW5wdXRzKSB7CiAgICAgICAgY29uc3QgbnVtQXJnc0V4cGVjdGVkID0gNTsKICAgICAgICBsZXQgZW52aXJvbm1lbnRhbEltcGFjdCA9IDA7CiAgICAgICAgaWYoIWlucHV0cy5sZW5ndGggPT0gbnVtQXJnc0V4cGVjdGVkKQogICAgICAgIHsKICAgICAgICAgICAgY29uc29sZS5lcnJvcigiRXJyb3IgaW4gYXR0YWNoZWQgc2NyaXB0IGdldENvZmZlZVRvdGFsczogSW52YWxpZCBpbnB1dHMgIiwgaW5wdXRzKTsKICAgICAgICAgICAgcmV0dXJuIFtlbnZpcm9ubWVudGFsSW1wYWN0XTsKICAgICAgICB9CgogICAgICAgIGNvbnN0IFt0aW1lRnJhbWVEYXlzLCBpbXBhY3RSYXRlRlRCRlBlclBvdW5kUGVyRGF5LCBpbXBhY3RSYXRlUmVndWxhclBlclBvdW5kUGVyRGF5LCBsYnNCb3VnaHRGVEJGLCBsYnNCb3VnaHRSZWd1bGFyXSA9IGlucHV0cwogICAgICAgIAogICAgICAgIGNvbnN0IGltcGFjdEZUQkYgPSAobGJzQm91Z2h0RlRCRiAvIHRpbWVGcmFtZURheXMpICogaW1wYWN0UmF0ZUZUQkZQZXJQb3VuZFBlckRheTsKICAgICAgICBjb25zdCBpbXBhY3RSZWd1bGFyID0gKGxic0JvdWdodFJlZ3VsYXIgLyB0aW1lRnJhbWVEYXlzKSAqIGltcGFjdFJhdGVSZWd1bGFyUGVyUG91bmRQZXJEYXk7CgogICAgICAgIGVudmlyb25tZW50YWxJbXBhY3QgPSBpbXBhY3RGVEJGICsgaW1wYWN0UmVndWxhcjsKCiAgICAgICAgcmV0dXJuIFtlbnZpcm9ubWVudGFsSW1wYWN0XTsKICAgIH0KCiAgICAvL01BUCBZT1VSIEZVTkNUSU9OIFRPIEEgU1RSSU5HIE5BTUUgSEVSRToKICAgIHJldHVybiB7IGZ1bmNNYXA6IHsiZ2V0RW52aXJvbm1lbnRhbEltcGFjdCI6IGdldEVudmlyb25tZW50YWxJbXBhY3R9IH07Cgp9KSgpOwoKCi8vIFRvIGltcG9ydCBhIHNjcmlwdCwgaXQgbXVzdCB1c2UgYSBzaW1pbGFyIHN0cnVjdHVyZSB0byB0aGUgZXhhbXBsZSBjb2RlIGFib3ZlLiBJdCBzaG91bGQgdGFrZSB0aGUgZm9ybSBvZgovLyBhbiBpbW1lZGlhdGVseSBpbnZva2VkIGZ1bmN0aW9uIGV4cHJlc3Npb246IGh0dHBzOi8vZGV2ZWxvcGVyLm1vemlsbGEub3JnL2VuLVVTL2RvY3MvR2xvc3NhcnkvSUlGRSB3aGVyZSB0aGUKLy8gZnVuY3Rpb24gcmV0dXJucyBhIGZ1bmN0aW9uIG1hcCBjYWxsZWQgZnVuY01hcC4KLy8gCi8vIGZ1bmNNYXAgc2hvdWxkIGhhdmUgc3RyaW5nIGtleXMgYW5kIGZ1bmN0aW9uIHZhbHVlcy4gU3RyaW5nIGtleXMgd2lsbCBiZSB1c2VkIGJ5IEV2YWx1YXRhYmxlIEVsZW1lbnRzCi8vIHRvIHBhc3MgaW5wdXRzIHRvIGFuZCByZWNlaXZlIG91dHB1dHMgZnJvbSB0aGUgZnVuY3Rpb25zLgovLyAKLy8gRWFjaCBzY3JpcHQgbWF5IGRlZmluZSBhcmJpdHJhcmlseSBtYW55IGZ1bmN0aW9ucywgc28gbG9uZyBhcyB0aGV5J3JlIGFsbCBleHBvc2VkIHZpYSBmdW5jTWFwLgovLyAKLy8gRnVuY3Rpb24gaW5wdXRzIHdpbGwgdGFrZSB0aGUgZm9ybSBvZiBhIHNpbmdsZSBhcnJheSBvZiA8YW55PiB2YWx1ZXMuCi8vIEZ1bmN0aW9ucyBzaG91bGQgbGlrZXdpc2UgcmV0dXJuIGFuIGFycmF5IG9mIDxhbnk+IHZhbHVlcy4KLy8gTWVhbmluZyBmb3IgYXJndW1lbnRzIGFuZCByZXR1cm4gdmFsdWVzIGlzIGRldGVybWluZWQgYnkgdGhlaXIgb3JkZXIgaW4gdGhlIGFycmF5Lg=="
+      }
+    },
+    {
+      "meta": {
+        "uuid": "9bd989ea-03b5-403b-a31d-e349fd578118",
+        "name": "Get Social Impact"
+      },
+      "evalType": "Script",
+      "content": {
+        "language": "javascript",
+        "script": "KGZ1bmN0aW9uICgpIHsKCiAgICAvL0lNUExFTUVOVCBZT1VSIEZVTkNUSU9OIEFTIEEgQ09OU1QgSEVSRToKICAgIGNvbnN0IGdldFNvY2lhbEltcGFjdCA9IGZ1bmN0aW9uIChpbnB1dHMpIHsKICAgICAgICBjb25zdCBudW1BcmdzRXhwZWN0ZWQgPSA2OwogICAgICAgIGxldCBzb2NpYWxJbXBhY3QgPSAwOwogICAgICAgIGlmKCFpbnB1dHMubGVuZ3RoID09IG51bUFyZ3NFeHBlY3RlZCkKICAgICAgICB7CiAgICAgICAgICAgIGNvbnNvbGUuZXJyb3IoIkVycm9yIGluIGF0dGFjaGVkIHNjcmlwdCBnZXRDb2ZmZWVUb3RhbHM6IEludmFsaWQgaW5wdXRzICIsIGlucHV0cyk7CiAgICAgICAgICAgIHJldHVybiBbc29jaWFsSW1wYWN0XTsKICAgICAgICB9CgogICAgICAgIGNvbnN0IFt0aW1lRnJhbWVEYXlzLCBtb25leVNwZW50T25GVEJGQ29mZmVlLCBtb25leVNwZW50T25SZWd1bGFyQ29mZmVlLCBzb2NpYWxSZXZlbnVlUGVyY2VudEZUQkZDb2ZmZWUsIHNvY2lhbFJldmVudWVQZXJjZW50UmVndWxhckNvZmZlZSwgcmVmZXJlbmNlRGFpbHlTb2NpYWxJbXBhY3RSZXZlbnVlXSA9IGlucHV0cwogICAgICAgIAogICAgICAgIC8vICJSZWZlcmVuY2UiIGRhaWx5IHNvY2lhbCBpbXBhY3QgcmV2ZW51ZSBpcyB0aGUgYW1vdW50IG9mIHNvY2lhbCBpbXBhY3QtZGlyZWN0ZWQgcmV2ZW51ZSBuZWVkZWQgZm9yIAogICAgICAgIC8vIGEgc29jaWFsIGltcGFjdCB2YWx1ZSBvZiAiMSIgaW4gdGhlIHRpbWUgcGVyaW9kIG9mIDEgZGF5LiBJZiB0aGlzIHZhbHVlIGlzIDAuMjUsIGFuZCB5b3VyIGNob2ljZSByZXN1bHRzCiAgICAgICAgLy8gaW4gJDAuMjUgcGVyIGRheSBvZiByZXZlbnVlIGdvaW5nIHRvd2FyZHMgc29jaWFsIGltcGFjdCwgeW91ciBzb2NpYWwgaW1wYWN0IHZhbHVlIHdpbGwgYmUgMS4KICAgICAgICBjb25zdCBkYWlseVNvY2lhbEltcGFjdFJldmVudWVGVEJGQ29mZmVlID0gKG1vbmV5U3BlbnRPbkZUQkZDb2ZmZWUgKiAoc29jaWFsUmV2ZW51ZVBlcmNlbnRGVEJGQ29mZmVlIC8gMTAwLjApKSAvIHRpbWVGcmFtZURheXM7CiAgICAgICAgY29uc3QgZGFpbHlTb2NpYWxJbXBhY3RSZXZlbnVlUmVndWxhckNvZmZlZSA9IChtb25leVNwZW50T25SZWd1bGFyQ29mZmVlICogKHNvY2lhbFJldmVudWVQZXJjZW50UmVndWxhckNvZmZlZSAvIDEwMC4wKSkgLyB0aW1lRnJhbWVEYXlzOwogICAgICAgIGNvbnN0IHRvdGFsRGFpbHlTb2NpYWxJbXBhY3RSZXZlbnVlID0gZGFpbHlTb2NpYWxJbXBhY3RSZXZlbnVlRlRCRkNvZmZlZSArIGRhaWx5U29jaWFsSW1wYWN0UmV2ZW51ZVJlZ3VsYXJDb2ZmZWU7CgogICAgICAgIHNvY2lhbEltcGFjdCA9IHRvdGFsRGFpbHlTb2NpYWxJbXBhY3RSZXZlbnVlIC8gcmVmZXJlbmNlRGFpbHlTb2NpYWxJbXBhY3RSZXZlbnVlOwoKCiAgICAgICAgcmV0dXJuIFtzb2NpYWxJbXBhY3RdOwogICAgfQoKICAgIC8vTUFQIFlPVVIgRlVOQ1RJT04gVE8gQSBTVFJJTkcgTkFNRSBIRVJFOgogICAgcmV0dXJuIHsgZnVuY01hcDogeyJnZXRTb2NpYWxJbXBhY3QiOiBnZXRTb2NpYWxJbXBhY3R9IH07Cgp9KSgpOwoKCi8vIFRvIGltcG9ydCBhIHNjcmlwdCwgaXQgbXVzdCB1c2UgYSBzaW1pbGFyIHN0cnVjdHVyZSB0byB0aGUgZXhhbXBsZSBjb2RlIGFib3ZlLiBJdCBzaG91bGQgdGFrZSB0aGUgZm9ybSBvZgovLyBhbiBpbW1lZGlhdGVseSBpbnZva2VkIGZ1bmN0aW9uIGV4cHJlc3Npb246IGh0dHBzOi8vZGV2ZWxvcGVyLm1vemlsbGEub3JnL2VuLVVTL2RvY3MvR2xvc3NhcnkvSUlGRSB3aGVyZSB0aGUKLy8gZnVuY3Rpb24gcmV0dXJucyBhIGZ1bmN0aW9uIG1hcCBjYWxsZWQgZnVuY01hcC4KLy8gCi8vIGZ1bmNNYXAgc2hvdWxkIGhhdmUgc3RyaW5nIGtleXMgYW5kIGZ1bmN0aW9uIHZhbHVlcy4gU3RyaW5nIGtleXMgd2lsbCBiZSB1c2VkIGJ5IEV2YWx1YXRhYmxlIEVsZW1lbnRzCi8vIHRvIHBhc3MgaW5wdXRzIHRvIGFuZCByZWNlaXZlIG91dHB1dHMgZnJvbSB0aGUgZnVuY3Rpb25zLgovLyAKLy8gRWFjaCBzY3JpcHQgbWF5IGRlZmluZSBhcmJpdHJhcmlseSBtYW55IGZ1bmN0aW9ucywgc28gbG9uZyBhcyB0aGV5J3JlIGFsbCBleHBvc2VkIHZpYSBmdW5jTWFwLgovLyAKLy8gRnVuY3Rpb24gaW5wdXRzIHdpbGwgdGFrZSB0aGUgZm9ybSBvZiBhIHNpbmdsZSBhcnJheSBvZiA8YW55PiB2YWx1ZXMuCi8vIEZ1bmN0aW9ucyBzaG91bGQgbGlrZXdpc2UgcmV0dXJuIGFuIGFycmF5IG9mIDxhbnk+IHZhbHVlcy4KLy8gTWVhbmluZyBmb3IgYXJndW1lbnRzIGFuZCByZXR1cm4gdmFsdWVzIGlzIGRldGVybWluZWQgYnkgdGhlaXIgb3JkZXIgaW4gdGhlIGFycmF5Lg=="
+      }
+    },
+    {
+      "meta": {
+        "uuid": "a7cd639e-8ce2-48ca-a60e-1911350c8014",
+        "name": "Get Combined Impact"
+      },
+      "evalType": "Script",
+      "content": {
+        "language": "javascript",
+        "script": "KGZ1bmN0aW9uICgpIHsKCiAgICAvL0lNUExFTUVOVCBZT1VSIEZVTkNUSU9OIEFTIEEgQ09OU1QgSEVSRToKICAgIGNvbnN0IGdldENvbWJpbmVkSW1wYWN0ID0gZnVuY3Rpb24gKGlucHV0cykgewogICAgICAgIGNvbnN0IG51bUFyZ3NFeHBlY3RlZCA9IDM7CiAgICAgICAgbGV0IGNvbWJpbmVkSW1wYWN0TnVtYmVyID0gMDsKICAgICAgICBsZXQgY29tYmluZWRJbXBhY3RMYWJlbCA9ICJVbmtub3duIjsKICAgICAgICBpZighaW5wdXRzLmxlbmd0aCA9PSBudW1BcmdzRXhwZWN0ZWQpCiAgICAgICAgewogICAgICAgICAgICBjb25zb2xlLmVycm9yKCJFcnJvciBpbiBhdHRhY2hlZCBzY3JpcHQgZ2V0Q29mZmVlVG90YWxzOiBJbnZhbGlkIGlucHV0cyAiLCBpbnB1dHMpOwogICAgICAgICAgICBjb21iaW5lZEltcGFjdExhYmVsID0gIkVycm9yIjsKICAgICAgICAgICAgcmV0dXJuIFtjb21iaW5lZEltcGFjdE51bWJlci50b0ZpeGVkKDIpLCBjb21iaW5lZEltcGFjdExhYmVsXTsKICAgICAgICB9CiAgICAgICAgY29uc3QgW2Vudmlyb25tZW50YWxJbXBhY3QsIHNvY2lhbEltcGFjdCwgbWFnbml0dWRlRm9yTm9uTmV1dHJhbExhYmVsXSA9IGlucHV0czsKICAgICAgICBjb25zdCBsYWJlbE9wdGlvbnMgPSBbIkJldHRlciIsICJOZXV0cmFsIiwgIldvcnNlIl07CiAgICAgICAgY29tYmluZWRJbXBhY3ROdW1iZXIgPSBzb2NpYWxJbXBhY3QgLSBlbnZpcm9ubWVudGFsSW1wYWN0OwoKICAgICAgICBjb21iaW5lZEltcGFjdExhYmVsID0gIiI7CiAgICAgICAgaWYoY29tYmluZWRJbXBhY3ROdW1iZXIgPCAwKSB7Y29tYmluZWRJbXBhY3RMYWJlbCA9ICIoLSkgIn0KICAgICAgICBpZihjb21iaW5lZEltcGFjdE51bWJlciA+IDApIHtjb21iaW5lZEltcGFjdExhYmVsID0gIigrKSAifQoKICAgICAgICBpZihNYXRoLmFicyhjb21iaW5lZEltcGFjdE51bWJlcikgPiBtYWduaXR1ZGVGb3JOb25OZXV0cmFsTGFiZWwpCiAgICAgICAgewogICAgICAgICAgICBpZihjb21iaW5lZEltcGFjdE51bWJlciA8IDApIHtjb21iaW5lZEltcGFjdExhYmVsICs9IGxhYmVsT3B0aW9uc1syXX0KICAgICAgICAgICAgZWxzZSB7Y29tYmluZWRJbXBhY3RMYWJlbCArPSBsYWJlbE9wdGlvbnNbMF19CiAgICAgICAgfQogICAgICAgIGVsc2UKICAgICAgICB7CiAgICAgICAgICAgIGNvbWJpbmVkSW1wYWN0TGFiZWwgKz0gbGFiZWxPcHRpb25zWzFdOwogICAgICAgIH0KICAgICAgICBjb25zb2xlLmxvZyhjb21iaW5lZEltcGFjdE51bWJlci50b0ZpeGVkKDIpLCBjb21iaW5lZEltcGFjdExhYmVsKTsKCiAgICAgICAgcmV0dXJuIFtjb21iaW5lZEltcGFjdE51bWJlci50b0ZpeGVkKDIpLCBjb21iaW5lZEltcGFjdExhYmVsXTsKICAgIH0KCiAgICAvL01BUCBZT1VSIEZVTkNUSU9OIFRPIEEgU1RSSU5HIE5BTUUgSEVSRToKICAgIHJldHVybiB7IGZ1bmNNYXA6IHsiZ2V0Q29tYmluZWRJbXBhY3QiOiBnZXRDb21iaW5lZEltcGFjdH0gfTsKCn0pKCk7CgoKLy8gVG8gaW1wb3J0IGEgc2NyaXB0LCBpdCBtdXN0IHVzZSBhIHNpbWlsYXIgc3RydWN0dXJlIHRvIHRoZSBleGFtcGxlIGNvZGUgYWJvdmUuIEl0IHNob3VsZCB0YWtlIHRoZSBmb3JtIG9mCi8vIGFuIGltbWVkaWF0ZWx5IGludm9rZWQgZnVuY3Rpb24gZXhwcmVzc2lvbjogaHR0cHM6Ly9kZXZlbG9wZXIubW96aWxsYS5vcmcvZW4tVVMvZG9jcy9HbG9zc2FyeS9JSUZFIHdoZXJlIHRoZQovLyBmdW5jdGlvbiByZXR1cm5zIGEgZnVuY3Rpb24gbWFwIGNhbGxlZCBmdW5jTWFwLgovLyAKLy8gZnVuY01hcCBzaG91bGQgaGF2ZSBzdHJpbmcga2V5cyBhbmQgZnVuY3Rpb24gdmFsdWVzLiBTdHJpbmcga2V5cyB3aWxsIGJlIHVzZWQgYnkgRXZhbHVhdGFibGUgRWxlbWVudHMKLy8gdG8gcGFzcyBpbnB1dHMgdG8gYW5kIHJlY2VpdmUgb3V0cHV0cyBmcm9tIHRoZSBmdW5jdGlvbnMuCi8vIAovLyBFYWNoIHNjcmlwdCBtYXkgZGVmaW5lIGFyYml0cmFyaWx5IG1hbnkgZnVuY3Rpb25zLCBzbyBsb25nIGFzIHRoZXkncmUgYWxsIGV4cG9zZWQgdmlhIGZ1bmNNYXAuCi8vIAovLyBGdW5jdGlvbiBpbnB1dHMgd2lsbCB0YWtlIHRoZSBmb3JtIG9mIGEgc2luZ2xlIGFycmF5IG9mIDxhbnk+IHZhbHVlcy4KLy8gRnVuY3Rpb25zIHNob3VsZCBsaWtld2lzZSByZXR1cm4gYW4gYXJyYXkgb2YgPGFueT4gdmFsdWVzLgovLyBNZWFuaW5nIGZvciBhcmd1bWVudHMgYW5kIHJldHVybiB2YWx1ZXMgaXMgZGV0ZXJtaW5lZCBieSB0aGVpciBvcmRlciBpbiB0aGUgYXJyYXku"
+      }
+    }
+  ],
+  "runnableModels": [
+    {
+      "meta": {
+        "uuid": "d69e397e-638f-4673-9f53-3ceaa48381e2",
+        "name": "Coffee: Runnable Decision Model"
+      },
+      "elements": [
+        {
+          "meta": {
+            "uuid": "de62d4fe-c117-47bd-9390-e88491f97353",
+            "name": "Get Coffee Totals"
+          },
+          "evaluatableAsset": "06c5377c-2a41-495b-a099-78b492e135e1",
+          "functionName": "getCoffeeTotals",
+          "inputs": [
+            "c921247c-e7f3-46d3-8b5a-bf57fbabcd58",
+            "a66c602e-7be7-46c6-825f-1ed892d30efb",
+            "c25b72a6-ced3-46ab-ac7d-79b129377d23",
+            "ecbed3f2-dbbc-4d64-8c39-25790f5b9999"
+          ],
+          "outputs": [
+            "0e609c76-5ff3-43c0-96e2-d453b0bec423",
+            "8ced4be1-4151-43e9-b869-0ab4d3895c15",
+            "ccb9c26e-615d-4d35-bb7f-f97c7ee547fc"
+          ]
+        },
+        {
+          "meta": {
+            "uuid": "63246be1-8c71-48e2-a57e-9d9dd618ba39",
+            "name": "Get Environmental Impact"
+          },
+          "evaluatableAsset": "e3e14e44-f07d-424e-ae18-3647b4e62648",
+          "functionName": "getEnvironmentalImpact",
+          "inputs": [
+            "6b9c2bc9-fa7d-4068-bf8b-ea1168dd8980",
+            "09d0e15a-db26-40ab-957c-1c8536eabe4d",
+            "8022af61-ddc7-44b0-9d33-235f851cca00",
+            "c25b72a6-ced3-46ab-ac7d-79b129377d23",
+            "ecbed3f2-dbbc-4d64-8c39-25790f5b9999"
+          ],
+          "outputs": [
+            "2505ccde-4180-4528-91f6-2c57682cbc7c"
+          ]
+        },
+        {
+          "meta": {
+            "uuid": "420c35fb-526b-4112-b833-f8da75d64691",
+            "name": "Get Social Impact"
+          },
+          "evaluatableAsset": "9bd989ea-03b5-403b-a31d-e349fd578118",
+          "functionName": "getSocialImpact",
+          "inputs": [
+            "6b9c2bc9-fa7d-4068-bf8b-ea1168dd8980",
+            "8ced4be1-4151-43e9-b869-0ab4d3895c15",
+            "ccb9c26e-615d-4d35-bb7f-f97c7ee547fc",
+            "5a982da4-abe2-4eab-b93f-e15c9a5ba4bf",
+            "ee77ab3e-2fbe-42fb-a498-7c26773fa369",
+            "6b1ebd7b-d193-4651-8d70-64680d9c9e30"
+          ],
+          "outputs": [
+            "84620412-3746-4a83-a03c-a6c68fef30ca"
+          ]
+        },
+        {
+          "meta": {
+            "uuid": "5247084f-9ffb-412a-ac10-ec5c5a6b4afc",
+            "name": "Get Combined Impact"
+          },
+          "evaluatableAsset": "a7cd639e-8ce2-48ca-a60e-1911350c8014",
+          "functionName": "getCombinedImpact",
+          "inputs": [
+            "2505ccde-4180-4528-91f6-2c57682cbc7c",
+            "84620412-3746-4a83-a03c-a6c68fef30ca",
+            "79667f59-9e74-4544-9207-4d1a58b1396a"
+          ],
+          "outputs": [
+            "268c3c48-ff2b-4e95-a3c2-5d8fe9d9cddf",
+            "b0ba9497-ca65-4f71-8d37-dd256b5e9583"
+          ]
+        }
+      ]
+    }
+  ],
+  "inputOutputValues": [
+    {
+      "meta": {
+        "uuid": "c25b72a6-ced3-46ab-ac7d-79b129377d23",
+        "name": "IOVal: #lbs of FTBF coffee I buy"
+      },
+      "data": 0
+    },
+    {
+      "meta": {
+        "uuid": "ecbed3f2-dbbc-4d64-8c39-25790f5b9999",
+        "name": "IOVal: #lbs of regular coffee I buy"
+      },
+      "data": 1
+    },
+    {
+      "meta": {
+        "uuid": "6b9c2bc9-fa7d-4068-bf8b-ea1168dd8980",
+        "name": "IOVal: Time frame (days)"
+      },
+      "data": 7
+    },
+    {
+      "meta": {
+        "uuid": "c921247c-e7f3-46d3-8b5a-bf57fbabcd58",
+        "name": "IOVal: $/lb for FTBF coffee"
+      },
+      "data": 18
+    },
+    {
+      "meta": {
+        "uuid": "a66c602e-7be7-46c6-825f-1ed892d30efb",
+        "name": "IOVal: $/lb for regular coffee"
+      },
+      "data": 9
+    },
+    {
+      "meta": {
+        "uuid": "0e609c76-5ff3-43c0-96e2-d453b0bec423",
+        "name": "IOVal: Total $ spent on ALL coffee"
+      },
+      "data": null
+    },
+    {
+      "meta": {
+        "uuid": "8ced4be1-4151-43e9-b869-0ab4d3895c15",
+        "name": "IOVal: Total $ spent on FTBF coffee"
+      },
+      "data": null
+    },
+    {
+      "meta": {
+        "uuid": "ccb9c26e-615d-4d35-bb7f-f97c7ee547fc",
+        "name": "IOVal: Total $ spent on regular coffee"
+      },
+      "data": null
+    },
+    {
+      "meta": {
+        "uuid": "09d0e15a-db26-40ab-957c-1c8536eabe4d",
+        "name": "IOVal: Impact rate FTBF coffee per pound per day"
+      },
+      "data": 1
+    },
+    {
+      "meta": {
+        "uuid": "8022af61-ddc7-44b0-9d33-235f851cca00",
+        "name": "IOVal: Impact rate Regular coffee per pound per day"
+      },
+      "data": 2.5
+    },
+    {
+      "meta": {
+        "uuid": "2505ccde-4180-4528-91f6-2c57682cbc7c",
+        "name": "IOVal: Total environmental impact"
+      },
+      "data": 0
+    },
+    {
+      "meta": {
+        "uuid": "5a982da4-abe2-4eab-b93f-e15c9a5ba4bf",
+        "name": "IOVal: Social income percent for FTBF coffee",
+        "summary": "The percent of Fair Trade, Bird Friendly coffee income that has a social impact (impacts workers/growers)"
+      },
+      "data": 10
+    },
+    {
+      "meta": {
+        "uuid": "ee77ab3e-2fbe-42fb-a498-7c26773fa369",
+        "name": "IOVal: Social income percent for regular coffee",
+        "summary": "The percent of regular coffee income that has a social impact (impacts workers/growers)"
+      },
+      "data": 1
+    },
+    {
+      "meta": {
+        "uuid": "6b1ebd7b-d193-4651-8d70-64680d9c9e30",
+        "name": "IOVal: Reference daily social impact income",
+        "summary": "The amount of income directed toward social impact needed for a social impact value of '1' in a period of 1 day. If this value is 0.25, and your choice results in $0.25 per day of revenue going toward social impact, your social impact value for the period will be 1."
+      },
+      "data": 0.25
+    },
+    {
+      "meta": {
+        "uuid": "84620412-3746-4a83-a03c-a6c68fef30ca",
+        "name": "IOVal: Total social impact"
+      },
+      "data": null
+    },
+    {
+      "meta": {
+        "uuid": "268c3c48-ff2b-4e95-a3c2-5d8fe9d9cddf",
+        "name": "IOVal: Total combined impact"
+      },
+      "data": null
+    },
+    {
+      "meta": {
+        "uuid": "b0ba9497-ca65-4f71-8d37-dd256b5e9583",
+        "name": "IOVal: Label for combined impact"
+      },
+      "data": ""
+    },
+    {
+      "meta": {
+        "uuid": "79667f59-9e74-4544-9207-4d1a58b1396a",
+        "name": "IOVal: Magnitude for non-neutral combined impact label"
+      },
+      "data": 0.25
+    }
+  ],
+  "controls": [
+    {
+      "meta": {
+        "uuid": "7cf47e6b-9251-43a1-ba50-2b748c405bff",
+        "name": "Control: #lbs of FTBF coffee I buy"
+      },
+      "displays": [
+        "fab3392d-5191-451e-b3f3-6434c873ff6d"
+      ],
+      "inputOutputValues": [
+        "c25b72a6-ced3-46ab-ac7d-79b129377d23"
+      ]
+    },
+    {
+      "meta": {
+        "uuid": "6a2ac43e-d6d7-4534-bcb8-7ac97259a198",
+        "name": "Control: #lbs of regular coffee I buy"
+      },
+      "displays": [
+        "8b8c316a-ffbd-4682-8c64-966fb5f7266b"
+      ],
+      "inputOutputValues": [
+        "ecbed3f2-dbbc-4d64-8c39-25790f5b9999"
+      ]
+    },
+    {
+      "meta": {
+        "uuid": "a93690e5-5204-484f-824d-154297c8fd89",
+        "name": "Control: Time frame (days)"
+      },
+      "displays": [
+        "418a1e0e-75ff-44c6-9eb1-fe81cfe64dc7"
+      ],
+      "inputOutputValues": [
+        "6b9c2bc9-fa7d-4068-bf8b-ea1168dd8980"
+      ]
+    },
+    {
+      "meta": {
+        "uuid": "d99c072a-3dd8-4d98-8e0a-518c60555914",
+        "name": "Control: $/lb for FTBF coffee"
+      },
+      "displays": [
+        "6113954e-9335-4dde-848b-c11763fd0859"
+      ],
+      "inputOutputValues": [
+        "c921247c-e7f3-46d3-8b5a-bf57fbabcd58"
+      ]
+    },
+    {
+      "meta": {
+        "uuid": "880b286f-24c1-4bc1-a9f2-4a61b122f187",
+        "name": "Control: $/lb for regular coffee"
+      },
+      "displays": [
+        "2ec3ec86-fc57-4228-9bad-535f5d4b2f62"
+      ],
+      "inputOutputValues": [
+        "a66c602e-7be7-46c6-825f-1ed892d30efb"
+      ]
+    },
+    {
+      "meta": {
+        "uuid": "8e5a0352-0f78-4b7f-94a4-4d08f8472cfb",
+        "name": "Control: Total $ spent on ALL coffee"
+      },
+      "displays": [
+        "42a33f51-05b7-49d2-83b7-9a83ac4b76b9"
+      ],
+      "inputOutputValues": [
+        "0e609c76-5ff3-43c0-96e2-d453b0bec423"
+      ]
+    },
+    {
+      "meta": {
+        "uuid": "fc26dcb9-e6ea-47c5-9cdf-58a38d101878",
+        "name": "Control: Total $ spent on FTBF coffee"
+      },
+      "displays": [
+        "77f10305-e578-4758-8937-a06fbb45068b"
+      ],
+      "inputOutputValues": [
+        "8ced4be1-4151-43e9-b869-0ab4d3895c15"
+      ]
+    },
+    {
+      "meta": {
+        "uuid": "722e4f61-2f16-485e-994b-e6e66b93537d",
+        "name": "Control: Total $ spent on regular coffee"
+      },
+      "displays": [
+        "9c799a6a-04b4-4cfe-a09e-9981f75f4859"
+      ],
+      "inputOutputValues": [
+        "ccb9c26e-615d-4d35-bb7f-f97c7ee547fc"
+      ]
+    },
+    {
+      "meta": {
+        "uuid": "2eb50363-a4de-4087-9bb1-f30f7c616485",
+        "name": "Control: Environmental impact rate for FTBF coffee"
+      },
+      "displays": [
+        "cbd5878f-d4e6-416b-b3cb-5bf6f885bf00"
+      ],
+      "inputOutputValues": [
+        "09d0e15a-db26-40ab-957c-1c8536eabe4d"
+      ]
+    },
+    {
+      "meta": {
+        "uuid": "d3214f94-6316-4a0e-89ff-b24c07f4174a",
+        "name": "Control: Environmental impact rate for regular coffee"
+      },
+      "displays": [
+        "9d2d4b3f-7319-40de-a2c0-2d10238d6686"
+      ],
+      "inputOutputValues": [
+        "8022af61-ddc7-44b0-9d33-235f851cca00"
+      ]
+    },
+    {
+      "meta": {
+        "uuid": "7bc62757-df08-466b-bef3-308994e31e39",
+        "name": "Control: Total environmental impact"
+      },
+      "displays": [
+        "47b17aa2-dfd5-4271-8601-d25af93b1a74"
+      ],
+      "inputOutputValues": [
+        "2505ccde-4180-4528-91f6-2c57682cbc7c"
+      ]
+    },
+    {
+      "meta": {
+        "uuid": "ab233d0e-a869-46b8-89c9-aa282351b1b4",
+        "name": "Control: Social income percent for FTBF coffee"
+      },
+      "displays": [
+        "a1f842af-f749-4281-9637-ab14a8978ef0"
+      ],
+      "inputOutputValues": [
+        "5a982da4-abe2-4eab-b93f-e15c9a5ba4bf"
+      ]
+    },
+    {
+      "meta": {
+        "uuid": "2658f39a-647d-4be3-9a86-557bdd0efe22",
+        "name": "Control: Social income percent for regular coffee"
+      },
+      "displays": [
+        "bbb5fc63-bbb6-4df3-bded-9ca59724afda"
+      ],
+      "inputOutputValues": [
+        "ee77ab3e-2fbe-42fb-a498-7c26773fa369"
+      ]
+    },
+    {
+      "meta": {
+        "uuid": "c8aab4b9-a305-4c3d-b2e5-5c9f80b4f20a",
+        "name": "Control: Impact on workers and growers (revenue, wages)"
+      },
+      "displays": [
+        "caa78734-554e-416a-8e39-43be0b4ef031"
+      ],
+      "inputOutputValues": [
+        "84620412-3746-4a83-a03c-a6c68fef30ca"
+      ]
+    },
+    {
+      "meta": {
+        "uuid": "bec94f8d-84a4-4c43-81fa-736bf8ab4a41",
+        "name": "Control: Reference daily social impact income",
+        "summary": "The amount of income directed toward social impact needed for a social impact value of '1' in a period of 1 day. If this value is 0.25, and your choice results in $0.25 per day of revenue going toward social impact, your social impact value for the period will be 1."
+      },
+      "displays": [
+        "cf5064b0-4509-4679-890d-c6427926ade5"
+      ],
+      "inputOutputValues": [
+        "6b1ebd7b-d193-4651-8d70-64680d9c9e30"
+      ]
+    },
+    {
+      "meta": {
+        "uuid": "7879a7d6-6d2b-4012-8db6-ada0eb5e2efc",
+        "name": "Control: Total combined impact"
+      },
+      "displays": [
+        "df4a4882-5d75-4741-bfe7-6239e5ab7cc4"
+      ],
+      "inputOutputValues": [
+        "268c3c48-ff2b-4e95-a3c2-5d8fe9d9cddf"
+      ]
+    },
+    {
+      "meta": {
+        "uuid": "18272444-137e-48bb-b907-48103fc4c8c7",
+        "name": "Control: Combined impact label"
+      },
+      "displays": [
+        "a4ed68ec-33af-4e41-b60a-8b99717a3bef"
+      ],
+      "inputOutputValues": [
+        "b0ba9497-ca65-4f71-8d37-dd256b5e9583"
+      ]
+    },
+    {
+      "meta": {
+        "uuid": "4dd6d964-53e2-4d30-971c-ab21b38f6f73",
+        "name": "Control: Magnitude for non-neutral impact label"
+      },
+      "displays": [
+        "4a0a2201-5303-4ce1-997a-bd38aa94ff41"
+      ],
+      "inputOutputValues": [
+        "79667f59-9e74-4544-9207-4d1a58b1396a"
+      ]
+    }
+  ],
+  "diagrams": [
+    {
+      "meta": {
+        "uuid": "ef40e7b4-1a11-46ab-8a43-38821c595b66",
+        "name": "Coffee purchasing CDD"
+      },
+      "elements": [
+        {
+          "meta": {
+            "uuid": "6a4b7773-6915-49d0-91d3-7987c867295c",
+            "name": "Price per pound for regular coffee"
+          },
+          "causalType": "External",
+          "position": {
+            "x": 440,
+            "y": 580
+          },
+          "displays": [
+            {
+              "meta": {
+                "uuid": "2ec3ec86-fc57-4228-9bad-535f5d4b2f62",
+                "name": "($/lb regular)"
+              },
+              "displayType": "controlRange",
+              "content": {
+                "controlParameters": {
+                  "min": 1,
+                  "max": 30,
+                  "step": 0.25,
+                  "value": 9,
+                  "isInteractive": true
+                }
+              }
+            }
+          ]
+        },
+        {
+          "meta": {
+            "uuid": "0468ece4-0910-44f8-bd9c-b7590b70a7e3",
+            "name": "Price per pound for fair trade bird friendly coffee"
+          },
+          "causalType": "External",
+          "position": {
+            "x": 100,
+            "y": 580
+          },
+          "displays": [
+            {
+              "meta": {
+                "uuid": "6113954e-9335-4dde-848b-c11763fd0859",
+                "name": "($/lb FTBF)"
+              },
+              "displayType": "controlRange",
+              "content": {
+                "controlParameters": {
+                  "min": 1,
+                  "max": 30,
+                  "step": 0.25,
+                  "value": 18,
+                  "isInteractive": true
+                }
+              }
+            }
+          ]
+        },
+        {
+          "meta": {
+            "uuid": "15fff188-9c80-46e2-9c61-d8c7e0cc99f6",
+            "name": "Number of pounds of regular coffee I buy"
+          },
+          "causalType": "Lever",
+          "position": {
+            "x": 20,
+            "y": 320
+          },
+          "displays": [
+            {
+              "meta": {
+                "uuid": "8b8c316a-ffbd-4682-8c64-966fb5f7266b",
+                "name": "(#lbs regular)"
+              },
+              "displayType": "controlRange",
+              "content": {
+                "controlParameters": {
+                  "min": 0,
+                  "max": 10,
+                  "step": 0.5,
+                  "value": 1,
+                  "isInteractive": true
+                }
+              }
+            }
+          ]
+        },
+        {
+          "meta": {
+            "uuid": "530ad25a-03b8-4419-9ff7-3a6194a32d66",
+            "name": "Environmental impact (birds, deforestation)"
+          },
+          "causalType": "Intermediate",
+          "position": {
+            "x": 420,
+            "y": 30
+          },
+          "displays": [
+            {
+              "meta": {
+                "uuid": "47b17aa2-dfd5-4271-8601-d25af93b1a74",
+                "name": "Raw environmental impact (number)"
+              },
+              "displayType": "controlText",
+              "content": {
+                "controlParameters": {
+                  "value": "",
+                  "isInteractive": false
+                }
+              }
+            }
+          ]
+        },
+        {
+          "meta": {
+            "uuid": "081e042a-65e9-4f39-ab58-bd4763630ce4",
+            "name": "Impact on workers and growers (revenue, wages)"
+          },
+          "causalType": "Intermediate",
+          "position": {
+            "x": 420,
+            "y": 190
+          },
+          "displays": [
+            {
+              "meta": {
+                "uuid": "caa78734-554e-416a-8e39-43be0b4ef031",
+                "name": "Raw worker impact (number)"
+              },
+              "displayType": "controlText",
+              "content": {
+                "controlParameters": {
+                  "value": "",
+                  "isInteractive": false
+                }
+              }
+            }
+          ]
+        },
+        {
+          "meta": {
+            "uuid": "dac1083c-fac3-4828-9d38-769e5afcb604",
+            "name": "How much money I pay for coffee"
+          },
+          "causalType": "Outcome",
+          "position": {
+            "x": 840,
+            "y": 350
+          },
+          "displays": [
+            {
+              "meta": {
+                "uuid": "42a33f51-05b7-49d2-83b7-9a83ac4b76b9",
+                "name": "Total spent"
+              },
+              "displayType": "controlText",
+              "content": {
+                "controlParameters": {
+                  "value": "",
+                  "isInteractive": false
+                }
+              }
+            },
+            {
+              "meta": {
+                "uuid": "77f10305-e578-4758-8937-a06fbb45068b",
+                "name": "Amount spent on FTBF coffee"
+              },
+              "displayType": "controlText",
+              "content": {
+                "controlParameters": {
+                  "value": "",
+                  "isInteractive": false
+                }
+              }
+            },
+            {
+              "meta": {
+                "uuid": "9c799a6a-04b4-4cfe-a09e-9981f75f4859",
+                "name": "Amount spent on regular coffee"
+              },
+              "displayType": "controlText",
+              "content": {
+                "controlParameters": {
+                  "value": "",
+                  "isInteractive": false
+                }
+              }
+            }
+          ]
+        },
+        {
+          "meta": {
+            "uuid": "1c1f521c-d93e-4fb9-a090-8f8d4b24a2c5",
+            "name": "Total social and environmental impact of my choice"
+          },
+          "causalType": "Outcome",
+          "position": {
+            "x": 830,
+            "y": 30
+          },
+          "displays": [
+            {
+              "meta": {
+                "uuid": "a4ed68ec-33af-4e41-b60a-8b99717a3bef",
+                "name": "Impact label"
+              },
+              "displayType": "controlText",
+              "content": {
+                "controlParameters": {
+                  "value": "",
+                  "isInteractive": false
+                }
+              }
+            },
+            {
+              "meta": {
+                "uuid": "df4a4882-5d75-4741-bfe7-6239e5ab7cc4",
+                "name": "Raw total impact (number)"
+              },
+              "displayType": "controlText",
+              "content": {
+                "controlParameters": {
+                  "value": "",
+                  "isInteractive": false
+                }
+              }
+            }
+          ]
+        },
+        {
+          "meta": {
+            "uuid": "219191d7-a785-4697-9a8a-96cc9c2fc8ba",
+            "name": "Number of pounds of Fair Trade, Bird Friendly coffee I buy"
+          },
+          "causalType": "Lever",
+          "position": {
+            "x": 20,
+            "y": 130
+          },
+          "displays": [
+            {
+              "meta": {
+                "uuid": "fab3392d-5191-451e-b3f3-6434c873ff6d",
+                "name": "(#lbs FTBF)"
+              },
+              "displayType": "controlRange",
+              "content": {
+                "controlParameters": {
+                  "min": 0,
+                  "max": 10,
+                  "step": 0.5,
+                  "value": 0,
+                  "isInteractive": true
+                }
+              }
+            }
+          ]
+        },
+        {
+          "meta": {
+            "uuid": "d70e95e2-6976-4124-95d4-b9c2eef58eae",
+            "name": "Misc. Configuration"
+          },
+          "causalType": "External",
+          "position": {
+            "x": 1330,
+            "y": 75
+          },
+          "displays": [
+            {
+              "meta": {
+                "uuid": "418a1e0e-75ff-44c6-9eb1-fe81cfe64dc7",
+                "name": "Decision time frame (Days)"
+              },
+              "displayType": "controlRange",
+              "content": {
+                "controlParameters": {
+                  "min": 1,
+                  "max": 30,
+                  "step": 1,
+                  "value": 7,
+                  "isInteractive": true
+                }
+              }
+            },
+            {
+              "meta": {
+                "uuid": "cbd5878f-d4e6-416b-b3cb-5bf6f885bf00",
+                "name": "Environmental Impact Rate: FTBF Coffee (impact per pound per day)"
+              },
+              "displayType": "controlRange",
+              "content": {
+                "controlParameters": {
+                  "min": 0,
+                  "max": 5,
+                  "step": 0.25,
+                  "value": 1,
+                  "isInteractive": true
+                }
+              }
+            },
+            {
+              "meta": {
+                "uuid": "9d2d4b3f-7319-40de-a2c0-2d10238d6686",
+                "name": "Environmental Impact Rate: Regular Coffee (impact per pound per day)"
+              },
+              "displayType": "controlRange",
+              "content": {
+                "controlParameters": {
+                  "min": 0,
+                  "max": 5,
+                  "step": 0.25,
+                  "value": 2.5,
+                  "isInteractive": true
+                }
+              }
+            },
+            {
+              "meta": {
+                "uuid": "a1f842af-f749-4281-9637-ab14a8978ef0",
+                "name": "Social income percent for FTBF coffee"
+              },
+              "displayType": "controlRange",
+              "content": {
+                "controlParameters": {
+                  "min": 0,
+                  "max": 100,
+                  "step": 1,
+                  "value": 10,
+                  "isInteractive": true
+                }
+              }
+            },
+            {
+              "meta": {
+                "uuid": "bbb5fc63-bbb6-4df3-bded-9ca59724afda",
+                "name": "Social income percent for regular coffee"
+              },
+              "displayType": "controlRange",
+              "content": {
+                "controlParameters": {
+                  "min": 0,
+                  "max": 100,
+                  "step": 1,
+                  "value": 1,
+                  "isInteractive": true
+                }
+              }
+            },
+            {
+              "meta": {
+                "uuid": "cf5064b0-4509-4679-890d-c6427926ade5",
+                "name": "Reference daily social impact income",
+                "summary": "The amount of income directed toward social impact needed for a social impact value of '1' in a period of 1 day. If this value is 0.25, and your choice results in $0.25 per day of revenue going toward social impact, your social impact value for the period will be 1."
+              },
+              "displayType": "controlRange",
+              "content": {
+                "controlParameters": {
+                  "min": 0.25,
+                  "max": 5,
+                  "step": 0.25,
+                  "value": 0.25,
+                  "isInteractive": true
+                }
+              }
+            },
+            {
+              "meta": {
+                "uuid": "4a0a2201-5303-4ce1-997a-bd38aa94ff41",
+                "name": "Magnitude for non-neutral impact label"
+              },
+              "displayType": "controlRange",
+              "content": {
+                "controlParameters": {
+                  "min": 0.01,
+                  "max": 1,
+                  "step": 0.01,
+                  "value": 0.1,
+                  "isInteractive": true
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "meta": {
+            "uuid": "934be48b-d518-4545-a8e2-5b3db8d558bc",
+            "name": "Number of pounds of coffee I buy --> How much money I pay for coffee"
+          },
+          "source": "15fff188-9c80-46e2-9c61-d8c7e0cc99f6",
+          "target": "dac1083c-fac3-4828-9d38-769e5afcb604"
+        },
+        {
+          "meta": {
+            "uuid": "a529e785-7438-4f7d-8000-3923ec0cd7d0",
+            "name": "Number of pounds of coffee I buy --> Environmental impact (birds, deforestation)"
+          },
+          "source": "15fff188-9c80-46e2-9c61-d8c7e0cc99f6",
+          "target": "530ad25a-03b8-4419-9ff7-3a6194a32d66"
+        },
+        {
+          "meta": {
+            "uuid": "cf801a34-fd53-4631-864c-397c7d52a516",
+            "name": "Price per pound for fair trade bird friendly coffee --> How much money I pay for coffee"
+          },
+          "source": "0468ece4-0910-44f8-bd9c-b7590b70a7e3",
+          "target": "dac1083c-fac3-4828-9d38-769e5afcb604"
+        },
+        {
+          "meta": {
+            "uuid": "3105d038-5e0d-465d-a30e-2fc73aff76fd",
+            "name": "Price per pound for regular coffee --> How much money I pay for coffee"
+          },
+          "source": "6a4b7773-6915-49d0-91d3-7987c867295c",
+          "target": "dac1083c-fac3-4828-9d38-769e5afcb604"
+        },
+        {
+          "meta": {
+            "uuid": "3c8ef5af-a578-4fe1-8fb2-3a149f3c260b",
+            "name": "Environmental impact (birds, deforestation) --> Total social and environmental impact of my choice"
+          },
+          "source": "530ad25a-03b8-4419-9ff7-3a6194a32d66",
+          "target": "1c1f521c-d93e-4fb9-a090-8f8d4b24a2c5"
+        },
+        {
+          "meta": {
+            "uuid": "de6e257e-5f25-4437-aa16-eca5fffa2c56",
+            "name": "Impact on workers and growers (revenue, wages) --> Total social and environmental impact of my choice"
+          },
+          "source": "081e042a-65e9-4f39-ab58-bd4763630ce4",
+          "target": "1c1f521c-d93e-4fb9-a090-8f8d4b24a2c5"
+        },
+        {
+          "meta": {
+            "uuid": "733ba8fb-9b81-4b4a-a78e-da784f722f34",
+            "name": "How much money I pay for coffee --> Impact on workers and growers (revenue, wages)"
+          },
+          "source": "dac1083c-fac3-4828-9d38-769e5afcb604",
+          "target": "081e042a-65e9-4f39-ab58-bd4763630ce4"
+        },
+        {
+          "meta": {
+            "uuid": "5b185e44-955a-4cf4-a580-96abeb579b2a",
+            "name": "Number of pounds of Fair Trade, Bird Friendly coffee I buy --> Environmental impact (birds, deforestation)"
+          },
+          "source": "219191d7-a785-4697-9a8a-96cc9c2fc8ba",
+          "target": "530ad25a-03b8-4419-9ff7-3a6194a32d66"
+        },
+        {
+          "meta": {
+            "uuid": "4a9733dd-a0a3-4211-9b26-d58e2b713f85",
+            "name": "Number of pounds of Fair Trade, Bird Friendly coffee I buy --> How much money I pay for coffee"
+          },
+          "source": "219191d7-a785-4697-9a8a-96cc9c2fc8ba",
+          "target": "dac1083c-fac3-4828-9d38-769e5afcb604"
+        }
+      ]
+    }
+  ]
+}

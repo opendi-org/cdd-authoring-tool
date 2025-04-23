@@ -1,0 +1,24 @@
+{
+    "$schema": "./schemas/Causal-Decision-Model.json",
+    "meta": {
+      "uuid": "",
+      "name": "New Decision Model",
+      "summary": "(Recommend editing name/summary/documentation fields before saving)",
+      "documentation": {
+        "content": "",
+        "MIMEType": "text/plain"
+      },
+      "version": "0.1",
+      "draft": true,
+      "createdDate": ""
+    },
+    "diagrams": [
+        {
+            "meta": {
+                "uuid": "",
+                "name": "CDD",
+                "createdDate": ""
+            }
+        }
+    ]
+}

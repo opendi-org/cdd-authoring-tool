@@ -1,0 +1,382 @@
+{
+  "$schema": "../schemas/Causal-Decision-Model.json",
+  "meta": {
+    "uuid": "93862764-dcd0-4b81-8e7a-ad272ee8ac81",
+    "name": "Coffee CDM (non-interactive)",
+    "summary": "See Coffee Purchasing Decision. This non-interactive version of the Coffee Purchasing Decision model shows one step in the authoring process. This model contains only the diagram portion of the overall decision model, with no Evaluatable Assets, Runnable Models, Controls, or Input/Output Values.",
+    "documentation": {
+      "content": "This CDD was authored by Dr. Lorien Pratt.\nSource: https://www.lorienpratt.com/a-framework-for-how-data-informs-decisions/\n\nAdapted for OpenDI schema compliance by Isaac Kellogg.",
+      "MIMEType": "text/plain"
+    },
+    "version": "0.1",
+    "draft": true,
+    "updatedDate": "2024-11-14T15:13:50-05:00"
+  },
+  "diagrams": [
+    {
+      "meta": {
+        "uuid": "ef40e7b4-1a11-46ab-8a43-38821c595b66",
+        "name": "Coffee purchasing CDD"
+      },
+      "elements": [
+        {
+          "meta": {
+            "uuid": "6a4b7773-6915-49d0-91d3-7987c867295c",
+            "name": "Price per pound for regular coffee"
+          },
+          "causalType": "External",
+          "position": {
+            "x": 840,
+            "y": 580
+          },
+          "displays": [
+            {
+              "meta": {
+                "uuid": "2ec3ec86-fc57-4228-9bad-535f5d4b2f62"
+              },
+              "displayType": "controlRange",
+              "content": {
+                "controlParameters": {
+                  "min": 1,
+                  "max": 30,
+                  "step": 0.25,
+                  "value": 9,
+                  "isInteractive": true
+                }
+              }
+            }
+          ]
+        },
+        {
+          "meta": {
+            "uuid": "0468ece4-0910-44f8-bd9c-b7590b70a7e3",
+            "name": "Price per pound for fair trade bird friendly coffee"
+          },
+          "causalType": "External",
+          "position": {
+            "x": 400,
+            "y": 580
+          },
+          "displays": [
+            {
+              "meta": {
+                "uuid": "6113954e-9335-4dde-848b-c11763fd0859"
+              },
+              "displayType": "controlRange",
+              "content": {
+                "controlParameters": {
+                  "min": 1,
+                  "max": 30,
+                  "step": 0.25,
+                  "value": 18,
+                  "isInteractive": true
+                }
+              }
+            }
+          ]
+        },
+        {
+          "meta": {
+            "uuid": "15fff188-9c80-46e2-9c61-d8c7e0cc99f6",
+            "name": "Number of pounds of regular coffee I buy"
+          },
+          "causalType": "Lever",
+          "position": {
+            "x": 20,
+            "y": 360
+          },
+          "displays": [
+            {
+              "meta": {
+                "uuid": "8b8c316a-ffbd-4682-8c64-966fb5f7266b"
+              },
+              "displayType": "controlRange",
+              "content": {
+                "controlParameters": {
+                  "min": 0,
+                  "max": 10,
+                  "step": 0.5,
+                  "value": 1,
+                  "isInteractive": true
+                }
+              }
+            }
+          ]
+        },
+        {
+          "meta": {
+            "uuid": "530ad25a-03b8-4419-9ff7-3a6194a32d66",
+            "name": "Environmental impact (birds, deforestation)"
+          },
+          "causalType": "Intermediate",
+          "position": {
+            "x": 420,
+            "y": 30
+          },
+          "displays": [
+            {
+              "meta": {
+                "uuid": "47b17aa2-dfd5-4271-8601-d25af93b1a74",
+                "name": "Raw environmental impact (number)"
+              },
+              "displayType": "controlText",
+              "content": {
+                "controlParameters": {
+                  "value": "",
+                  "isInteractive": false
+                }
+              }
+            }
+          ]
+        },
+        {
+          "meta": {
+            "uuid": "081e042a-65e9-4f39-ab58-bd4763630ce4",
+            "name": "Impact on workers and growers (revenue, wages)"
+          },
+          "causalType": "Intermediate",
+          "position": {
+            "x": 420,
+            "y": 180
+          },
+          "displays": [
+            {
+              "meta": {
+                "uuid": "caa78734-554e-416a-8e39-43be0b4ef031",
+                "name": "Raw worker impact (number)"
+              },
+              "displayType": "controlText",
+              "content": {
+                "controlParameters": {
+                  "value": "",
+                  "isInteractive": false
+                }
+              }
+            }
+          ]
+        },
+        {
+          "meta": {
+            "uuid": "dac1083c-fac3-4828-9d38-769e5afcb604",
+            "name": "How much money I pay for coffee"
+          },
+          "causalType": "Outcome",
+          "position": {
+            "x": 840,
+            "y": 350
+          },
+          "displays": [
+            {
+              "meta": {
+                "uuid": "42a33f51-05b7-49d2-83b7-9a83ac4b76b9",
+                "name": "Total spent"
+              },
+              "displayType": "controlText",
+              "content": {
+                "controlParameters": {
+                  "value": "",
+                  "isInteractive": false
+                }
+              }
+            },
+            {
+              "meta": {
+                "uuid": "77f10305-e578-4758-8937-a06fbb45068b",
+                "name": "Amount spent on FTBF coffee"
+              },
+              "displayType": "controlText",
+              "content": {
+                "controlParameters": {
+                  "value": "",
+                  "isInteractive": false
+                }
+              }
+            },
+            {
+              "meta": {
+                "uuid": "9c799a6a-04b4-4cfe-a09e-9981f75f4859",
+                "name": "Amount spent on regular coffee"
+              },
+              "displayType": "controlText",
+              "content": {
+                "controlParameters": {
+                  "value": "",
+                  "isInteractive": false
+                }
+              }
+            }
+          ]
+        },
+        {
+          "meta": {
+            "uuid": "1c1f521c-d93e-4fb9-a090-8f8d4b24a2c5",
+            "name": "Total social and environmental impact of my choice"
+          },
+          "causalType": "Outcome",
+          "position": {
+            "x": 830,
+            "y": 30
+          },
+          "displays": [
+            {
+              "meta": {
+                "uuid": "a4ed68ec-33af-4e41-b60a-8b99717a3bef",
+                "name": "Impact label"
+              },
+              "displayType": "controlText",
+              "content": {
+                "controlParameters": {
+                  "value": "",
+                  "isInteractive": false
+                }
+              }
+            },
+            {
+              "meta": {
+                "uuid": "a4ed68ec-33af-4e41-b60a-8b99717a3bef",
+                "name": "Raw total impact (number)"
+              },
+              "displayType": "controlText",
+              "content": {
+                "controlParameters": {
+                  "value": "",
+                  "isInteractive": false
+                }
+              }
+            }
+          ]
+        },
+        {
+          "meta": {
+            "uuid": "219191d7-a785-4697-9a8a-96cc9c2fc8ba",
+            "name": "Number of pounds of Fair Trade, Bird Friendly coffee I buy"
+          },
+          "causalType": "Lever",
+          "position": {
+            "x": 20,
+            "y": 150
+          },
+          "displays": [
+            {
+              "meta": {
+                "uuid": "fab3392d-5191-451e-b3f3-6434c873ff6d"
+              },
+              "displayType": "controlRange",
+              "content": {
+                "controlParameters": {
+                  "min": 0,
+                  "max": 10,
+                  "step": 0.5,
+                  "value": 0,
+                  "isInteractive": true
+                }
+              }
+            }
+          ]
+        },
+        {
+          "meta": {
+            "uuid": "d70e95e2-6976-4124-95d4-b9c2eef58eae",
+            "name": "Time Frame (Days)"
+          },
+          "causalType": "External",
+          "position": {
+            "x": 30,
+            "y": 580
+          },
+          "displays": [
+            {
+              "meta": {
+                "uuid": "418a1e0e-75ff-44c6-9eb1-fe81cfe64dc7"
+              },
+              "displayType": "controlRange",
+              "content": {
+                "controlParameters": {
+                  "min": 1,
+                  "max": 30,
+                  "step": 1,
+                  "value": 7,
+                  "isInteractive": true
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "meta": {
+            "uuid": "934be48b-d518-4545-a8e2-5b3db8d558bc",
+            "name": "Number of pounds of coffee I buy --> How much money I pay for coffee"
+          },
+          "source": "15fff188-9c80-46e2-9c61-d8c7e0cc99f6",
+          "target": "dac1083c-fac3-4828-9d38-769e5afcb604"
+        },
+        {
+          "meta": {
+            "uuid": "a529e785-7438-4f7d-8000-3923ec0cd7d0",
+            "name": "Number of pounds of coffee I buy --> Environmental impact (birds, deforestation)"
+          },
+          "source": "15fff188-9c80-46e2-9c61-d8c7e0cc99f6",
+          "target": "530ad25a-03b8-4419-9ff7-3a6194a32d66"
+        },
+        {
+          "meta": {
+            "uuid": "cf801a34-fd53-4631-864c-397c7d52a516",
+            "name": "Price per pound for fair trade bird friendly coffee --> How much money I pay for coffee"
+          },
+          "source": "0468ece4-0910-44f8-bd9c-b7590b70a7e3",
+          "target": "dac1083c-fac3-4828-9d38-769e5afcb604"
+        },
+        {
+          "meta": {
+            "uuid": "3105d038-5e0d-465d-a30e-2fc73aff76fd",
+            "name": "Price per pound for regular coffee --> How much money I pay for coffee"
+          },
+          "source": "6a4b7773-6915-49d0-91d3-7987c867295c",
+          "target": "dac1083c-fac3-4828-9d38-769e5afcb604"
+        },
+        {
+          "meta": {
+            "uuid": "3c8ef5af-a578-4fe1-8fb2-3a149f3c260b",
+            "name": "Environmental impact (birds, deforestation) --> Total social and environmental impact of my choice"
+          },
+          "source": "530ad25a-03b8-4419-9ff7-3a6194a32d66",
+          "target": "1c1f521c-d93e-4fb9-a090-8f8d4b24a2c5"
+        },
+        {
+          "meta": {
+            "uuid": "de6e257e-5f25-4437-aa16-eca5fffa2c56",
+            "name": "Impact on workers and growers (revenue, wages) --> Total social and environmental impact of my choice"
+          },
+          "source": "081e042a-65e9-4f39-ab58-bd4763630ce4",
+          "target": "1c1f521c-d93e-4fb9-a090-8f8d4b24a2c5"
+        },
+        {
+          "meta": {
+            "uuid": "733ba8fb-9b81-4b4a-a78e-da784f722f34",
+            "name": "How much money I pay for coffee --> Impact on workers and growers (revenue, wages)"
+          },
+          "source": "dac1083c-fac3-4828-9d38-769e5afcb604",
+          "target": "081e042a-65e9-4f39-ab58-bd4763630ce4"
+        },
+        {
+          "meta": {
+            "uuid": "5b185e44-955a-4cf4-a580-96abeb579b2a",
+            "name": "Number of pounds of Fair Trade, Bird Friendly coffee I buy --> Environmental impact (birds, deforestation)"
+          },
+          "source": "219191d7-a785-4697-9a8a-96cc9c2fc8ba",
+          "target": "530ad25a-03b8-4419-9ff7-3a6194a32d66"
+        },
+        {
+          "meta": {
+            "uuid": "4a9733dd-a0a3-4211-9b26-d58e2b713f85",
+            "name": "Number of pounds of Fair Trade, Bird Friendly coffee I buy --> How much money I pay for coffee"
+          },
+          "source": "219191d7-a785-4697-9a8a-96cc9c2fc8ba",
+          "target": "dac1083c-fac3-4828-9d38-769e5afcb604"
+        }
+      ]
+    }
+  ]
+}
