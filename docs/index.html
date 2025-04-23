@@ -1,132 +1,14 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>CDD Authoring Tool</title>
-        <link rel="stylesheet" type="text/css" href="./style.css">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
-    </head>
-    <body>
-
-        <h2 class="title-header">OpenDI CDD Authoring Tool (Prototype)</h2>
-
-        <div class="cdd-editor">
-            <div class="cdd-editor left">
-                <div id="jointjspaper" class="cdd-editor"><!-- This is used by index.js to attach the JointJS Paper object, for displaying CDDs. --></div>
-                <div id="controls-legend"> <!--Display graph control options over graph-->
-                    <b>Left click:</b> Select single element <br/>
-                    <b>Left click (drag):</b> Move single element <br />
-                    <b>Right click:</b> Select multiple elements <br/>
-                </div>
-            </div>
-            <!--Menu contains control descriptions, glossary of terms, and JSON Editor-->
-            <div id="menu" class="cdd-editor right">
-                <div id="menu-options"> <!--Menu buttons-->
-                    <div id ="menu-tabs"> <!--Menu tab buttons-->
-                        <div id="help-tab-btn" class="menu-tab">Help</div>
-                        <div id="glossary-btn" class="menu-tab">Glossary</div>
-                        <div id="advanced-tab-btn" class="menu-tab">JSON Editor</div>
-                    </div>
-                    <div id="exit-btn" class="menu-tab">Close</div> <!--Exit menu button-->
-                </div>
-                <div id="menu-contents" class="cdd-editor"> <!--Actual menu content-->
-                    <div id="helpmenu" class="info-menu"><!--Provides details about controls and buttons-->
-                        <h2>UI Buttons (Graph view)</h2>
-                        <ul>
-                            <li><b>New Elem</b>: Create a new decision element. The new element will be placed on the graph, with placeholder values.</li>
-                            <li><b>Del Elem</b>: Delete the selected element(s). Removes all associated dependencies as well. Can select and delete multiple elements at once.</li>
-                            <li><b>Toggle Dep</b>: When 2 or more elements are selected, toggle causal dependency arrows along the selected chain, from first selected to last selected.</li>
-                            <li><b>Menu</b>: Show menu resources such as information about controls and CDD terms, as well as the JSON Editor.</li>
-                        </ul>
-                        <h2>Controls (JSON Editor)</h2>
-                        <p>In tree view:
-                            <ul>
-                                <li><b>Double-click a value</b> to edit.</li>
-                                <li><b>Right-click</b>: View context menu.</li>
-                            </ul>
-                        </p>
-                        <h2>API Controls</h2>
-                        <p>
-                            <ul>
-                                <li><b>Select a Model</b>: Select a saved model from the API's database. The selected model can be loaded or deleted.</li>
-                                <li><b>Load Model</b>: Load the model that is currently selected in the <b>Select a Model</b> dropdown menu.</li>
-                                <li><b>Delete Model</b>: Delete the model that is currently selected in the <b>Select a Model</b> dropdown menu.</li>
-                                <li><b>New Model</b>: Replace the model in the Graph View with an empty model. You can use this to start diagramming a new decision model.</li>
-                                <li><b>Save Model</b>: Save the model that is currently open in the Graph View. If the model is not in the API database, it will be added. If the model already exists, it will be updated.</li>
-                            </ul>
-                        </p>
-                        <h2>Changing the API Base URL</h2>
-                        <p>
-                            You can direct the authoring tool to use your own local or external API by typing the new Base URL into the <b>API Base URL</b> textbox and clicking <b>Update</b>.
-                        </p>
-                        <h2>Manually load a saved JSON</h2>
-                        <p>
-                            To use your own JSON file as a starting point:
-                            <ol>
-                                <li>Delete all contents in the JSON Editor view.</li>
-                                <li>Open your JSON file in a local text editor.</li>
-                                <li>Copy the entire text contents of your local JSON file.</li>
-                                <li>Paste into this tool's JSON view.</li>
-                            </ol>
-                        </p>
-                    </div>
-                    <div id="glossary" class="info-menu"> <!--Provides definitions of CDD terminology-->
-                        <h2><a target="_blank" rel="noopener noreferrer" href="https://opendi.org/OpenDI%20Glossary#lever">Lever</a></h2>
-                        <p>Represents an <a target="_blank" rel="noopener noreferrer" href="https://opendi.org/OpenDI%20Glossary#action">Action</a> directly within the decision maker's control.</p>
-                        <h2><a target="_blank" rel="noopener noreferrer" href="https://opendi.org/OpenDI%20Glossary/#intermediate">Intermediate</a></h2>
-                        <p>Consequence of the decision maker's actions which impact the outcomes of the decision.</p>
-                        <h2><a target="_blank" rel="noopener noreferrer" href="https://opendi.org/OpenDI%20Glossary/#outcome">Outcome</a></h2>
-                        <p>A result of a decision the decision maker is interested in measuring.</p>
-                        <h2><a target="_blank" rel="noopener noreferrer" href="https://opendi.org/OpenDI%20Glossary/#external">External</a></h2>
-                        <p>Represents something outside the decision maker's control that have an impact on outcomes, either directly or indirectly.</p>
-                    </div>
-                    <div id="jsoneditor"><!-- This is used by index.js to attach the JSON Editor object. --></div> <!--Default menu tab-->
-                </div>
-                
-            </div>            
-        </div>
-
-        <div class="model-controls">
-            <h3 class="model-controls-header">API Controls</h2>
-            Select a Model: <select name="models" id="models-select"></select> <button id="load-model">Load Model</button> <button id="delete-model">Delete Model</button>
-            <br> <br>
-            <button id="new-model">New Model</button> <button id="save-model">Save Model</button>
-            <br> <br>
-            API Base URL: <input type="text" id="api-base-url"></input> <button id="update-api-url">Update</button> <label style="font-size:small">(Leave blank for static/no API)</label>
-            <br> <br>
-        </div>
-
-        <div class="instructions">
-            <p>
-                This tool allows you to create and edit OpenDI standards-compliant
-                Causal Decision Diagrams, using a graphical view and JSON editor.
-                <br>
-                For more info about OpenDI, visit <a href="https://opendi.org" target="_blank">OpenDI.org</a>.
-            </p>
-            <p>
-                Coffee purchasing CDD by Dr. Lorien Pratt. See original source on her blog: <a href="https://www.lorienpratt.com/a-framework-for-how-data-informs-decisions/" target="_blank">A Framework for How Data Informs Decisions</a>.
-            </p>
-            <p>
-                <b>This tool is a prototype!</b><br>We cannot yet guarantee that the system
-                is bug-free. This tool may crash unexpectedly, and you may lose data.
-                <br>
-                The tool provides a Download button to save your work as a JSON file.
-                Use it often!
-            </p>
-            <h2>Source</h2>
-            <p>
-                You can view and contribute to this project's source code on <a href="https://github.com/opendi-org/cdd-authoring-tool" target="_blank">GitHub</a>.
-            </p>
-            <br><br>
-            <hr>
-            <h2>Acknowledgements</h2>
-            <ul>
-                <li>Graphical view uses <a href="https://www.jointjs.com/" target="_blank">JointJS</a> diagramming library.</li>
-                <li>JSON Editor view uses <a href="https://github.com/josdejong/svelte-jsoneditor" target="_blank">svelte-jsoneditor</a>. See copyright notice in this project's source code.</li>
-            </ul>
-        </div>
-
-        
-        <!-- Must reference the file that will be output by Webpack here. See webpack.config.js -- output filename in module.exports object -->
-        <script src="bundled_app.js"></script>
-    </body>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/cdd-authoring-tool/assets/opendi-icon-small-CRjwzN0J.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CDD Authoring Tool</title>
+    <script type="module" crossorigin src="/cdd-authoring-tool/assets/index-B-oFDpZj.js"></script>
+    <link rel="stylesheet" crossorigin href="/cdd-authoring-tool/assets/index-_hbjwmF1.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
 </html>
