@@ -238,6 +238,8 @@ const ElementCRUDPanel: React.FC<ElementCrudPanelProps> = ({
                     <select name="Display Type" value={displayType} onChange={(event) => setDisplayType(event.target.value)}>
                         {Object.keys(DisplayTypeRegistry).map((displayType: string) => {
                             return (
+                                //Don't create an entry for the 'unknown' type
+                                displayType == "unknown" || 
                                 <option value={displayType} key={`option-${displayType}`}>{cleanDisplayTypeName(displayType)}</option>
                             )
                         })} 

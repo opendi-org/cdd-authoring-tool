@@ -47,7 +47,7 @@ const DisplaysSection: React.FC<DisplaysSectionProps> = ({
                 </button>
             </div>
             <section {...getCollapseProps()}>
-                <div style={{ padding: "5px", backgroundColor: "#0000004D" }}>
+                <div>
                     {displays}
                 </div>
             </section>

@@ -88,18 +88,26 @@ const DiagramElement: React.FC<DiagramElementProps> = ({
     let nonInteractiveDisplays = new Array<JSX.Element>();
     let displayContents = new Array<JSX.Element>();
     elementData.displays?.forEach((elemDisplay: any) => {
-      const DisplayComponentType = DisplayTypeRegistry[elemDisplay.displayType ?? ""].component;
-      const displayJSX = DisplayComponentType ? (
-      <DisplayComponentType
-        key={elemDisplay.meta.uuid}
-        displayJSON={elemDisplay}
-        computedIOValues={computedIOValues}
-        IOValues={IOValues}
-        setIOValues={setIOValues}
-        controlsMap={controlsMap}
-      />
-      ) : (
-        <div style={{ color: "yellow" }}>Unsupported display type: {elemDisplay.displayType ?? "(none)"}</div>
+      let DisplayComponentType = DisplayTypeRegistry[elemDisplay.displayType ?? "unknown"];
+      let styleClassName = elemDisplay.displayType ?? "unknown";
+      if (!DisplayComponentType)
+        {
+          DisplayComponentType = DisplayTypeRegistry.unknown;
+          styleClassName = "unknown";
+        }
+
+      const DisplayComponent = DisplayComponentType.component;
+      const displayJSX = DisplayComponent && (
+        <div className={`elem-display disp-${styleClassName}`}>
+          <DisplayComponent
+            key={elemDisplay.meta.uuid}
+            displayJSON={elemDisplay}
+            computedIOValues={computedIOValues}
+            IOValues={IOValues}
+            setIOValues={setIOValues}
+            controlsMap={controlsMap}
+          />
+        </div>
       )
 
       if(elemDisplay.content.controlParameters?.isInteractive)
