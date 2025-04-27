@@ -13,7 +13,8 @@ import { findIndexOfDependency, findIndexOfElement } from "./elementCRUD";
 export function getExpandedPathsForSelectedElements(
     selectionBuffer: Array<string>,
     model: any,
-    associatedDependenciesMap: Map<string, Set<AssociatedDependencyData>>
+    associatedDependenciesMap: Map<string, Set<AssociatedDependencyData>>,
+    selectedDiagramIndex: number = 0
 ): Array<Array<string>> {
 
     if(selectionBuffer.length > 0)
@@ -27,10 +28,10 @@ export function getExpandedPathsForSelectedElements(
         //Construct JSON paths for the selected elements while we're at it
         selectionBuffer.forEach((elemUUID: string) => {
             //Path
-            const elemIdx = findIndexOfElement(elemUUID, model);
+            const elemIdx = findIndexOfElement(elemUUID, model, selectedDiagramIndex);
             if(elemIdx !== undefined)
             {
-                elemPathsToExpand.push(["diagrams", "0", "elements", elemIdx.toString()]);
+                elemPathsToExpand.push(["diagrams", String(selectedDiagramIndex), "elements", elemIdx.toString()]);
             }
 
             //Associated dependencies
@@ -61,9 +62,9 @@ export function getExpandedPathsForSelectedElements(
     else //No selected elements, expand the default paths
     {
         let defaultPaths: Array<Array<string>> = []
-        if(model.diagrams && model.diagrams[0])
+        if(model.diagrams && model.diagrams[selectedDiagramIndex])
         {
-            defaultPaths.push(["diagrams", "0"]);
+            defaultPaths.push(["diagrams", String(selectedDiagramIndex)]);
         }
         if(model.meta)
         {

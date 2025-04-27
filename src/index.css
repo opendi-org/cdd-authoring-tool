@@ -292,10 +292,61 @@ body {
     padding-inline: 20px;
     font-size: 17px;
     font-weight: bold;
+    /* If h2 comes right after h3 or h2, this'll divide them */
+    border-top: 2px solid var(--info-menu-background);
+}
+
+/* H3 acts like a sub-section divider */
+.info-menu h3 {
+    background-color: #5353c249;
+    margin: 0;
+    padding-bottom:0.5em;
+    padding-top: 0.5em;
+    padding-inline: 20px;
+    /* If h3 comes right after h3 or h2, this'll divide them */
+    border-top: 2px solid var(--info-menu-background);
+}
+
+.info-menu div.model-options-list {
+    padding: 0px;
+    display:flex;
+    flex-direction: column;
+    height: 7.3em;
+    max-height: 7.3em;
+    overflow-y: auto;
+    border-top: 1.5px solid #252525;
+    border-bottom: 1.5px solid #252525;
+}
+.info-menu div.model-option {
+    padding: 0px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-inline-start: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+    background-color: #00000090;
+}
+
+.info-menu div.model-option.odd-entry {
+    background-color: #ffffff10;
+}
+
+.model-option div {
+    padding: 0px !important;
+    flex: 2;
+}
+.model-option label {
+    flex: 2;
+    display: block;
+    overflow: auto;
+    max-height: 3em;
 }
 
 .info-menu div {
-    padding: 20px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    padding-inline: 20px;
 }
 
 .info-menu button {
@@ -306,6 +357,10 @@ body {
     max-width: 30%;
 }
 .info-menu input {
+    margin-inline-end: var(--info-menu-margin);
+}
+
+.info-menu label {
     margin-inline-end: var(--info-menu-margin);
 }
 

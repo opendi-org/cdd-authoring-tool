@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useCollapse } from "react-collapsed";
 import ReactMarkdown from "react-markdown";
+import { cleanComponentName } from "../lib/cleanupNames";
 
 type ModelMetaInfoPanelProps = {
     model: any;
@@ -26,8 +27,8 @@ const ModelMetaInfoPanel: React.FC<ModelMetaInfoPanelProps> = ({
     const diagramMeta = ((model.diagrams && model.diagrams[diagramIndex]) && model.diagrams[diagramIndex].meta)
         ?? {name: null, summary: null};
 
-    const modelName = meta.name || "(Unnamed Model)";
-    const diagramName = diagramMeta.name || "(Unnamed Diagram)";
+    const modelName = cleanComponentName(meta.name, "Model");
+    const diagramName = cleanComponentName(diagramMeta.name, "Diagram");
     const summaryFromMarkdown = meta.summary && <ReactMarkdown children={meta.summary}/>;
 
 

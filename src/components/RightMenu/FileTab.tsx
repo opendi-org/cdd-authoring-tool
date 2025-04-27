@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { downloadModel, getDisplayNameForModel, getNewModel } from "../../lib/api/fileIO";
+import { copyDiagramInModel, deleteDiagramFromModel, addDiagramToModel, downloadModel, getNewModel } from "../../lib/api/modelCRUD";
 import { API, APIInterface } from "../../lib/api/api";
 import { v4 as uuidv4 } from "uuid";
 import { NoAPI } from "../../lib/api/noApi";
+import { cleanComponentDisplay } from "../../lib/cleanupNames";
 
 type FileTabProps = {
     model: any;
     setModel: Function;
+    selectedDiagramIndex: number;
+    setSelectedDiagramIndex: Function;
     apiInstance: APIInterface;
     setApiInstance: Function;
 }
@@ -19,6 +22,8 @@ type FileTabProps = {
 const FileTab: React.FC<FileTabProps> = ({
     model,
     setModel,
+    selectedDiagramIndex,
+    setSelectedDiagramIndex,
     apiInstance,
     setApiInstance,
 }) => {
@@ -39,7 +44,7 @@ const FileTab: React.FC<FileTabProps> = ({
 
         //Generates an <option> tag for a model based on its meta object
         const generateMetaOption = (meta: any) => {
-            const label = getDisplayNameForModel({meta: meta});
+            const label = cleanComponentDisplay(meta);
             const value = meta.uuid;
             return <option value={value} key={`option-models-${label}`}>{label}</option>
         }
@@ -64,6 +69,63 @@ const FileTab: React.FC<FileTabProps> = ({
         setModelOptions(options);
     }
 
+    /**
+     * Generate a list of Diagrams associated with the open model, and provide
+     * some options for each.
+     * @returns List of Diagrams associated with the open model
+     */
+    const generateModelDiagramList = () => {
+        
+        if(!model.diagrams) return null;
+
+        let diagramIndex = 0;
+        return model.diagrams.map((diagram: any) => {
+            const diaMeta = diagram.meta;
+            const diaLabel = cleanComponentDisplay(diaMeta, "Diagram");
+            const thisDiagramIndex = diagramIndex;
+            const isSelected = selectedDiagramIndex == thisDiagramIndex;
+
+            const deleteClick = () => {
+                setModel((prev: any) => {
+                    if(confirm(`Deleting diagram ${diaLabel}\nOK?`))
+                    {
+                        return deleteDiagramFromModel(prev, thisDiagramIndex);
+                    }
+                    return prev;
+                })
+                if(selectedDiagramIndex >= thisDiagramIndex)
+                {
+                    const diagramIndexToSelect = model.diagrams[selectedDiagramIndex - 1] ? selectedDiagramIndex - 1 : 0;
+                    setSelectedDiagramIndex(diagramIndexToSelect);    
+                }
+            }
+
+            const openClick = () => {
+                setSelectedDiagramIndex(thisDiagramIndex);
+            }
+
+            const copyClick = () => {
+                setModel((prev: any) => {
+                    return copyDiagramInModel(prev, thisDiagramIndex);
+                });
+            }
+            diagramIndex++;
+
+            const key = `model-dia-${diaMeta.uuid}`;
+            return (
+                <div key={key} className={`model-option ${thisDiagramIndex % 2 == 1 ? "odd-entry" : ""}`}>
+                    <label>{diaLabel}</label>
+                    <div>
+                        <button onClick={openClick}>Open</button>
+                        <button onClick={copyClick}>Make a Copy</button>
+                        <button onClick={deleteClick}>Delete</button>
+                        {isSelected && "(Opened)"}
+                    </div>
+                </div>
+            )
+        })
+    }
+
     // When the API class instance changes, update the options
     // in the "Pick a model" dropdown menu
     useEffect(() => {
@@ -75,6 +137,7 @@ const FileTab: React.FC<FileTabProps> = ({
     // "Pick a model" option.
     useEffect(() => {
         setSelectedModel(model.meta?.uuid ?? "");
+        generateModelDiagramList();
     }, [model]);
 
     //Holds UUID of the model selected in the "Select a Model" dropdown
@@ -153,6 +216,11 @@ const FileTab: React.FC<FileTabProps> = ({
         
     }
 
+    //OnClick for "Add Diagram" button
+    const clickAddDiagram = () => {
+        setModel((prev: any) => addDiagramToModel(prev));
+    }
+
     
 
     return (
@@ -173,13 +241,24 @@ const FileTab: React.FC<FileTabProps> = ({
                 </button>
             </div>
             <div>
-                {"Pick a model: "}
+                <label>Pick a model:</label>
                 <select name="Select a Model" value={selectedModel} onChange={(event) => {setSelectedModel(event.target.value)}}>
                     <option value={""}>Pick a model</option>
                     {modelOptions}
                 </select>
                 <button onClick={clickLoad}>Load Model</button>
                 <button onClick={clickDelete}>Delete Model</button>
+            </div>
+            <h2>Model Settings</h2>
+            <h3>Diagrams</h3>
+            <div className="model-options-list">
+                {generateModelDiagramList()}
+            </div>
+            <div>
+                <button onClick={clickAddDiagram}>Add Diagram</button>
+            </div>
+            <h3>Runnable Models</h3>
+            <div>
             </div>
             <h2>API Settings</h2>
             <div>

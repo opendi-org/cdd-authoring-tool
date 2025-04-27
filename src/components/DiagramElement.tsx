@@ -4,6 +4,7 @@ import DisplaysSection from "./DisplaysSection";
 import Draggable from "react-draggable";
 import { causalTypeColors } from "../lib/cddTypes";
 import {v4 as uuidv4} from "uuid"
+import { cleanComponentName } from "../lib/cleanupNames";
 
 type DiagramElementProps = {
     elementData: any;
@@ -58,7 +59,7 @@ const DiagramElement: React.FC<DiagramElementProps> = ({
     {
       headerContent = <div>
         <div style={{wordWrap: "break-word", width: "95%"}}>
-          <label>{elementData.meta.name ?? "Untitled Element"}</label>
+          <label>{cleanComponentName(elementData.meta.name, "Element")}</label>
           <div style={{height:"5px"}}></div>
         </div>
       </div>

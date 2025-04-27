@@ -129,7 +129,7 @@ export function addNewElement(model: any, selectionBuffer: Array<string>, diagra
 {
     let workingModel = structuredClone(model);
     let newSelectionBuffer = structuredClone(selectionBuffer);
-    if(workingModel.diagrams[diagramIndex] !== undefined)
+    if(workingModel.diagrams && workingModel.diagrams[diagramIndex] !== undefined)
     {
         const newElementJSON = defaultDiagramElementJSON(
             calculateNewElementPosition(selectionBuffer, diagramElementMap, connectNewElement)
@@ -154,6 +154,12 @@ export function addNewElement(model: any, selectionBuffer: Array<string>, diagra
 
         workingModel.diagrams[diagramIndex].elements = elemsList;
         newSelectionBuffer = [newElementJSON.meta.uuid];
+    }
+    else
+    {
+        const msg = "Error: Diagram is undefined. Is any diagram active?\nCheck the File tab in the menu.";
+        console.error(msg);
+        alert(msg);
     }
 
     return [workingModel, newSelectionBuffer]

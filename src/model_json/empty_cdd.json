@@ -16,9 +16,11 @@
         {
             "meta": {
                 "uuid": "",
-                "name": "CDD",
+                "name": "",
                 "createdDate": ""
-            }
+            },
+            "elements": [],
+            "dependencies": []
         }
     ]
 }

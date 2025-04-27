@@ -2,9 +2,11 @@ import { useEffect, useMemo, useState } from "react";
 import { addDisplayToElement, addNewElement, deleteDisplayFromElement, deleteElement, toggleDependency } from "../lib/elementCRUD";
 import { AssociatedDependencyData } from "../lib/cddTypes";
 import DisplayTypeRegistry from "./DisplayTypeRegistry";
+import { cleanDisplayTypeName, cleanComponentDisplay } from "../lib/cleanupNames";
 
 type ElementCrudPanelProps = {
     setModelJSON: Function;
+    selectedDiagramIndex: number;
     selectionBuffer: Array<string>;
     setSelectionBuffer: Function;
     diagramElementsMap: Map<string, any>;
@@ -28,6 +30,7 @@ type ElementCrudPanelProps = {
 const ElementCRUDPanel: React.FC<ElementCrudPanelProps> = ({
     setModelJSON,
     selectionBuffer,
+    selectedDiagramIndex,
     setSelectionBuffer,
     diagramElementsMap,
     elementAssociatedDependenciesMap,
@@ -46,7 +49,7 @@ const ElementCRUDPanel: React.FC<ElementCrudPanelProps> = ({
         {
             setModelJSON((prevModel: any) =>
             {
-                const [newModelJSON, newSelectionBuffer] = addNewElement(prevModel, selectionBuffer, diagramElementsMap, connectNewElement, 0);
+                const [newModelJSON, newSelectionBuffer] = addNewElement(prevModel, selectionBuffer, diagramElementsMap, connectNewElement, selectedDiagramIndex);
                 setSelectionBuffer(newSelectionBuffer);
                 return newModelJSON;
             });
@@ -66,14 +69,16 @@ const ElementCRUDPanel: React.FC<ElementCrudPanelProps> = ({
     const toggleDependencyClick = () => {
         if(toggleDependencyIsActive)
         {
-            setModelJSON((prevModel: any) => toggleDependency(prevModel, selectionBuffer, diagramElementsMap, elementAssociatedDependenciesMap, dependencyBehavior === dependencyBehaviors.combine, 0));
+            setModelJSON((prevModel: any) => toggleDependency(prevModel, selectionBuffer, diagramElementsMap, elementAssociatedDependenciesMap, dependencyBehavior === dependencyBehaviors.combine, selectedDiagramIndex));
             //Set selection buffer to a copy of itself. Effectively re-selects the selected elements. Re-triggers the JSON path expansion useEffect in CausalDecisionDiagram
             setSelectionBuffer((prev: Array<string>) => structuredClone(prev));
         }
     }
 
     // Active state and click callback for: Select All
-    const selectAllIsActive = true;
+    const selectAllIsActive = useMemo(() => {
+        return diagramElementsMap.size > 0;
+    }, [diagramElementsMap]);
     const selectAllClick = () => {
         if(selectAllIsActive)
         {
@@ -88,7 +93,7 @@ const ElementCRUDPanel: React.FC<ElementCrudPanelProps> = ({
     const deleteElementClick = () => {
         if(deleteElementIsActive)
         {
-            setModelJSON((prevModel: any) => deleteElement(prevModel, selectionBuffer, elementAssociatedDependenciesMap, 0));
+            setModelJSON((prevModel: any) => deleteElement(prevModel, selectionBuffer, elementAssociatedDependenciesMap, selectedDiagramIndex));
             setSelectionBuffer([]);
         }
     }
@@ -101,23 +106,10 @@ const ElementCRUDPanel: React.FC<ElementCrudPanelProps> = ({
     const addDisplayClick = () => {
         if(addDisplayIsActive)
         {
-            setModelJSON((prevModel: any) => addDisplayToElement(prevModel, selectionBuffer, displayType, 0));
+            setModelJSON((prevModel: any) => addDisplayToElement(prevModel, selectionBuffer, displayType, selectedDiagramIndex));
             //Set selection buffer to a copy of itself. Effectively re-selects the selected elements. Re-triggers the JSON path expansion useEffect in CausalDecisionDiagram
             setSelectionBuffer((prev: Array<string>) => structuredClone(prev));
         }
-    }
-    /**
-     * Clean up display type label from the original camelCase of the
-     * display type registry to Title Case with other adjustments.
-     * @param originalName Original display name from the display type record
-     * @returns Cleaned up selection option title for the display type
-     */
-    const cleanDisplayTypeName = (originalName: string) => {
-        //Convert string from camelCase to Title Format
-        return originalName
-            .replace(/([A-Z])/g, ' $1') //Adds a space before each capital letter
-            .replace(/^./, s => s.toUpperCase()) //Capitalizes the first character in the string
-            .replace(/^Control/, 'Ctrl:'); //Shorten common prefix
     }
 
     //State and click callback for: Del. Display from Element (and related options)
@@ -135,7 +127,7 @@ const ElementCRUDPanel: React.FC<ElementCrudPanelProps> = ({
         {
             if(displayToDelete)
             {
-                setModelJSON((prevModel: any) => deleteDisplayFromElement(prevModel, selectionBuffer, displayToDelete, 0));
+                setModelJSON((prevModel: any) => deleteDisplayFromElement(prevModel, selectionBuffer, displayToDelete, selectedDiagramIndex));
                 setDisplayToDelete("");
                 //Set selection buffer to a copy of itself. Effectively re-selects the selected elements. Re-triggers the JSON path expansion useEffect in CausalDecisionDiagram
                 setSelectionBuffer((prev: Array<string>) => structuredClone(prev));
@@ -162,24 +154,24 @@ const ElementCRUDPanel: React.FC<ElementCrudPanelProps> = ({
     const generateDisplayOptionsForElement = (elem: any) =>
     {
         if(elem && elem.displays && elem.displays.length > 0)
-        {
-            const options = [
-                <option value={undefined} key={`option-delElem-none`}>(Pick)</option>
-            ];
-
-            elem.displays.forEach((displayJSON: any) => {
-                const optionDisplay = `"${displayJSON.meta.name ?? "Unnamed Display"}" (uuid=${String(displayJSON.meta.uuid).substring(0, 5)}...)`
-                options.push(
-                    <option value={displayJSON.meta.uuid} key={`option-delElem-${displayJSON.meta.uuid}`}>{optionDisplay}</option>
+            {
+                const options = [
+                    <option value={undefined} key={`option-delElem-none`}>(Pick)</option>
+                ];
+        
+                elem.displays.forEach((displayJSON: any) => {
+                    const optionDisplay = `${cleanComponentDisplay(displayJSON.meta, `Display of type [${cleanDisplayTypeName(String(displayJSON.displayType ?? "noDisplayType"))}]`)}`
+                    options.push(
+                        <option value={displayJSON.meta.uuid} key={`option-delElem-${displayJSON.meta.uuid}`}>{optionDisplay}</option>
+                    )
+                })
+                return (
+                    <select name="Display to Delete" value={displayToDelete} onChange={(event) => {setDisplayToDelete(event.target.value)}}>
+                        {options}
+                    </select>
                 )
-            })
-            return (
-                <select name="Display to Delete" value={displayToDelete} onChange={(event) => {setDisplayToDelete(event.target.value)}}>
-                    {options}
-                </select>
-            )
-        }
-        return null;
+            }
+            return null;
     }
 
     return (

@@ -17,6 +17,8 @@ export function evaluateModel(model: any, funcMap: Map<string, Function>, ioMap:
 
     //Handle case where there's nothing to evaluate (Return a copy of IO Map unedited)
     if(!model.runnableModels) return new Map(ioMap);
+    //Handle case where this particular runnable model doesn't exist
+    if(!model.runnableModels[runnableModelNumber]) return new Map(ioMap);
 
 
     // Model pre-processing

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import CausalDecisionDiagram from "./components/CausalDecisionDiagram";
 import EditorAndHelpMenu from "./components/RightMenu/EditorAndHelpMenu";
-import { getNewModel } from "./lib/api/fileIO";
+import { getNewModel } from "./lib/api/modelCRUD";
 import { APIInterface } from "./lib/api/api";
 import { NoAPI } from "./lib/api/noApi";
 
@@ -10,6 +10,37 @@ function App() {
     const [modelJSON, setModelJSON] = useState(() => {
         return getNewModel();
     });
+
+    const [selectedDiagramIndex, setSelectedDiagramIndex] = useState((0));
+    const [selectedRunnableModelIndices, setSelectedRunnableModelIndices] = useState(([0]));
+
+    /**
+     * This combo of useState and useEffect means I conditionally run some code
+     * ONLY when the we get a new model that has a different UUID from the one
+     * before. So if modelJSON just gets updated, but its UUID didn't change,
+     * then code that checks for modelUUIDChanged below won't run.
+     */
+    const [currentModelUUID, setCurrentModelUUID] = useState((""));
+    useEffect(() => {
+        const modelHasValidUUID = modelJSON.meta && modelJSON.meta.uuid;
+        const modelUUIDChanged = modelHasValidUUID && modelJSON.meta.uuid != currentModelUUID;
+        
+        if(modelUUIDChanged)
+        {
+            setCurrentModelUUID(modelJSON.meta.uuid);
+            setSelectedDiagramIndex(0);
+            setSelectedRunnableModelIndices([0]);
+        }
+        else if(modelJSON.diagrams && !modelJSON.diagrams[selectedDiagramIndex])
+        {
+            let selectionCandidate = selectedDiagramIndex;
+            while(!modelJSON.diagrams[selectionCandidate] && selectionCandidate > 0)
+            {
+                selectionCandidate--;
+            }
+            setSelectedDiagramIndex(selectionCandidate >= 0 ? selectionCandidate : 0);
+        }
+    }, [modelJSON]);
 
     const [apiInstance, setApiInstance] = useState<APIInterface>(new NoAPI());
 
@@ -72,6 +103,8 @@ function App() {
                         model={modelJSON}
                         setModelJSON={setModelJSON}
                         setExpandedPaths={setExpandedPaths}
+                        selectedDiagramIndex={selectedDiagramIndex}
+                        selectedRunnableModelIndices={selectedRunnableModelIndices}
                     />
                     <div id="controls-legend">
                         <b>Move element:</b> Click and drag element's top bar.<br/>
@@ -91,6 +124,8 @@ function App() {
                     <EditorAndHelpMenu
                         modelJSON={modelJSON}
                         setModelJSON={setModelJSON}
+                        selectedDiagramIndex={selectedDiagramIndex}
+                        setSelectedDiagramIndex={setSelectedDiagramIndex}
                         expandedPaths={expandedPaths}
                         apiInstance={apiInstance}
                         setApiInstance={setApiInstance}
