@@ -105,9 +105,7 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
     //Displays will prefer to use THIS I/O map when setting their current values.
     const computedIOValues = useMemo(() => {
         let computedValues: Map<string, any> = new Map<string, any>();
-        selectedRunnableModelIndices.forEach((modelIndex: number) => {
-            computedValues = evaluateModel(model, functionMap, IOValues, modelIndex);
-        })
+        computedValues = evaluateModel(model, functionMap, IOValues, selectedRunnableModelIndices);
         return computedValues;
     }, [model, functionMap, IOValues, selectedRunnableModelIndices]);
 
