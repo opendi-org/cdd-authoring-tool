@@ -68,6 +68,8 @@ export function getNewModel()
     newModel.meta.createdDate = getCurrentTimeAsTimestamp();
     newModel.diagrams[0].meta.uuid = uuidv4();
     newModel.diagrams[0].meta.createdDate = getCurrentTimeAsTimestamp();
+    newModel.runnableModels[0].meta.uuid = uuidv4();
+    newModel.runnableModels[0].meta.createdDate = getCurrentTimeAsTimestamp();
 
     return newModel;
 }
@@ -104,7 +106,7 @@ export function addDiagramToModel(modelJSON: any)
 export function deleteDiagramFromModel(modelJSON: any, diagramIndex: number)
 {
     const updatedModel = structuredClone(modelJSON);
-    if(!modelJSON.diagrams || !modelJSON.diagrams[diagramIndex])
+    if(!updatedModel.diagrams || !updatedModel.diagrams[diagramIndex])
     {
         const msg = `Diagram index ${diagramIndex} not found in model.`
         console.error(msg)
@@ -141,5 +143,49 @@ export function copyDiagramInModel(modelJSON: any, diagramIndex: number)
     let copiedDiagram = structuredClone(updatedModel.diagrams[diagramIndex]);
     copiedDiagram.meta.uuid = uuidv4();
     updatedModel.diagrams = [...updatedModel.diagrams, copiedDiagram]
+    return updatedModel;
+}
+
+/**
+ * Add a new empty runnable model to the given model
+ * 
+ * (Pure/immutable: Does not update modelJSON directly, but returns
+ * an updated version of modelJSON with the action applied)
+ * @param modelJSON JSON content of model to add a new runnable model to
+ * @returns Updated model JSON with new empty runnable model added
+ */
+export function addRunnableModelToModel(modelJSON: any)
+{
+    const updatedModel = structuredClone(modelJSON);
+    const newRunnable = structuredClone(EmptyModel.runnableModels[0]);
+    newRunnable.meta.uuid = uuidv4();
+    newRunnable.meta.createdDate = getCurrentTimeAsTimestamp();
+
+    const newRunnablesList = [...(updatedModel.runnableModels ?? []), newRunnable];
+    updatedModel.runnableModels = newRunnablesList;
+    return updatedModel;
+}
+
+/**
+ * Removes the requested runnable model from the model
+ * 
+ * (Pure/immutable: Does not update modelJSON directly, but returns
+ * an updated version of modelJSON with the action applied)
+ * @param modelJSON JSON content of model to delete runnableModel from
+ * @param runnableModelIndex Index of the runnable mdoel to delete from the model
+ * @returns Updated model JSON with the requested runnable model removed
+ */
+export function deleteRunnableModelFromModel(modelJSON: any, runnableModelIndex: number)
+{
+    const updatedModel = structuredClone(modelJSON);
+    if(!updatedModel.runnableModels || !updatedModel.runnableModels[runnableModelIndex])
+    {
+        const msg = `Runnable model index ${runnableModelIndex} not found in model.`
+        console.error(msg);
+        alert(msg);
+        return updatedModel;
+    }
+
+    updatedModel.runnableModels.splice(runnableModelIndex, 1);
     return updatedModel;
 }

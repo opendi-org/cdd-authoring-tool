@@ -13,6 +13,8 @@ type EditorAndHelpMenuProps = {
     setModelJSON: Function;
     selectedDiagramIndex: number;
     setSelectedDiagramIndex: Function;
+    selectedRunnableModelIndices: Array<number>;
+    setSelectedRunnableModelIndices: Function;
     expandedPaths: Array<Array<string>>;
     apiInstance: APIInterface;
     setApiInstance: Function;
@@ -35,6 +37,8 @@ const EditorAndHelpMenu: React.FC<EditorAndHelpMenuProps> = ({
     setModelJSON,
     selectedDiagramIndex,
     setSelectedDiagramIndex,
+    selectedRunnableModelIndices,
+    setSelectedRunnableModelIndices,
     expandedPaths,
     apiInstance,
     setApiInstance,
@@ -96,7 +100,7 @@ const EditorAndHelpMenu: React.FC<EditorAndHelpMenuProps> = ({
                 </div>
                 <div id="menu-contents"> {/* Actual menu content */}
                     <div className={`info-menu ${activeTab === TABS.FILE ? "" : "hidden"}`}>
-                        <FileTab model={modelJSON} setModel={setModelJSON} selectedDiagramIndex={selectedDiagramIndex} setSelectedDiagramIndex={setSelectedDiagramIndex} apiInstance={apiInstance} setApiInstance={setApiInstance} />
+                        <FileTab model={modelJSON} setModel={setModelJSON} selectedDiagramIndex={selectedDiagramIndex} setSelectedDiagramIndex={setSelectedDiagramIndex} selectedRunnableModelIndices={selectedRunnableModelIndices} setSelectedRunnableModelIndices={setSelectedRunnableModelIndices} apiInstance={apiInstance} setApiInstance={setApiInstance} />
                     </div>
                     <div className={`${activeTab === TABS.JSON ? "" : "hidden"}`}>
                         <VanillaJSONEditor

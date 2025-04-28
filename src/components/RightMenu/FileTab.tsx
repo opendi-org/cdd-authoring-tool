@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { copyDiagramInModel, deleteDiagramFromModel, addDiagramToModel, downloadModel, getNewModel } from "../../lib/api/modelCRUD";
+import React, { useEffect, useMemo, useState } from "react";
+import { copyDiagramInModel, deleteDiagramFromModel, addDiagramToModel, downloadModel, getNewModel, deleteRunnableModelFromModel, addRunnableModelToModel } from "../../lib/api/modelCRUD";
 import { API, APIInterface } from "../../lib/api/api";
 import { v4 as uuidv4 } from "uuid";
 import { NoAPI } from "../../lib/api/noApi";
@@ -10,6 +10,8 @@ type FileTabProps = {
     setModel: Function;
     selectedDiagramIndex: number;
     setSelectedDiagramIndex: Function;
+    selectedRunnableModelIndices: Array<number>;
+    setSelectedRunnableModelIndices: Function;
     apiInstance: APIInterface;
     setApiInstance: Function;
 }
@@ -24,6 +26,8 @@ const FileTab: React.FC<FileTabProps> = ({
     setModel,
     selectedDiagramIndex,
     setSelectedDiagramIndex,
+    selectedRunnableModelIndices,
+    setSelectedRunnableModelIndices,
     apiInstance,
     setApiInstance,
 }) => {
@@ -126,6 +130,54 @@ const FileTab: React.FC<FileTabProps> = ({
         })
     }
 
+    /**
+     * Generate a list of Runnable Models assocaited with the open model, and provide
+     * some options for each.
+     * @returns List of Runnable Models associated with the open model
+     */
+    const generateRunnableModelList = () => {
+        if(!model.runnableModels) return null;
+
+        let runnableModelIndex = 0;
+        return model.runnableModels.map((runnableModel: any) => {
+            const runnableMeta = runnableModel.meta;
+            const runnableLabel = cleanComponentDisplay(runnableMeta, "Runnable Model");
+            const thisRunnableModelIndex = runnableModelIndex;
+            runnableModelIndex++;
+
+            const checkboxToggle = () => {
+                setSelectedRunnableModelIndices((prev: Array<number>) =>
+                    prev.includes(thisRunnableModelIndex)
+                        ? prev.filter(idx => idx !== thisRunnableModelIndex)
+                        : [...prev, thisRunnableModelIndex]
+                );
+            }
+
+            const deleteClick = () => {
+                setModel((prev: any) => {
+                    if(confirm(`Deleting runnable model ${runnableLabel}\nOK?`))
+                    {
+                        return deleteRunnableModelFromModel(prev, thisRunnableModelIndex);
+                    }
+                    return prev;
+                })
+                setSelectedRunnableModelIndices((prev: Array<number>) => prev.filter(idx => idx !== thisRunnableModelIndex));
+            }
+
+            const key = `model-runnable-${runnableMeta.uuid}`;
+            return (
+                <div key={key} className={`model-option ${thisRunnableModelIndex % 2 == 1 ? "odd-entry" : ""}`}>
+                    <label>{runnableLabel}</label>
+                    <div>
+                        Active?<input type="checkbox" checked={selectedRunnableModelIndices.includes(thisRunnableModelIndex)} onChange={checkboxToggle}></input>
+                        <button onClick={() => alert("Not yet implemented.")}>Edit</button>
+                        <button onClick={deleteClick}>Delete</button>
+                    </div>
+                </div>
+            )
+        })
+    }
+
     // When the API class instance changes, update the options
     // in the "Pick a model" dropdown menu
     useEffect(() => {
@@ -137,8 +189,15 @@ const FileTab: React.FC<FileTabProps> = ({
     // "Pick a model" option.
     useEffect(() => {
         setSelectedModel(model.meta?.uuid ?? "");
-        generateModelDiagramList();
     }, [model]);
+
+    const modelDiagramsList = useMemo(() => {
+        return generateModelDiagramList();
+    }, [model, selectedDiagramIndex]);
+
+    const runnableModelsList = useMemo(() => {
+        return generateRunnableModelList();
+    }, [model, selectedRunnableModelIndices])
 
     //Holds UUID of the model selected in the "Select a Model" dropdown
     const [selectedModel, setSelectedModel] = useState(model.meta?.uuid ?? "")
@@ -216,9 +275,14 @@ const FileTab: React.FC<FileTabProps> = ({
         
     }
 
-    //OnClick for "Add Diagram" button
+    //OnClick for "Add New Diagram" button
     const clickAddDiagram = () => {
         setModel((prev: any) => addDiagramToModel(prev));
+    }
+
+    //OnClick for "Add New Runnable Model" button
+    const clickAddRunnable = () => {
+        setModel((prev: any) => addRunnableModelToModel(prev));
     }
 
     
@@ -252,13 +316,17 @@ const FileTab: React.FC<FileTabProps> = ({
             <h2>Model Settings</h2>
             <h3>Diagrams</h3>
             <div className="model-options-list">
-                {generateModelDiagramList()}
+                {modelDiagramsList && modelDiagramsList}
             </div>
             <div>
-                <button onClick={clickAddDiagram}>Add Diagram</button>
+                <button onClick={clickAddDiagram}>Add New Diagram</button>
             </div>
             <h3>Runnable Models</h3>
+            <div className="model-options-list">
+                {runnableModelsList && runnableModelsList}
+            </div>
             <div>
+                <button onClick={clickAddRunnable}>Add New Runnable Model</button>
             </div>
             <h2>API Settings</h2>
             <div>

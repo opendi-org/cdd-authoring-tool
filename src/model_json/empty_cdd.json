@@ -22,5 +22,15 @@
             "elements": [],
             "dependencies": []
         }
+    ],
+    "runnableModels": [
+      {
+        "meta": {
+          "uuid": "",
+          "name": "",
+          "createdDate": ""
+        },
+        "elements": []
+      }
     ]
 }

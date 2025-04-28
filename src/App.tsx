@@ -126,6 +126,8 @@ function App() {
                         setModelJSON={setModelJSON}
                         selectedDiagramIndex={selectedDiagramIndex}
                         setSelectedDiagramIndex={setSelectedDiagramIndex}
+                        selectedRunnableModelIndices={selectedRunnableModelIndices}
+                        setSelectedRunnableModelIndices={setSelectedRunnableModelIndices}
                         expandedPaths={expandedPaths}
                         apiInstance={apiInstance}
                         setApiInstance={setApiInstance}
