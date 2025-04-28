@@ -74,13 +74,7 @@ const DiagramElement: React.FC<DiagramElementProps> = ({
       String(elementData.causalType).slice(customPrefix.length) :
       String(elementData.causalType);
     let causalTypeLabel = (elementData.causalType &&
-      <div
-        style= {{
-          marginTop:"3px",
-          fontSize:"12px",
-          paddingLeft:"5px",
-        }}
-      >
+      <div className={"diagram-element-type-label"}>
         {processedCausalTypeName}
       </div>
     )
@@ -164,13 +158,15 @@ const DiagramElement: React.FC<DiagramElementProps> = ({
           }}
         >
           {/*Upper black handle for dragging the draggable element.*/}
-          <div 
-            className={`diagram-element-drag-handle ${isSelected ? selectedElementClass : ""}`}
-          >
-            {causalTypeLabel}
-            <div style={{position: "absolute", right: "2px", top: "1px"}}>
-              {(selectionBuffer.indexOf(elementData.meta.uuid) != -1) ? selectionBuffer.indexOf(elementData.meta.uuid) + 1 : null}
-              <input type="checkbox" className="hoverable" onChange={toggleMySelection} checked={isSelected}></input>
+          <div className={`diagram-element-top-bar ${isSelected ? selectedElementClass : ""}`}>
+            <div 
+              className={`diagram-element-drag-handle ${isSelected ? selectedElementClass : ""}`}
+            >
+              {causalTypeLabel}
+            </div>
+            <div className={"diagram-element-selector-checkbox"}>
+                {(selectionBuffer.indexOf(elementData.meta.uuid) != -1) ? selectionBuffer.indexOf(elementData.meta.uuid) + 1 : null}
+                <input type="checkbox" className="hoverable" onChange={toggleMySelection} checked={isSelected}></input>
             </div>
           </div>
           <div>
