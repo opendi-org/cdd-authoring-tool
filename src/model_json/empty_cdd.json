@@ -16,9 +16,21 @@
         {
             "meta": {
                 "uuid": "",
-                "name": "CDD",
+                "name": "",
                 "createdDate": ""
-            }
+            },
+            "elements": [],
+            "dependencies": []
         }
+    ],
+    "runnableModels": [
+      {
+        "meta": {
+          "uuid": "",
+          "name": "",
+          "createdDate": ""
+        },
+        "elements": []
+      }
     ]
 }

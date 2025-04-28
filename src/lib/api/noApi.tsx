@@ -1,6 +1,6 @@
 import { APIInterface } from "./api";
 import { BuiltInModels } from "../../model_json/builtin-examples/builtinModels";
-import { downloadModel } from "./fileIO";
+import { downloadModel } from "./modelCRUD";
 
 /**
  * API-less implementation of the API interface.

@@ -4,6 +4,7 @@ import DisplaysSection from "./DisplaysSection";
 import Draggable from "react-draggable";
 import { causalTypeColors } from "../lib/cddTypes";
 import {v4 as uuidv4} from "uuid"
+import { cleanComponentName } from "../lib/cleanupNames";
 
 type DiagramElementProps = {
     elementData: any;
@@ -58,7 +59,7 @@ const DiagramElement: React.FC<DiagramElementProps> = ({
     {
       headerContent = <div>
         <div style={{wordWrap: "break-word", width: "95%"}}>
-          <label>{elementData.meta.name ?? "Untitled Element"}</label>
+          <label>{cleanComponentName(elementData.meta.name, "Element")}</label>
           <div style={{height:"5px"}}></div>
         </div>
       </div>
@@ -73,13 +74,7 @@ const DiagramElement: React.FC<DiagramElementProps> = ({
       String(elementData.causalType).slice(customPrefix.length) :
       String(elementData.causalType);
     let causalTypeLabel = (elementData.causalType &&
-      <div
-        style= {{
-          marginTop:"3px",
-          fontSize:"12px",
-          paddingLeft:"5px",
-        }}
-      >
+      <div className={"diagram-element-type-label"}>
         {processedCausalTypeName}
       </div>
     )
@@ -88,18 +83,26 @@ const DiagramElement: React.FC<DiagramElementProps> = ({
     let nonInteractiveDisplays = new Array<JSX.Element>();
     let displayContents = new Array<JSX.Element>();
     elementData.displays?.forEach((elemDisplay: any) => {
-      const DisplayComponentType = DisplayTypeRegistry[elemDisplay.displayType ?? ""].component;
-      const displayJSX = DisplayComponentType ? (
-      <DisplayComponentType
-        key={elemDisplay.meta.uuid}
-        displayJSON={elemDisplay}
-        computedIOValues={computedIOValues}
-        IOValues={IOValues}
-        setIOValues={setIOValues}
-        controlsMap={controlsMap}
-      />
-      ) : (
-        <div style={{ color: "yellow" }}>Unsupported display type: {elemDisplay.displayType ?? "(none)"}</div>
+      let DisplayComponentType = DisplayTypeRegistry[elemDisplay.displayType ?? "unknown"];
+      let styleClassName = elemDisplay.displayType ?? "unknown";
+      if (!DisplayComponentType)
+        {
+          DisplayComponentType = DisplayTypeRegistry.unknown;
+          styleClassName = "unknown";
+        }
+
+      const DisplayComponent = DisplayComponentType.component;
+      const displayJSX = DisplayComponent && (
+        <div className={`elem-display disp-${styleClassName}`}>
+          <DisplayComponent
+            key={elemDisplay.meta.uuid}
+            displayJSON={elemDisplay}
+            computedIOValues={computedIOValues}
+            IOValues={IOValues}
+            setIOValues={setIOValues}
+            controlsMap={controlsMap}
+          />
+        </div>
       )
 
       if(elemDisplay.content.controlParameters?.isInteractive)
@@ -155,13 +158,15 @@ const DiagramElement: React.FC<DiagramElementProps> = ({
           }}
         >
           {/*Upper black handle for dragging the draggable element.*/}
-          <div 
-            className={`diagram-element-drag-handle ${isSelected ? selectedElementClass : ""}`}
-          >
-            {causalTypeLabel}
-            <div style={{position: "absolute", right: "2px", top: "1px"}}>
-              {(selectionBuffer.indexOf(elementData.meta.uuid) != -1) ? selectionBuffer.indexOf(elementData.meta.uuid) + 1 : null}
-              <input type="checkbox" className="hoverable" onChange={toggleMySelection} checked={isSelected}></input>
+          <div className={`diagram-element-top-bar ${isSelected ? selectedElementClass : ""}`}>
+            <div 
+              className={`diagram-element-drag-handle ${isSelected ? selectedElementClass : ""}`}
+            >
+              {causalTypeLabel}
+            </div>
+            <div className={"diagram-element-selector-checkbox"}>
+                {(selectionBuffer.indexOf(elementData.meta.uuid) != -1) ? selectionBuffer.indexOf(elementData.meta.uuid) + 1 : null}
+                <input type="checkbox" className="hoverable" onChange={toggleMySelection} checked={isSelected}></input>
             </div>
           </div>
           <div>

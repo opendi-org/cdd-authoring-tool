@@ -1,7 +1,7 @@
 import { validate } from 'uuid'
 import { NoAPI } from './noApi';
 import { generateReportStringFromValidationResults, getValidator } from '../validation';
-import { downloadModel } from './fileIO';
+import { downloadModel } from './modelCRUD';
 
 /**
  * All API implementations must provide this functionality.

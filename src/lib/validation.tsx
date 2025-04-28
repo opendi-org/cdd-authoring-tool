@@ -34,9 +34,10 @@ type CDDValidationResults = {
 }
 
 /**
- * Validates the graph data, beyond what is covered by the OpenDI JSON Schema.
+ * Validates diagram data, beyond what is covered by the OpenDI JSON Schema.
  * 
- * a) Checks that the graph data contains a diagram.  
+ * a) Checks that the graph data contains a diagram. This is not a breaking issue, but
+ * it adds an error to the list to let the user know that no diagrams will be displayed.  
  * b) Checks that all elements have unique UUIDs. Assigns new UUIDs if necessary.  
  * c) Checks that all dependencies have unique UUIDs Assigns new UUIDs if necessary.  
  * d) Removes dependencies that have dangling references to nonexistent elements.  
@@ -46,67 +47,72 @@ type CDDValidationResults = {
 export function validateGraphData(graphData: any): CDDValidationResults {
     let errorList: string[] = [];
     let validatedData = structuredClone(graphData);
-    
-    //Check that a renderable diagram exists. Diagrams are optional.
-    if(!validatedData || !validatedData.diagrams || validatedData.diagrams.length === 0)
-    {
-        errorList.push("No diagrams to render.");
-        return {canRender: false, errors: errorList, validatedData: validatedData};
-    }
-    //Elements are optional
-    if(!validatedData.diagrams[0].elements || validatedData.diagrams[0].elements.length === 0)
-    {
-        errorList.push("No elements to render.");
-        return {canRender: false, errors: errorList, validatedData: validatedData};
-    }
 
-    //Validate graph elements: Check for duplicate UUIDs
-    let graphElements = new Map<string, any>();  //Map used for verifying uniqueness of UUIDs
-    validatedData.diagrams[0].elements.forEach((elementData: any) => {
-        //Check for duplicate uuid
-        if(graphElements.get(elementData?.meta?.uuid))
-        {
-            //Replace this element's uuid.
-            const newUUID = uuidv4();
-            errorList.push("Found duplicate element UUID <" + elementData.meta.uuid + ">. UUID updated to <" + newUUID + ">.");
-            elementData.meta.uuid = newUUID;
-        }
-        graphElements.set(elementData.meta.uuid, elementData);
-    })
-
-    //Validate dependencies: Check for duplicate UUIDs and dangling references to nonexistent source/target elements/
-    let validDeps: any[] = []; //This will hold only dependencies with verified unique UUIDs, with no dangling references.
-    let graphDependencies = new Map<string, any>(); //Map used for verifying uniqueness of UUIDs
-    if(validatedData.diagrams[0].dependencies)  //Deps are optional
+    //Diagrams are optional
+    if(validatedData.diagrams)
     {
-        validatedData.diagrams[0].dependencies.forEach((dependencyData: any) => {
-
-            //Check for duplicate uuid
-            if(graphDependencies.get(dependencyData?.meta?.uuid))
+        validatedData.diagrams.forEach((diagramData: any) => {
+            
+            let validDeps: any[] = []; //This will hold only dependencies with verified unique UUIDs, with no dangling references.
+            if(diagramData.elements) //Elements are optional
             {
-                //Replace this dependency's uuid.
-                const newUUID = uuidv4();
-                errorList.push("Found duplicate dependency UUID <" + dependencyData.meta.uuid + ">. UUID updated to <" + newUUID + ">.");
-                dependencyData.meta.uuid = newUUID;
-            }
-            graphDependencies.set(dependencyData.meta.uuid, dependencyData);
-    
-            //Remove dangling references
-            const sourceValid = (graphElements.get(dependencyData.source) !== undefined);
-            const targetValid = (graphElements.get(dependencyData.target) !== undefined);
-            if(!(sourceValid && targetValid))
-            {
-                errorList.push("Removed dangling dependency. UUID <" + dependencyData.meta.uuid + ">. Name <"
-                    + dependencyData.meta.name + ">. Source <" + dependencyData.source + ">. Target <"
-                    + dependencyData.target + ">.");
+                //Validate graph elements: Check for duplicate UUIDs
+                let graphElements = new Map<string, any>();  //Map used for verifying uniqueness of UUIDs
+                diagramData.elements.forEach((elementData: any) => {
+                    //Check for duplicate uuid
+                    if(graphElements.get(elementData?.meta?.uuid))
+                    {
+                        //Replace this element's uuid.
+                        const newUUID = uuidv4();
+                        errorList.push("Found duplicate element UUID <" + elementData.meta.uuid + ">. UUID updated to <" + newUUID + ">.");
+                        elementData.meta.uuid = newUUID; //Mutate in-place, in validatedData.
+                    }
+                    graphElements.set(elementData.meta.uuid, elementData);
+                })
+
+                //Validate dependencies: Check for duplicate UUIDs and dangling references to nonexistent source/target elements/
+                let graphDependencies = new Map<string, any>(); //Map used for verifying uniqueness of UUIDs
+                if(diagramData.dependencies)  //Deps are optional
+                {
+                    diagramData.dependencies.forEach((dependencyData: any) => {
+
+                        //Check for duplicate uuid
+                        if(graphDependencies.get(dependencyData?.meta?.uuid))
+                        {
+                            //Replace this dependency's uuid.
+                            const newUUID = uuidv4();
+                            errorList.push("Found duplicate dependency UUID <" + dependencyData.meta.uuid + ">. UUID updated to <" + newUUID + ">.");
+                            dependencyData.meta.uuid = newUUID;
+                        }
+                        graphDependencies.set(dependencyData.meta.uuid, dependencyData);
+                
+                        //Remove dangling references
+                        const sourceValid = (graphElements.get(dependencyData.source) !== undefined);
+                        const targetValid = (graphElements.get(dependencyData.target) !== undefined);
+                        if(!(sourceValid && targetValid))
+                        {
+                            errorList.push("Removed dangling dependency. UUID <" + dependencyData.meta.uuid + ">. Name <"
+                                + dependencyData.meta.name + ">. Source <" + dependencyData.source + ">. Target <"
+                                + dependencyData.target + ">.");
+                        }
+                        else
+                        {
+                            validDeps.push(dependencyData);
+                        }
+                    });
+                }
             }
             else
             {
-                validDeps.push(dependencyData);
+                errorList.push(`Diagram ${diagramData.meta.uuid} contains no elements. Display for this diagram will be empty, and any dangling dependencies have been removed.`)
             }
-        });
+            diagramData.dependencies = validDeps;
+        })
     }
-    validatedData.diagrams[0].dependencies = validDeps;
+    else
+    {
+        errorList.push("Model contains no diagrams. Diagram display will be empty.");
+    }
 
     return {canRender: true, errors: errorList, validatedData: validatedData};
 

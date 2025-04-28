@@ -13,6 +13,8 @@ type CausalDecisionDiagramProps = {
     model: any;
     setModelJSON: Function;
     setExpandedPaths: Function;
+    selectedDiagramIndex?: number;
+    selectedRunnableModelIndices?: Array<number>;
 }
 
 /**
@@ -25,6 +27,8 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
     model,
     setModelJSON,
     setExpandedPaths,
+    selectedDiagramIndex = 0,
+    selectedRunnableModelIndices = [0],
 }) => {
 
     //Re-draws dependency arrows between elements
@@ -34,7 +38,7 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
     const handlePositionChange = (uuid: string, newPosition: any) => {
         setModelJSON((prevModel: any) => {
             const newModel = structuredClone(prevModel);
-            const diagramElement = newModel.diagrams[0].elements.find((e: any) => e.meta.uuid === uuid);
+            const diagramElement = newModel.diagrams[selectedDiagramIndex].elements.find((e: any) => e.meta.uuid === uuid);
             if(diagramElement) {
                 diagramElement.position = newPosition;
             }
@@ -100,8 +104,10 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
     //Whenever I/O values or the underlying model (etc) change, re-evaluate the model.
     //Displays will prefer to use THIS I/O map when setting their current values.
     const computedIOValues = useMemo(() => {
-        return evaluateModel(model, functionMap, IOValues);
-    }, [model, functionMap, IOValues]);
+        let computedValues: Map<string, any> = new Map<string, any>();
+        computedValues = evaluateModel(model, functionMap, IOValues, selectedRunnableModelIndices);
+        return computedValues;
+    }, [model, functionMap, IOValues, selectedRunnableModelIndices]);
 
     //Maps diagram element UUIDs to their list of associated I/O values. Associated via their control.
     const controlsMap = useMemo(() => {
@@ -129,14 +135,14 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
     //Maps diagram element UUIDs to their JSON information
     const diagramElementMap = useMemo(() => {
         const diaElems = new Map<string, any>();
-        if(model.diagrams && model.diagrams[0].elements)
+        if(model.diagrams && model.diagrams[selectedDiagramIndex] && model.diagrams[selectedDiagramIndex].elements)
         {
-            model.diagrams[0].elements.forEach((elem: any) => {
+            model.diagrams[selectedDiagramIndex].elements.forEach((elem: any) => {
                 diaElems.set(elem.meta.uuid, elem);
             })
         }
         return diaElems;
-    }, [model])
+    }, [model, selectedDiagramIndex])
 
     //Maps element UUIDs to a set of information about all dependencies associated with that element.
     //"Associated" means that the dia elem is either a "source" or "target" for the dependency.
@@ -151,14 +157,14 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
         }
         if(model.diagrams)
         {
-            model.diagrams[0]?.dependencies?.forEach((dep: any) => {
+            model.diagrams[selectedDiagramIndex]?.dependencies?.forEach((dep: any) => {
                 addEntry(dep.source, dep.meta.uuid, DependencyRole.source, dep.target);
                 addEntry(dep.target, dep.meta.uuid, DependencyRole.target, dep.source);
             })
         }
 
         return elemAssociatedDeps;
-    }, [model])
+    }, [model, selectedDiagramIndex])
 
     //Holds a simple list of the UUIDs of selected elements, in the order they were selected.
     const [selectionBuffer, setSelectionBuffer] = useState(() => {let arr: string[] = []; return arr;});
@@ -171,7 +177,7 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
     //Mirror graphical element selections in the JSON editor
     useEffect(() => {
         setExpandedPaths(
-            getExpandedPathsForSelectedElements(selectionBuffer, model, elementAssociatedDependenciesMap)
+            getExpandedPathsForSelectedElements(selectionBuffer, model, elementAssociatedDependenciesMap, selectedDiagramIndex)
         );
     }, [selectionBuffer])
 
@@ -239,8 +245,9 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
     const dependencyArrows = useMemo(() => {
         return (
             model.diagrams &&
-            model.diagrams[0].dependencies &&
-            model.diagrams[0].dependencies.map((dep: any) =>
+            model.diagrams[selectedDiagramIndex] && 
+            model.diagrams[selectedDiagramIndex].dependencies &&
+            model.diagrams[selectedDiagramIndex].dependencies.map((dep: any) =>
                 <Xarrow
                 key={dep.meta.uuid}
                 start={dep.source}
@@ -250,14 +257,15 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
                 color={getDependencyStyle(dep).color}
                 />
         ))
-    }, [model, selectionBuffer]);
+    }, [model, selectionBuffer, selectedDiagramIndex]);
 
     //Generate HTML for diagram elements
     //Diagram elements wrap inner content in a consistent draggable outer shell
     const diagramElements = 
         model.diagrams &&
-        model.diagrams[0].elements && 
-        model.diagrams[0].elements.map((elem: any) => {
+        model.diagrams[selectedDiagramIndex] && 
+        model.diagrams[selectedDiagramIndex].elements && 
+        model.diagrams[selectedDiagramIndex].elements.map((elem: any) => {
             return <DiagramElement
             key={elem.meta.uuid}
             elementData={elem}
@@ -288,9 +296,10 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
                 </div>
             </Xwrapper>
             {/*Info box in the top-left for model name, etc.*/}
-            <ModelMetaInfoPanel model={model} diagramIndex={0}/>
+            <ModelMetaInfoPanel model={model} diagramIndex={selectedDiagramIndex}/>
             <ElementCRUDPanel
                 setModelJSON={setModelJSON}
+                selectedDiagramIndex={selectedDiagramIndex}
                 selectionBuffer={selectionBuffer}
                 setSelectionBuffer={setSelectionBuffer}
                 diagramElementsMap={diagramElementMap}

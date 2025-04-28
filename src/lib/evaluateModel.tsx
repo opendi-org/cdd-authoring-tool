@@ -8,41 +8,44 @@
  * @param model Full model JSON. MUST adhere to OpenDI JSON Schema
  * @param funcMap For accessing script functions from model JSON. Maps name of function to the function itself
  * @param ioMap For accessing I/O values from model JSON. Maps I/O Value UUID to the data for that value
- * @param runnableModelNumber The index for the runnable model to evaluate, in the model's runnableModels list
+ * @param activeRunnableModels List of indices for the runnable models to evaluate, in the model's runnableModels list
  * @param debugLogs Flag for whether to log lots of debug stuff to console
  * @returns A fresh copy of ioMap, with I/O values updated based on the results of one step of the decision simulation
  */
-export function evaluateModel(model: any, funcMap: Map<string, Function>, ioMap: Map<string, any>, runnableModelNumber = 0, debugLogs = false): Map<string, any> {
+export function evaluateModel(model: any, funcMap: Map<string, Function>, ioMap: Map<string, any>, activeRunnableModels = [0], debugLogs = false): Map<string, any> {
     if(debugLogs) console.log("Eval start.");
 
     //Handle case where there's nothing to evaluate (Return a copy of IO Map unedited)
     if(!model.runnableModels) return new Map(ioMap);
 
 
-    // Model pre-processing
-    
+    // --Model pre-processing--
+    // All active runnable models will put their elements into the same pool,
+    // to be processed in whatever arbitrary order they appear in here.
     let evals = new Map(); //Key: "Evaluatable Element UUID" -- Value: Evaluatable Element
     let unevaluated = new Array<string>(); //Lists UUIDs for Eval Elements that haven't been evaluated yet
     let outputValues = new Set<string>(); //Lists UUIDs for IO Vals that are referenced in Eval Elements as Outputs
     
-
     //Populate the above empties
-    model.runnableModels[runnableModelNumber]?.elements.forEach((elem: any) => {
-        evals.set(elem.meta.uuid, elem);
-        unevaluated.push(elem.meta.uuid); //All elements start as unevaluated
-        elem.outputs.forEach((IOValUUID: string) => {
-            //Since execution order is not guaranteed, an IO value used as an output for more than one
-            //eval element has a non-deterministic value when used as an input elsewhere
-            if(outputValues.has(IOValUUID))
-            {
-                console.error(`Error: Possible non-deterministic behavior from output ${IOValUUID} (Used as output multiple times. Execution order is not guaranteed.)`);
-            }
-            else
-            {
-                outputValues.add(IOValUUID)
-            }
+    activeRunnableModels.forEach((runnableIdx: number) => {
+        //Add this model's elements to the global pool / lists
+        model.runnableModels[runnableIdx]?.elements.forEach((elem: any) => {
+            evals.set(elem.meta.uuid, elem);
+            unevaluated.push(elem.meta.uuid); //All elements start as unevaluated
+            elem.outputs.forEach((IOValUUID: string) => {
+                //Since execution order is not guaranteed, an IO value used as an output for more than one
+                //eval element has a non-deterministic value when used as an input elsewhere
+                if(outputValues.has(IOValUUID))
+                {
+                    console.error(`Error: Possible non-deterministic behavior from output ${IOValUUID} (Used as output multiple times. Execution order is not guaranteed.)`);
+                }
+                else
+                {
+                    outputValues.add(IOValUUID)
+                }
+            });
         });
-    });
+    })
 
     //The set of I/O Values that have known values for this evaluation run.
     //To start, assume that every I/O value that is never referenced as an Output has a known value.
