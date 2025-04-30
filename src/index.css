@@ -302,6 +302,11 @@ body {
     height: 100%;
 }
 
+.info-menu-json {
+    height: 100%;
+    overflow-y: auto;
+}
+
 /* Currently for right-side menu items that are not selected */
 .hidden {
     display: none !important;
