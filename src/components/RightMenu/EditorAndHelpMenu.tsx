@@ -102,7 +102,7 @@ const EditorAndHelpMenu: React.FC<EditorAndHelpMenuProps> = ({
                     <div className={`info-menu ${activeTab === TABS.FILE ? "" : "hidden"}`}>
                         <FileTab model={modelJSON} setModel={setModelJSON} selectedDiagramIndex={selectedDiagramIndex} setSelectedDiagramIndex={setSelectedDiagramIndex} selectedRunnableModelIndices={selectedRunnableModelIndices} setSelectedRunnableModelIndices={setSelectedRunnableModelIndices} apiInstance={apiInstance} setApiInstance={setApiInstance} />
                     </div>
-                    <div className={`${activeTab === TABS.JSON ? "" : "hidden"}`}>
+                    <div className={`info-menu-json ${activeTab === TABS.JSON ? "" : "hidden"}`}>
                         <VanillaJSONEditor
                             content={content}
                             onChange={(newContent: any, _previousContent, { contentErrors, patchResult: _ }) => {
