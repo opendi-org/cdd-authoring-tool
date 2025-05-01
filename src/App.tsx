@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import CausalDecisionDiagram from "./components/CausalDecisionDiagram";
+import CausalDecisionDiagram from "./components/Diagram/CausalDecisionDiagram";
 import EditorAndHelpMenu from "./components/RightMenu/EditorAndHelpMenu";
 import { getNewModel } from "./lib/api/modelCRUD";
 import { APIInterface } from "./lib/api/api";

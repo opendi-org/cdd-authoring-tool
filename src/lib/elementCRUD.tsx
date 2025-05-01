@@ -1,6 +1,6 @@
 import { AssociatedDependencyData, DependencyRole } from './cddTypes';
-import DisplayTypeRegistry from '../components/DisplayTypeRegistry';
-import { defaultDiagramElementJSON } from '../components/DiagramElement';
+import DisplayTypeRegistry from '../components/Diagram/Displays/DisplayTypeRegistry';
+import { defaultDiagramElementJSON } from '../components/Diagram/DiagramElement';
 import { defaultDependencyJSON } from './dependencyUtil';
 
 /**

@@ -1,6 +1,6 @@
 // Attribution: See note at bottom of file
 
-import "../../../index.css";
+import "../../../../../index.css";
 
 interface SliderProps {
   title: string;

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { addDisplayToElement, addNewElement, deleteDisplayFromElement, deleteElement, toggleDependency } from "../lib/elementCRUD";
 import { AssociatedDependencyData } from "../lib/cddTypes";
-import DisplayTypeRegistry from "./DisplayTypeRegistry";
+import DisplayTypeRegistry from "./Diagram/Displays/DisplayTypeRegistry";
 import { cleanDisplayTypeName, cleanComponentDisplay } from "../lib/cleanupNames";
 
 type ElementCrudPanelProps = {

@@ -1,10 +1,10 @@
 import React, { useMemo } from "react";
-import DisplayTypeRegistry from "./DisplayTypeRegistry";
-import DisplaysSection from "./DisplaysSection";
+import DisplayTypeRegistry from "./Displays/DisplayTypeRegistry";
+import DisplaysSection from "./Displays/DisplaysSection";
 import Draggable from "react-draggable";
-import { causalTypeColors } from "../lib/cddTypes";
+import { causalTypeColors } from "../../lib/cddTypes";
 import {v4 as uuidv4} from "uuid"
-import { cleanComponentName } from "../lib/cleanupNames";
+import { cleanComponentName } from "../../lib/cleanupNames";
 
 type DiagramElementProps = {
     elementData: any;

@@ -1,12 +1,12 @@
 import React, { useState, useMemo, useEffect } from "react";
 import Xarrow, { useXarrow, Xwrapper } from "react-xarrows";
 import DiagramElement from "./DiagramElement";
-import { evaluateModel } from "../lib/evaluateModel"
-import { getIOMapFromModelJSON } from "../lib/getIOMapFromModelJSON";
-import { AssociatedDependencyData, causalTypeColors, DependencyRole } from "../lib/cddTypes";
-import { updateElementSelection } from "../lib/updateElementSelection";
-import { getExpandedPathsForSelectedElements } from "../lib/getExpandedPathsForSelectedElements";
-import ElementCRUDPanel from "./ElementCRUDPanel";
+import { evaluateModel } from "../../lib/evaluateModel"
+import { getIOMapFromModelJSON } from "../../lib/getIOMapFromModelJSON";
+import { AssociatedDependencyData, causalTypeColors, DependencyRole } from "../../lib/cddTypes";
+import { updateElementSelection } from "../../lib/updateElementSelection";
+import { getExpandedPathsForSelectedElements } from "../../lib/getExpandedPathsForSelectedElements";
+import ElementCRUDPanel from "../ElementCRUDPanel";
 import ModelMetaInfoPanel from "./ModelMetaInfoPanel";
 
 type CausalDecisionDiagramProps = {

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useCollapse } from "react-collapsed";
 import ReactMarkdown from "react-markdown";
-import { cleanComponentName } from "../lib/cleanupNames";
+import { cleanComponentName } from "../../lib/cleanupNames";
 
 type ModelMetaInfoPanelProps = {
     model: any;
