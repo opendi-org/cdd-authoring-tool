@@ -1,0 +1,15 @@
+.file-tab {
+    .model-options-list {
+        font-size: 1em;
+        height: 7.3em;
+        max-height: 7.3em;
+        border-top: 1.5px solid #252525;
+        border-bottom: 1.5px solid #252525;    
+    }
+    .model-option label {
+        flex: 2;
+        display: block;
+        overflow: auto;
+        max-height: 3em;
+    }
+}

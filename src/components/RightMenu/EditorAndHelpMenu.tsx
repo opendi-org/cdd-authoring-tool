@@ -18,6 +18,7 @@ type EditorAndHelpMenuProps = {
     expandedPaths: Array<Array<string>>;
     apiInstance: APIInterface;
     setApiInstance: Function;
+    setLeftEditorState: Function;
 }
 
 const TABS = {
@@ -42,6 +43,7 @@ const EditorAndHelpMenu: React.FC<EditorAndHelpMenuProps> = ({
     expandedPaths,
     apiInstance,
     setApiInstance,
+    setLeftEditorState,
 }) => {
     const [activeTab, setActiveTab] = useState(() => localStorage.getItem("tab") || TABS.JSON);
 
@@ -99,8 +101,18 @@ const EditorAndHelpMenu: React.FC<EditorAndHelpMenuProps> = ({
                     </div>
                 </div>
                 <div id="menu-contents"> {/* Actual menu content */}
-                    <div className={`info-menu ${activeTab === TABS.FILE ? "" : "hidden"}`}>
-                        <FileTab model={modelJSON} setModel={setModelJSON} selectedDiagramIndex={selectedDiagramIndex} setSelectedDiagramIndex={setSelectedDiagramIndex} selectedRunnableModelIndices={selectedRunnableModelIndices} setSelectedRunnableModelIndices={setSelectedRunnableModelIndices} apiInstance={apiInstance} setApiInstance={setApiInstance} />
+                    <div className={`file-tab info-menu ${activeTab === TABS.FILE ? "" : "hidden"}`}>
+                        <FileTab
+                            model={modelJSON}
+                            setModel={setModelJSON}
+                            selectedDiagramIndex={selectedDiagramIndex}
+                            setSelectedDiagramIndex={setSelectedDiagramIndex}
+                            selectedRunnableModelIndices={selectedRunnableModelIndices}
+                            setSelectedRunnableModelIndices={setSelectedRunnableModelIndices}
+                            apiInstance={apiInstance}
+                            setApiInstance={setApiInstance}
+                            setLeftEditorState={setLeftEditorState}
+                        />
                     </div>
                     <div className={`info-menu-json ${activeTab === TABS.JSON ? "" : "hidden"}`}>
                         <VanillaJSONEditor

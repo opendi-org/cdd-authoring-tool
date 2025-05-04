@@ -1,0 +1,79 @@
+.runnable-model-editor {
+    display: flex;
+    flex-direction: column;
+    min-height: 300px;
+    height: 80vh;
+    max-height: 80vh; /* Leave a little room at bottom of screen to reveal instruction text */
+    position: relative;
+    background-color: #021f1f;
+    color: white;
+    --runnable-editor-border: 1.5px solid #414141;
+    font-size: 0.85em;
+
+    h2 {
+        margin-top: 0em;
+    }
+
+    .editor-row {
+        display: flex;
+        flex-direction: row;
+        overflow: hidden;
+    }
+    .top {
+        flex: 3;
+    }
+    .bottom {
+        flex: 2;
+    }
+    
+    .editor-panel {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background-color: #021919;
+        border: var(--runnable-editor-border);
+        padding: 2em;
+        padding-bottom: 1em;
+        padding-top: 1em;
+        overflow-y: auto;
+    }
+
+    .model-options-list {
+        .model-option {
+            label {
+                flex: 4;
+            }
+            input {
+                margin-right: 1em;
+            }
+        }
+    }
+
+    .io-values {
+        flex: 2;
+        .model-options-list {
+            overflow-y: auto;
+            border: var(--runnable-editor-border);
+
+            .model-option {
+                padding-top: 0px;
+                padding-bottom: 0px;
+
+                div, label{
+                    padding-top: 0.3em;
+                    padding-bottom: 0.3em;
+                    padding-right: 0.3em;
+                }
+                div {
+                    padding-left: 1em;
+                    border-left: var(--runnable-editor-border);
+                }
+            }
+        }
+    }
+
+    .runnable-models {
+        flex: 3;
+        overflow-y: auto;
+    }
+}

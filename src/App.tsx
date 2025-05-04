@@ -4,6 +4,7 @@ import EditorAndHelpMenu from "./components/RightMenu/EditorAndHelpMenu";
 import { getNewModel } from "./lib/api/modelCRUD";
 import { APIInterface } from "./lib/api/api";
 import { NoAPI } from "./lib/api/noApi";
+import RunnableModelEditor from "./components/RunnableEditor/RunnableModelEditor";
 
 function App() {
     // This is the single source of truth for Model JSON, used by both VanillaJSONEditor and CausalDecisionDiagram.
@@ -93,33 +94,51 @@ function App() {
     }, [menuIsOpen]);
     const [expandedPaths, setExpandedPaths] = useState([]);
 
+    const [leftEditorState, setLeftEditorState] = useState("cdd");
+
     return (
         <div style={{ paddingRight:"0.75%" }}>
             <h2 className="title-header">OpenDI CDD Authoring Tool</h2>
-            <div className="cdd-editor">
-                {/* Diagram view / engine */}
-                <div className="cdd-editor left">
-                    <CausalDecisionDiagram
-                        model={modelJSON}
-                        setModelJSON={setModelJSON}
-                        setExpandedPaths={setExpandedPaths}
-                        selectedDiagramIndex={selectedDiagramIndex}
-                        selectedRunnableModelIndices={selectedRunnableModelIndices}
-                    />
-                    <div id="controls-legend">
-                        <b>Move element:</b> Click and drag element's top bar.<br/>
-                        <b>Select element(s):</b> Toggle element's top-right checkbox.<br/>
-                        <b>Deselect all:</b> Click diagram background.
+            <div className="authoring-tool-container">
+                <div className="left">
+                    {/* Runnable Model Editor */}
+                    <div className={`editor ${leftEditorState == "runnable" ? "" : "hidden"}`}>
+                        <RunnableModelEditor
+                            model={modelJSON}
+                            setModel={setModelJSON}
+                            selectedRunnableModelIndices={selectedRunnableModelIndices}
+                        />
+                        <div
+                            className="menu-toggle-button"
+                            onClick={() => setMenuIsOpen(!menuIsOpen)}
+                        >
+                            {menuIsOpen ? "-" : "+"}
+                        </div>
                     </div>
-                    <div
-                        className="menu-toggle-button"
-                        onClick={() => setMenuIsOpen(!menuIsOpen)}
-                    >
-                        {menuIsOpen ? "-" : "+"}
+                    {/* Diagram view / engine */}
+                    <div className={`editor ${leftEditorState == "cdd" ? "" : "hidden"}`}>
+                        <CausalDecisionDiagram
+                            model={modelJSON}
+                            setModelJSON={setModelJSON}
+                            setExpandedPaths={setExpandedPaths}
+                            selectedDiagramIndex={selectedDiagramIndex}
+                            selectedRunnableModelIndices={selectedRunnableModelIndices}
+                        />
+                        <div id="controls-legend">
+                            <b>Move element:</b> Click and drag element's top bar.<br/>
+                            <b>Select element(s):</b> Toggle element's top-right checkbox.<br/>
+                            <b>Deselect all:</b> Click diagram background.
+                        </div>
+                        <div
+                            className="menu-toggle-button"
+                            onClick={() => setMenuIsOpen(!menuIsOpen)}
+                        >
+                            {menuIsOpen ? "-" : "+"}
+                        </div>
                     </div>
                 </div>
 
-                <div className={`cdd-editor right ${menuIsOpen ? "" : "hidden"}`}>
+                <div className={`editor right ${menuIsOpen ? "" : "hidden"}`}>
                     {/*JSON Editor*/}
                     <EditorAndHelpMenu
                         modelJSON={modelJSON}
@@ -131,6 +150,7 @@ function App() {
                         expandedPaths={expandedPaths}
                         apiInstance={apiInstance}
                         setApiInstance={setApiInstance}
+                        setLeftEditorState={setLeftEditorState}
                     />
                 </div>
             </div>

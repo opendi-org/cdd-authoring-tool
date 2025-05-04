@@ -4,6 +4,7 @@ import { API, APIInterface } from "../../lib/api/api";
 import { v4 as uuidv4 } from "uuid";
 import { NoAPI } from "../../lib/api/noApi";
 import { cleanComponentDisplay } from "../../lib/cleanupNames";
+import "./FileTab.css";
 
 type FileTabProps = {
     model: any;
@@ -14,6 +15,7 @@ type FileTabProps = {
     setSelectedRunnableModelIndices: Function;
     apiInstance: APIInterface;
     setApiInstance: Function;
+    setLeftEditorState: Function;
 }
 
 /**
@@ -30,6 +32,7 @@ const FileTab: React.FC<FileTabProps> = ({
     setSelectedRunnableModelIndices,
     apiInstance,
     setApiInstance,
+    setLeftEditorState,
 }) => {
 
      // Options list for the "Pick a model" dropdown menu
@@ -106,6 +109,7 @@ const FileTab: React.FC<FileTabProps> = ({
 
             const openClick = () => {
                 setSelectedDiagramIndex(thisDiagramIndex);
+                setLeftEditorState("cdd");
             }
 
             const copyClick = () => {
@@ -170,7 +174,6 @@ const FileTab: React.FC<FileTabProps> = ({
                     <label>{runnableLabel}</label>
                     <div>
                         Active?<input type="checkbox" checked={selectedRunnableModelIndices.includes(thisRunnableModelIndex)} onChange={checkboxToggle}></input>
-                        <button onClick={() => alert("Not yet implemented.")}>Edit</button>
                         <button onClick={deleteClick}>Delete</button>
                     </div>
                 </div>
@@ -285,15 +288,20 @@ const FileTab: React.FC<FileTabProps> = ({
         setModel((prev: any) => addRunnableModelToModel(prev));
     }
 
+    //OnClick for "Edit Active Runnable Models" button
+    const clickEditRunnables = () => {
+        setLeftEditorState("runnable");
+    }
+
     
 
     return (
         <>
             <h2>File Settings</h2>
-            <div>
+            <div className="info-menu-content">
                 <button onClick={clickNewModel}>New Model</button>Create a new model file, with an empty diagram.
             </div>
-            <div>
+            <div className="info-menu-content">
                 <button onClick={clickSave}>
                     Save Model
                 </button>
@@ -304,7 +312,7 @@ const FileTab: React.FC<FileTabProps> = ({
                     Download JSON
                 </button>
             </div>
-            <div>
+            <div className="info-menu-content">
                 <label>Pick a model:</label>
                 <select name="Select a Model" value={selectedModel} onChange={(event) => {setSelectedModel(event.target.value)}}>
                     <option value={""}>Pick a model</option>
@@ -318,18 +326,19 @@ const FileTab: React.FC<FileTabProps> = ({
             <div className="model-options-list">
                 {modelDiagramsList && modelDiagramsList}
             </div>
-            <div>
+            <div className="info-menu-content">
                 <button onClick={clickAddDiagram}>Add New Diagram</button>
             </div>
             <h3>Runnable Models</h3>
             <div className="model-options-list">
                 {runnableModelsList && runnableModelsList}
             </div>
-            <div>
+            <div className="info-menu-content">
                 <button onClick={clickAddRunnable}>Add New Runnable Model</button>
+                <button onClick={clickEditRunnables}>Edit Active Runnable Models</button>
             </div>
             <h2>API Settings</h2>
-            <div>
+            <div className="info-menu-content">
                 Base URL: <input type="text" value={urlInput} onChange={(event) => setUrlInput(event.target.value)}></input>
                 <button onClick={clickUpdateBaseURL}>Update</button>
             </div>
