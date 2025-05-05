@@ -1,24 +1,22 @@
 import React from "react";
 import { cleanComponentDisplay } from "../../lib/cleanupNames";
 import "./RunnableModel.css"
+import ReactMarkdown from "react-markdown";
 
 type RunnableModelProps = {
     model: any;
     activeModelIndex?: number;
+    ioMap: Map<string, any>;
 }
 
 const RunnableModel: React.FC<RunnableModelProps> = ({
     model,
     activeModelIndex,
+    ioMap,
 }) => {
     if(activeModelIndex === undefined) activeModelIndex = 0;
     if(!(model.runnableModels && model.runnableModels[activeModelIndex])) return null;
     const thisModel = model.runnableModels[activeModelIndex];
-
-    let ioMap = new Map<string, any>();
-    if(model.inputOutputValues) model.inputOutputValues.forEach((ioVal: any) => {
-        ioMap.set(ioVal.meta.uuid, ioVal);
-    })
 
     const getElementInputsList = (element: any) => {
         let inputCount = 0;
@@ -63,6 +61,9 @@ const RunnableModel: React.FC<RunnableModelProps> = ({
                     <p>
                         <b>Function: </b>{runnableElement.functionName}
                     </p>
+                    {runnableElement.meta.summary && (<div className="eval-element-summary">
+                        <ReactMarkdown children={runnableElement.meta.summary}/>
+                    </div>)}
                 </div>)}
                 <div className="eval-io">
                     <div className="eval-io-list">
@@ -72,7 +73,7 @@ const RunnableModel: React.FC<RunnableModelProps> = ({
                         </div>
                         <div>
                             <button>Add Selected</button>
-                            <button>Remove selected</button>
+                            <button>Remove Selected</button>
                         </div>
                     </div>
                     <div className="eval-io-list">
@@ -82,7 +83,7 @@ const RunnableModel: React.FC<RunnableModelProps> = ({
                         </div>
                         <div>
                             <button>Add Selected</button>
-                            <button>Remove selected</button>
+                            <button>Remove Selected</button>
                         </div>
                     </div>
                 </div>

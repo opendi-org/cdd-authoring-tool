@@ -98,7 +98,7 @@ function App() {
 
     return (
         <div style={{ paddingRight:"0.75%" }}>
-            <h2 className="title-header">OpenDI CDD Authoring Tool</h2>
+            <h2 className="title-header">OpenDI Causal Decision Model Authoring Tool</h2>
             <div className="authoring-tool-container">
                 <div className="left">
                     {/* Runnable Model Editor */}

@@ -12,6 +12,7 @@
 
     h2 {
         margin-top: 0em;
+        color: #d3e6f3;
     }
 
     .editor-row {
@@ -75,5 +76,78 @@
     .runnable-models {
         flex: 3;
         overflow-y: auto;
+    }
+
+    .eval-assets {
+        flex: 2;
+        overflow-y: auto;
+        .eval-assets-list {
+            overflow-y: auto;
+            .eval-asset-info {
+                background: #00000055;
+                padding: 1em;
+                border: var(--runnable-editor-border);
+                display: flex;
+                flex-direction: column; 
+                .eval-asset-code {
+                    background-color: rgb(0, 17, 3);
+                    padding: 1em;
+                    overflow: auto;
+                    height: 10em;
+                    border: var(--runnable-editor-border);
+                }
+                button {
+                    margin: 0.5em;
+                }
+            }
+        }
+    }
+
+    .controls {
+        flex: 3;
+        overflow-y: auto;
+        .controls-list {
+            overflow-y: auto;
+            .control-info {
+                background: #00000055;
+                padding: 1em;
+                border: var(--runnable-editor-border);
+                display: flex;
+                flex-direction: column; 
+
+                .control-hooks {
+                    display: flex;
+                    flex-direction: row;
+
+                    .control-hooks-list {
+                        flex: 1;
+                        background: #021919;
+                        padding: 0.5em;
+                        border: 1px solid black;
+                        button {
+                            margin: 0.5em;
+                        }
+
+                        .model-option {
+                            label {
+                                flex: 4;
+                            }
+                            div {
+                                padding-inline: 1em;
+                                flex: 1;
+                            }
+                            button {
+                                margin: 0em;
+                                margin-inline-end: 0.2em;
+                                font-size: smaller;
+                                padding-inline: 0.1em;
+                                padding-top: 0.1em;
+                                padding-bottom: 0.1em;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
