@@ -8,11 +8,16 @@
     background-color: #021f1f;
     color: white;
     --runnable-editor-border: 1.5px solid #414141;
+    --runnable-editor-header-color: #d3e6f3;
     font-size: 0.85em;
 
     h2 {
         margin-top: 0em;
-        color: #d3e6f3;
+        color: var(--runnable-editor-header-color);
+    }
+
+    button {
+        margin: 0.5em;
     }
 
     .editor-row {
@@ -21,7 +26,7 @@
         overflow: hidden;
     }
     .top {
-        flex: 3;
+        flex: 2.5;
     }
     .bottom {
         flex: 2;
@@ -52,6 +57,9 @@
 
     .io-values {
         flex: 2;
+        h3 {
+            color: var(--runnable-editor-header-color)
+        }
         .model-options-list {
             overflow-y: auto;
             border: var(--runnable-editor-border);
@@ -96,9 +104,6 @@
                     height: 10em;
                     border: var(--runnable-editor-border);
                 }
-                button {
-                    margin: 0.5em;
-                }
             }
         }
     }
@@ -106,9 +111,16 @@
     .controls {
         flex: 3;
         overflow-y: auto;
+        h3 {
+            color: var(--runnable-editor-header-color)
+        }
         .controls-list {
             overflow-y: auto;
+            padding-bottom: 4em;
             .control-info {
+                h3 {
+                    color: unset;
+                }
                 background: #00000055;
                 padding: 1em;
                 border: var(--runnable-editor-border);
@@ -124,9 +136,7 @@
                         background: #021919;
                         padding: 0.5em;
                         border: 1px solid black;
-                        button {
-                            margin: 0.5em;
-                        }
+                        
 
                         .model-option {
                             label {

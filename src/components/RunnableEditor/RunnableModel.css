@@ -23,9 +23,6 @@
                 background: #021919;
                 padding: 0.5em;
                 border: 1px solid black;
-                button {
-                    margin: 0.5em;
-                }
 
                 .model-option {
                     label {

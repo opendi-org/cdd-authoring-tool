@@ -16,7 +16,8 @@
     {
       "meta": {
         "uuid": "06c5377c-2a41-495b-a099-78b492e135e1",
-        "name": "Get Coffee Totals"
+        "name": "Get Coffee Totals",
+        "summary": "Calculate the total prices of all coffee purchases."
       },
       "evalType": "Script",
       "content": {
@@ -68,7 +69,8 @@
         {
           "meta": {
             "uuid": "de62d4fe-c117-47bd-9390-e88491f97353",
-            "name": "Get Coffee Totals"
+            "name": "Get Coffee Totals",
+            "summary": "Calculate the total prices of all coffee purchases."
           },
           "evaluatableAsset": "06c5377c-2a41-495b-a099-78b492e135e1",
           "functionName": "getCoffeeTotals",

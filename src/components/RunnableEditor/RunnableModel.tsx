@@ -7,12 +7,16 @@ type RunnableModelProps = {
     model: any;
     activeModelIndex?: number;
     ioMap: Map<string, any>;
+    selectedIOValues: Array<string>;
+    generateIOToggleFunction: Function;
 }
 
 const RunnableModel: React.FC<RunnableModelProps> = ({
     model,
     activeModelIndex,
     ioMap,
+    selectedIOValues,
+    generateIOToggleFunction,
 }) => {
     if(activeModelIndex === undefined) activeModelIndex = 0;
     if(!(model.runnableModels && model.runnableModels[activeModelIndex])) return null;
@@ -30,7 +34,7 @@ const RunnableModel: React.FC<RunnableModelProps> = ({
                     <button>↑</button>
                     <button>↓</button>
                 </div>
-                <input type="checkbox"></input>
+                <input type="checkbox" checked={selectedIOValues.includes(thisIOVal.meta.uuid)} onChange={generateIOToggleFunction(thisIOVal.meta.uuid)}></input>
             </div>
         })
     }
@@ -47,7 +51,7 @@ const RunnableModel: React.FC<RunnableModelProps> = ({
                     <button>↑</button>
                     <button>↓</button>
                 </div>
-                <input type="checkbox"></input>
+                <input type="checkbox" checked={selectedIOValues.includes(thisIOVal.meta.uuid)} onChange={generateIOToggleFunction(thisIOVal.meta.uuid)}></input>
             </div>
         })
     }

@@ -107,6 +107,7 @@ function App() {
                             model={modelJSON}
                             setModel={setModelJSON}
                             selectedRunnableModelIndices={selectedRunnableModelIndices}
+                            selectedDiagramIndex={selectedDiagramIndex}
                         />
                         <div
                             className="menu-toggle-button"
