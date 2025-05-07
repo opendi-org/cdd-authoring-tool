@@ -102,41 +102,45 @@ function App() {
             <div className="authoring-tool-container">
                 <div className="left">
                     {/* Runnable Model Editor */}
-                    <div className={`editor ${leftEditorState == "runnable" ? "" : "hidden"}`}>
-                        <RunnableModelEditor
-                            model={modelJSON}
-                            setModel={setModelJSON}
-                            selectedRunnableModelIndices={selectedRunnableModelIndices}
-                            selectedDiagramIndex={selectedDiagramIndex}
-                        />
-                        <div
-                            className="menu-toggle-button"
-                            onClick={() => setMenuIsOpen(!menuIsOpen)}
-                        >
-                            {menuIsOpen ? "-" : "+"}
+                    {leftEditorState == "runnable" && (
+                        <div className={`editor`}>
+                            <RunnableModelEditor
+                                model={modelJSON}
+                                setModel={setModelJSON}
+                                selectedRunnableModelIndices={selectedRunnableModelIndices}
+                                selectedDiagramIndex={selectedDiagramIndex}
+                            />
+                            <div
+                                className="menu-toggle-button"
+                                onClick={() => setMenuIsOpen(!menuIsOpen)}
+                            >
+                                {menuIsOpen ? "-" : "+"}
+                            </div>
                         </div>
-                    </div>
+                    )}
                     {/* Diagram view / engine */}
-                    <div className={`editor ${leftEditorState == "cdd" ? "" : "hidden"}`}>
-                        <CausalDecisionDiagram
-                            model={modelJSON}
-                            setModelJSON={setModelJSON}
-                            setExpandedPaths={setExpandedPaths}
-                            selectedDiagramIndex={selectedDiagramIndex}
-                            selectedRunnableModelIndices={selectedRunnableModelIndices}
-                        />
-                        <div id="controls-legend">
-                            <b>Move element:</b> Click and drag element's top bar.<br/>
-                            <b>Select element(s):</b> Toggle element's top-right checkbox.<br/>
-                            <b>Deselect all:</b> Click diagram background.
+                    {leftEditorState == "cdd" && (
+                        <div className={`editor`}>
+                            <CausalDecisionDiagram
+                                model={modelJSON}
+                                setModelJSON={setModelJSON}
+                                setExpandedPaths={setExpandedPaths}
+                                selectedDiagramIndex={selectedDiagramIndex}
+                                selectedRunnableModelIndices={selectedRunnableModelIndices}
+                            />
+                            <div id="controls-legend">
+                                <b>Move element:</b> Click and drag element's top bar.<br/>
+                                <b>Select element(s):</b> Toggle element's top-right checkbox.<br/>
+                                <b>Deselect all:</b> Click diagram background.
+                            </div>
+                            <div
+                                className="menu-toggle-button"
+                                onClick={() => setMenuIsOpen(!menuIsOpen)}
+                            >
+                                {menuIsOpen ? "-" : "+"}
+                            </div>
                         </div>
-                        <div
-                            className="menu-toggle-button"
-                            onClick={() => setMenuIsOpen(!menuIsOpen)}
-                        >
-                            {menuIsOpen ? "-" : "+"}
-                        </div>
-                    </div>
+                    )}
                 </div>
 
                 <div className={`editor right ${menuIsOpen ? "" : "hidden"}`}>

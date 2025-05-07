@@ -1,9 +1,8 @@
 .runnable-model-info {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     padding: 1em;
     border: var(--runnable-editor-border);
-    flex-direction: column;
     background: #00000055;
 
     .eval-element-info {
