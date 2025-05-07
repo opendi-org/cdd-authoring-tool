@@ -4,6 +4,8 @@ import RunnableModel from "./RunnableModel";
 import './RunnableModelEditor.css';
 import ReactMarkdown from "react-markdown";
 
+import Editor from "@monaco-editor/react"
+
 type RunnableModelEditorProps = {
     model: any;
     setModel: Function;
@@ -132,11 +134,15 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
         )
     }, [activeIOs, selectedIOValues]);
 
+    const [editorCode, setEditorCode] = useState("");
     const evalAssetsList = useMemo(() => {
         const evalAssetListEntries = model.evaluatableAssets && model.evaluatableAssets.map((evalAsset: any) => {
             const codeMarkdown = () => {
                 if(evalAsset.evalType !== "Script") return null;
                 return `${"```"}${evalAsset.content.language}\n${atob(evalAsset.content.script)}\n${"```"}`;
+            }
+            const openEditor = () => {
+                setEditorCode(atob(evalAsset.content.script));
             }
             return (
                 <div key={evalAsset.meta.uuid} className="eval-asset-info">
@@ -146,12 +152,20 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
                     <div className="eval-asset-code">
                         <ReactMarkdown children={codeMarkdown()} />
                     </div>
-                    <div><button>Edit Script</button><button>Delete Script</button></div>
+                    <div><button onClick={openEditor}>Edit Script</button></div>
                 </div>
             )
         });
         return evalAssetListEntries;
     }, [model]);
+    const closeEditor = (save: boolean) => {
+        if(save)
+        {
+            alert("Not implemented.");
+            return;
+        }
+        setEditorCode("");
+    }
 
     const modelControlsList = useMemo(() => {
         const getControlJSX = (control: any) => {
@@ -274,8 +288,8 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
                     </div>
                 </div>
             </div>
-            <div className="editor-row bottom">
-                <div className="editor-panel eval-assets">
+            <div className={`editor-row bottom ${editorCode != "" ? "code-editor-open" : ""}`}>
+                <div className={`editor-panel eval-assets ${editorCode != "" ? "hidden" : ""}`}>
                     <h2>Evaluatable Assets</h2>
                     <div className="eval-assets-list">
                         {evalAssetsList}
@@ -286,6 +300,24 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
                         <button>Clear Selection</button>
                     </div>
                 </div>
+                {editorCode != "" && (
+                    <div className="editor-panel code-editor">
+                        <Editor
+                            defaultLanguage="javascript"
+                            defaultValue={editorCode}
+                            onChange={(value) => {setEditorCode(value ?? "")}}
+                            theme="vs-dark"
+                        />
+                        <div>
+                            <button
+                                onClick={() => closeEditor(true)}
+                            >Save and Close</button>
+                            <button
+                                onClick={() => closeEditor(false)}
+                            >Close Without Saving</button>
+                        </div>
+                    </div>
+                )}
                 <div className="editor-panel controls">
                     <h2>Model Controls</h2>
                     <div className="controls-list">

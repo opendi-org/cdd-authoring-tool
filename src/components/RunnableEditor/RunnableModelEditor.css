@@ -29,6 +29,10 @@
     .bottom {
         flex: 2;
     }
+
+    .code-editor-open {
+        flex: 5 !important;
+    }
     
     .editor-panel {
         flex: 1;
@@ -104,6 +108,10 @@
                 }
             }
         }
+    }
+
+    .code-editor {
+        flex: 6;
     }
 
     .controls {
