@@ -152,7 +152,10 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
                     <div className="eval-asset-code">
                         <ReactMarkdown children={codeMarkdown()} />
                     </div>
-                    <div><button onClick={openEditor}>Edit Script</button></div>
+                    <div>
+                        <button onClick={openEditor}>{`Edit ${evalAsset.evalType}`}</button>
+                        <button>{`Delete ${evalAsset.evalType}`}</button>
+                    </div>
                 </div>
             )
         });
@@ -218,8 +221,8 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
                                 {getControlIOList()}
                             </div>
                             <div>
-                                <button>Add Selected</button>
-                                <button>Remove Selected</button>
+                                <button>Add Selected I/O</button>
+                                <button>Remove Selected I/O</button>
                             </div>
                         </div>
                         <div className="control-hooks-list">
@@ -234,6 +237,9 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
                                 <button>Add to Control</button>
                             </div>
                         </div>
+                    </div>
+                    <div>
+                        <button>Delete Control</button>
                     </div>
                 </div>
             )
@@ -271,9 +277,9 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
                     <h2>I/O Values</h2>
                     {inputOutputList}
                     <div>
-                        <button>Add New</button>
-                        <button>Delete Selected</button>
-                        <button onClick={() => setSelectedIOValues(new Array<string>())}>Clear Selection</button>
+                        <button>Add New I/O</button>
+                        <button>Delete Selected I/O</button>
+                        <button onClick={() => setSelectedIOValues(new Array<string>())}>Clear I/O Selection</button>
                     </div>
                 </div>
                 <div className="editor-panel runnable-models">
@@ -282,9 +288,7 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
                         {runnableModelsList}
                     </div>
                     <div>
-                        <button>Add New</button>
-                        <button>Delete Selected</button>
-                        <button>Clear Selection</button>
+                        <button>Add New Model</button>
                     </div>
                 </div>
             </div>
@@ -295,9 +299,7 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
                         {evalAssetsList}
                     </div>
                     <div>
-                        <button>Add New</button>
-                        <button>Delete Selected</button>
-                        <button>Clear Selection</button>
+                        <button>Add New Script</button>
                     </div>
                 </div>
                 {editorCode != "" && (
@@ -324,9 +326,7 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
                         {modelControlsList}
                     </div>
                     <div>
-                        <button>Add New</button>
-                        <button>Delete Selected</button>
-                        <button>Clear Selection</button>
+                        <button>Add New Control</button>
                     </div>
                 </div>
             </div>

@@ -76,8 +76,8 @@ const RunnableModel: React.FC<RunnableModelProps> = ({
                             {getElementInputsList(runnableElement)}
                         </div>
                         <div>
-                            <button>Add Selected</button>
-                            <button>Remove Selected</button>
+                            <button>Add Selected I/O</button>
+                            <button>Remove Selected I/O</button>
                         </div>
                     </div>
                     <div className="eval-io-list">
@@ -86,10 +86,13 @@ const RunnableModel: React.FC<RunnableModelProps> = ({
                             {getElementOutputsList(runnableElement)}
                         </div>
                         <div>
-                            <button>Add Selected</button>
-                            <button>Remove Selected</button>
+                            <button>Add Selected I/O</button>
+                            <button>Remove Selected I/O</button>
                         </div>
                     </div>
+                </div>
+                <div>
+                    <button>Delete Element</button>
                 </div>
             </div>
         )
@@ -100,6 +103,9 @@ const RunnableModel: React.FC<RunnableModelProps> = ({
             <h3>{cleanComponentDisplay(thisModel.meta, "Runnable Model")}</h3>
             <div className="model-options-list">
                 {evalElementsList}
+            </div>
+            <div>
+                <button>Add New Evaluatable Element</button>
             </div>
         </div>
     )

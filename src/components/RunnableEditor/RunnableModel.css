@@ -2,8 +2,12 @@
     display: flex;
     flex-direction: column;
     padding: 1em;
-    border: var(--runnable-editor-border);
+    padding-left: 2em;
+    padding-right: 0;
+    border-top: var(--runnable-editor-border);
+    border-bottom: var(--runnable-editor-border);
     background: #00000055;
+    max-height: 93%;
 
     .eval-element-info {
         border: 1px solid black;
