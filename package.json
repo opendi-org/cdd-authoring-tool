@@ -27,7 +27,7 @@
     "react-markdown": "^10.1.0",
     "react-xarrows": "^2.0.2",
     "uuid": "^11.1.0",
-    "vanilla-jsoneditor": "^3.3.0"
+    "vanilla-jsoneditor": "^3.5.0"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.4.1",
