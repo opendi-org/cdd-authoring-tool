@@ -30,7 +30,6 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
                     ? prev.filter(idToCheck => idToCheck !== id)
                     : [...prev, id]
             );
-            console.log(selectedIOValues);
         }
         return toggleIOValue;
     }

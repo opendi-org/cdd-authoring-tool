@@ -104,11 +104,11 @@ export function evaluateModel(model: any, funcMap: Map<string, Function>, ioMap:
         if(unevaluated.length == prevUnevalLength) {
             console.error("List of unevaluated elements has not changed between evaluation iterations. Terminating evaluation.");
             evalInProgress = false;
-        }
-        prevUnevalLength = unevaluated.length;
-        }
-        if(debugLogs) console.log("Eval Complete! IO Values: ", workingIOMap);
-
-        return workingIOMap;
-        
     }
+    prevUnevalLength = unevaluated.length;
+    }
+    if(debugLogs) console.log("Eval Complete! IO Values: ", workingIOMap);
+
+    return workingIOMap;
+    
+}
