@@ -11,7 +11,7 @@ import { AssociatedDependencyData, DependencyRole } from "./cddTypes";
  * @param selectedDiagramIndex The diagram to generate an element map for
  * @returns A map of diagram elements, mapping element UUID to element JSON data (as any)
  */
-export function getDiagramElementMapFromModelJSON(model: any, selectedDiagramIndex: number): Map<string, any> {
+export function getDiagramElementMap(model: any, selectedDiagramIndex: number): Map<string, any> {
     const diaElems = new Map<string, any>();
     if(model.diagrams && model.diagrams[selectedDiagramIndex] && model.diagrams[selectedDiagramIndex].elements)
     {
@@ -31,7 +31,7 @@ export function getDiagramElementMapFromModelJSON(model: any, selectedDiagramInd
  * @param selectedDiagramIndex The diagram to generate an associated dependencies map for
  * @returns A map from diagram element UUID to info about all dependencies associated with that element
  */
-export function getDiaElemAssociatedDepsMapFromModelJSON(model: any, selectedDiagramIndex: number): Map<string, Set<AssociatedDependencyData>> {
+export function getDiaElemAssociatedDepsMap(model: any, selectedDiagramIndex: number): Map<string, Set<AssociatedDependencyData>> {
     const elemAssociatedDeps = new Map<string, Set<AssociatedDependencyData>>();
     const addEntry = (elemUUID: string, depUUID: string, role: DependencyRole, otherElemUUID: string) => {
         let currentDeps = elemAssociatedDeps.get(elemUUID) ?? new Set<AssociatedDependencyData>();
@@ -54,8 +54,9 @@ export function getDiaElemAssociatedDepsMapFromModelJSON(model: any, selectedDia
  * @param model Schema-compliant JSON for a causal decision model
  * @returns A map of IO Values, mapping UUID to the data stored in that IO Value
  */
-export function getIOMapFromModelJSON(model: any): Map<string, any> {
-    const values = new Map();
+export function getIOMap(model: any): Map<string, any> {
+    console.log("Get IO Map from model", model)
+    const values = new Map<string, any>();
     model.inputOutputValues?.forEach((ioVal: any) => {
         values.set(ioVal.meta.uuid, ioVal.data);
     });
@@ -67,7 +68,7 @@ export function getIOMapFromModelJSON(model: any): Map<string, any> {
  * @param model Schema-compliant JSON for a causal decision model
  * @returns A map from function name to the actual evaluated code of the function -- "<Eval Asset UUID>_<Function Name>": function
  */
-export function getFunctionMapFromModelJSON(model: any): Map<string, any> {
+export function getFunctionMap(model: any): Map<string, any> {
     const funcMap = new Map();
     model.evaluatableAssets?.forEach((evalAsset: any) => {
         if(evalAsset.evalType == "Script" && evalAsset.content.language == "javascript")
@@ -92,7 +93,7 @@ export function getFunctionMapFromModelJSON(model: any): Map<string, any> {
  * @param model Schema-compliant JSON for a causal decision model
  * @returns A map from a diagram element Display's UUID to the list of associated I/O values (UUIDs)
  */
-export function getControlsMapFromModelJSON(model: any): Map<string, Array<string>> {
+export function getControlsMap(model: any): Map<string, Array<string>> {
     const controls = new Map<string, Array<string>>();
     model.controls?.forEach((control: any) => {
         control.displays.forEach((displayUUID: any) => {

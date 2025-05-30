@@ -62,6 +62,7 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
         return newMap;
     }, [model]);
 
+    //These components will generate JSX for runnable models, including eval elements and I/O values
     const runnableModelsList = useMemo(() => {
         return selectedRunnableModelIndices.map((idx: number) => {
             return <RunnableModel
@@ -133,13 +134,11 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
         )
     }, [activeIOs, selectedIOValues]);
 
+    //Generate JSX for evaluatable assets list
+    //These are scripts, API calls, etc. Currently only really works for scripts.
     const [editorCode, setEditorCode] = useState("");
     const evalAssetsList = useMemo(() => {
         const evalAssetListEntries = model.evaluatableAssets && model.evaluatableAssets.map((evalAsset: any) => {
-            const codeMarkdown = () => {
-                if(evalAsset.evalType !== "Script") return null;
-                return `${"```"}${evalAsset.content.language}\n${atob(evalAsset.content.script)}\n${"```"}`;
-            }
             const openEditor = () => {
                 setEditorCode(atob(evalAsset.content.script));
             }
@@ -148,9 +147,6 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
                     <h3>{cleanComponentDisplay(evalAsset.meta, "Evaluatable Asset")}</h3>
                     <p><b>Type: </b>{evalAsset.evalType}</p>
                     {evalAsset.meta.summary && <ReactMarkdown children={evalAsset.meta.summary}/>}
-                    <div className="eval-asset-code">
-                        <ReactMarkdown children={codeMarkdown()} />
-                    </div>
                     <div>
                         <button onClick={openEditor}>{`Edit ${evalAsset.evalType}`}</button>
                         <button>{`Delete ${evalAsset.evalType}`}</button>
@@ -169,6 +165,7 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
         setEditorCode("");
     }
 
+    //Generate JSX for model controls list
     const modelControlsList = useMemo(() => {
         const getControlJSX = (control: any) => {
             const getControlIOList = () => {

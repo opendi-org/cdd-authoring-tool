@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import Xarrow, { useXarrow, Xwrapper } from "react-xarrows";
 import DiagramElement from "./DiagramElement";
 import { evaluateModel } from "../../lib/evaluateModel"
-import { getIOMapFromModelJSON, getFunctionMapFromModelJSON, getControlsMapFromModelJSON, getDiagramElementMapFromModelJSON, getDiaElemAssociatedDepsMapFromModelJSON } from "../../lib/modelPreprocessing";
+import { getIOMap, getFunctionMap, getControlsMap, getDiagramElementMap, getDiaElemAssociatedDepsMap } from "../../lib/modelPreprocessing";
 import { causalTypeColors } from "../../lib/cddTypes";
 import { updateElementSelection } from "../../lib/updateElementSelection";
 import { getExpandedPathsForSelectedElements } from "../../lib/getExpandedPathsForSelectedElements";
@@ -47,14 +47,14 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
     }
 
     //Evaluatable Assets: Import functions from their Base64-encoded string values
-    const functionMap = useMemo(() => getFunctionMapFromModelJSON(model), [model]);
+    const functionMap = useMemo(() => getFunctionMap(model), [model]);
 
     //InitialIOValues is IMMUTABLE.
     //Used to check whether incoming model JSON has an edited IO values list.
     //We can't let React check this itself because it just checks refs. This is a value comparison.
-    const [initialIOValues, setInitialIOValues] = useState(() => getIOMapFromModelJSON(model));
+    const [initialIOValues, setInitialIOValues] = useState(() => getIOMap(model));
     useEffect(() => {
-        const incomingIOMap = getIOMapFromModelJSON(model);
+        const incomingIOMap = getIOMap(model);
 
         const didIOValuesChange = () => {
             if (incomingIOMap.size !== initialIOValues.size) return true;
@@ -94,13 +94,13 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
     }, [model, functionMap, IOValues, selectedRunnableModelIndices]);
 
     //Maps diagram element UUIDs to their list of associated I/O values. Associated via their control.
-    const controlsMap = useMemo(() => getControlsMapFromModelJSON(model), [model]);
+    const controlsMap = useMemo(() => getControlsMap(model), [model]);
 
     //Maps diagram element UUIDs to their JSON information
-    const diagramElementMap = useMemo(() => getDiagramElementMapFromModelJSON(model, selectedDiagramIndex), [model, selectedDiagramIndex])
+    const diagramElementMap = useMemo(() => getDiagramElementMap(model, selectedDiagramIndex), [model, selectedDiagramIndex])
 
     //Maps element UUIDs to a set of information about all dependencies associated with that element.
-    const elementAssociatedDependenciesMap = useMemo(() => getDiaElemAssociatedDepsMapFromModelJSON(model, selectedDiagramIndex), [model, selectedDiagramIndex])
+    const elementAssociatedDependenciesMap = useMemo(() => getDiaElemAssociatedDepsMap(model, selectedDiagramIndex), [model, selectedDiagramIndex])
 
     //Holds a simple list of the UUIDs of selected elements, in the order they were selected.
     const [selectionBuffer, setSelectionBuffer] = useState(() => {let arr: string[] = []; return arr;});
