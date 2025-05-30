@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import Xarrow, { useXarrow, Xwrapper } from "react-xarrows";
 import DiagramElement from "./DiagramElement";
 import { evaluateModel } from "../../lib/evaluateModel"
-import { getIOMap, getFunctionMap, getControlsMap, getDiagramElementMap, getDiaElemAssociatedDepsMap } from "../../lib/modelPreprocessing";
+import { getIODataMap, getFunctionMap, getControlsMap, getDiagramElementMap, getDiaElemAssociatedDepsMap } from "../../lib/modelPreprocessing";
 import { causalTypeColors } from "../../lib/cddTypes";
 import { updateElementSelection } from "../../lib/updateElementSelection";
 import { getExpandedPathsForSelectedElements } from "../../lib/getExpandedPathsForSelectedElements";
@@ -52,9 +52,9 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
     //InitialIOValues is IMMUTABLE.
     //Used to check whether incoming model JSON has an edited IO values list.
     //We can't let React check this itself because it just checks refs. This is a value comparison.
-    const [initialIOValues, setInitialIOValues] = useState(() => getIOMap(model));
+    const [initialIOValues, setInitialIOValues] = useState(() => getIODataMap(model));
     useEffect(() => {
-        const incomingIOMap = getIOMap(model);
+        const incomingIOMap = getIODataMap(model);
 
         const didIOValuesChange = () => {
             if (incomingIOMap.size !== initialIOValues.size) return true;

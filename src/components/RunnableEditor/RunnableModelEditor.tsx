@@ -5,6 +5,7 @@ import './RunnableModelEditor.css';
 import ReactMarkdown from "react-markdown";
 
 import Editor from "@monaco-editor/react"
+import { getActiveIOValues, getIOMap } from "../../lib/modelPreprocessing";
 
 type RunnableModelEditorProps = {
     model: any;
@@ -54,13 +55,7 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
 
     }, [model]);
 
-    const ioMap = useMemo(() => {
-        let newMap = new Map<string, any>();
-        if(model.inputOutputValues) model.inputOutputValues.forEach((ioVal: any) => {
-            newMap.set(ioVal.meta.uuid, ioVal);
-        });
-        return newMap;
-    }, [model]);
+    const ioMap = useMemo(() => getIOMap(model), [model]);
 
     //These components will generate JSX for runnable models, including eval elements and I/O values
     const runnableModelsList = useMemo(() => {
@@ -76,21 +71,9 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
         })
     }, [model, selectedRunnableModelIndices, selectedIOValues]);
 
-    const activeIOs = useMemo(() => {
-        let activeIOs = new Set<string>();
-        selectedRunnableModelIndices.forEach((idx: number) => {
-            if(model.runnableModels[idx].elements) model.runnableModels[idx].elements.forEach((elem: any) => {
-                if(elem.inputs) elem.inputs.forEach((input: string) => {
-                    activeIOs.add(input);
-                });
-                if(elem.outputs) elem.outputs.forEach((output: string) => {
-                    activeIOs.add(output);
-                });
-            })
-        });
-        return activeIOs;
-    }, [model, selectedRunnableModelIndices]);
+    const activeIOs = useMemo(() => getActiveIOValues(model, selectedRunnableModelIndices), [model, selectedRunnableModelIndices]);
 
+    //Generate JSX for input output list, with checkboxes etc.
     const inputOutputList = useMemo(() => {
         let activeIOCount = 0;
         let inactiveIOCount = 0;
