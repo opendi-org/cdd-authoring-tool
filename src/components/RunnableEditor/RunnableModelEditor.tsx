@@ -6,6 +6,7 @@ import ReactMarkdown from "react-markdown";
 
 import Editor from "@monaco-editor/react"
 import { getActiveIOValues, getIOMap } from "../../lib/modelPreprocessing";
+import { addIOsToControl, moveIOsInControl, removeIOsFromControl } from "../../lib/runnableCRUD";
 
 type RunnableModelEditorProps = {
     model: any;
@@ -63,6 +64,7 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
             return <RunnableModel
                 key={`selected-runnable-panel-${idx}`}
                 model={model}
+                setModel={setModel}
                 activeModelIndex={idx}
                 ioMap={ioMap}
                 selectedIOValues={selectedIOValues}
@@ -160,8 +162,16 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
                     return <div className={`model-option ${thisIOValIdx % 2 == 1 ? "odd-entry" : ""}`}>
                         <label>{cleanComponentDisplay(thisIOVal.meta, "I/O Value")}</label>
                         <div>
-                            <button>↑</button>
-                            <button>↓</button>
+                            <button
+                                onClick={() => {setModel(moveIOsInControl(model, thisIOVal.meta.uuid, control.meta.uuid, -1))}}
+                            >
+                                ↑
+                            </button>
+                            <button
+                                onClick={() => {setModel(moveIOsInControl(model, thisIOVal.meta.uuid, control.meta.uuid, 1))}}
+                            >
+                                ↓
+                            </button>
                         </div>
                         <input type="checkbox" checked={selectedIOValues.includes(thisIOVal.meta.uuid)} onChange={generateIOToggleFunction(thisIOVal.meta.uuid)}></input>
                     </div>
@@ -200,8 +210,24 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
                                 {getControlIOList()}
                             </div>
                             <div>
-                                <button>Add Selected I/O</button>
-                                <button>Remove Selected I/O</button>
+                                <button
+                                    onClick={() => setModel(addIOsToControl(
+                                        model,
+                                        selectedIOValues,
+                                        control.meta.uuid
+                                    ))}
+                                >
+                                    Add Selected I/O
+                                </button>
+                                <button
+                                    onClick={() => setModel(removeIOsFromControl(
+                                        model,
+                                        selectedIOValues,
+                                        control.meta.uuid
+                                    ))}
+                                >
+                                    Remove Selected I/O
+                                </button>
                             </div>
                         </div>
                         <div className="control-hooks-list">

@@ -2,9 +2,11 @@ import React from "react";
 import { cleanComponentDisplay } from "../../lib/cleanupNames";
 import "./RunnableModel.css"
 import ReactMarkdown from "react-markdown";
+import { addIOToEvalElement, moveIOsInEvalElement, removeIOFromEvalElement } from "../../lib/runnableCRUD";
 
 type RunnableModelProps = {
     model: any;
+    setModel: Function;
     activeModelIndex?: number;
     ioMap: Map<string, any>;
     selectedIOValues: Array<string>;
@@ -13,6 +15,7 @@ type RunnableModelProps = {
 
 const RunnableModel: React.FC<RunnableModelProps> = ({
     model,
+    setModel,
     activeModelIndex,
     ioMap,
     selectedIOValues,
@@ -31,8 +34,16 @@ const RunnableModel: React.FC<RunnableModelProps> = ({
             return <div className={`model-option ${thisInputIdx % 2 == 1 ? "odd-entry" : ""}`}>
                 <label>{cleanComponentDisplay(thisIOVal.meta, "I/O Value")}</label>
                 <div>
-                    <button>↑</button>
-                    <button>↓</button>
+                    <button
+                        onClick={() => {setModel(moveIOsInEvalElement(model, thisIOVal.meta.uuid, element.meta.uuid, activeModelIndex, -1, true))}}
+                    >
+                        ↑
+                    </button>
+                    <button
+                        onClick={() => {setModel(moveIOsInEvalElement(model, thisIOVal.meta.uuid, element.meta.uuid, activeModelIndex, 1, true))}}
+                    >
+                        ↓
+                    </button>
                 </div>
                 <input type="checkbox" checked={selectedIOValues.includes(thisIOVal.meta.uuid)} onChange={generateIOToggleFunction(thisIOVal.meta.uuid)}></input>
             </div>
@@ -48,8 +59,16 @@ const RunnableModel: React.FC<RunnableModelProps> = ({
             return <div className={`model-option ${thisOutputIdx % 2 == 1 ? "odd-entry" : ""}`}>
                 <label>{cleanComponentDisplay(thisIOVal.meta, "I/O Value")}</label>
                 <div>
-                    <button>↑</button>
-                    <button>↓</button>
+                    <button
+                        onClick={() => {setModel(moveIOsInEvalElement(model, thisIOVal.meta.uuid, element.meta.uuid, activeModelIndex, -1, false))}}
+                    >
+                        ↑
+                    </button>
+                    <button
+                        onClick={() => {setModel(moveIOsInEvalElement(model, thisIOVal.meta.uuid, element.meta.uuid, activeModelIndex, 1, false))}}
+                    >
+                        ↓
+                    </button>
                 </div>
                 <input type="checkbox" checked={selectedIOValues.includes(thisIOVal.meta.uuid)} onChange={generateIOToggleFunction(thisIOVal.meta.uuid)}></input>
             </div>
@@ -76,8 +95,28 @@ const RunnableModel: React.FC<RunnableModelProps> = ({
                             {getElementInputsList(runnableElement)}
                         </div>
                         <div>
-                            <button>Add Selected I/O</button>
-                            <button>Remove Selected I/O</button>
+                            <button
+                                onClick={() => setModel(addIOToEvalElement(
+                                    model,
+                                    selectedIOValues,
+                                    runnableElement.meta.uuid,
+                                    activeModelIndex,
+                                    true
+                                ))}
+                            >
+                                Add Selected I/O
+                            </button>
+                            <button
+                                onClick={() => setModel(removeIOFromEvalElement(
+                                    model,
+                                    selectedIOValues,
+                                    runnableElement.meta.uuid,
+                                    activeModelIndex,
+                                    true
+                                ))}
+                            >
+                                Remove Selected I/O
+                            </button>
                         </div>
                     </div>
                     <div className="eval-io-list">
@@ -86,8 +125,28 @@ const RunnableModel: React.FC<RunnableModelProps> = ({
                             {getElementOutputsList(runnableElement)}
                         </div>
                         <div>
-                            <button>Add Selected I/O</button>
-                            <button>Remove Selected I/O</button>
+                            <button
+                                onClick={() => setModel(addIOToEvalElement(
+                                    model,
+                                    selectedIOValues,
+                                    runnableElement.meta.uuid,
+                                    activeModelIndex,
+                                    false
+                                ))}
+                            >
+                                Add Selected I/O
+                            </button>
+                            <button
+                                onClick={() => setModel(removeIOFromEvalElement(
+                                    model,
+                                    selectedIOValues,
+                                    runnableElement.meta.uuid,
+                                    activeModelIndex,
+                                    false
+                                ))}
+                            >
+                                Remove Selected I/O
+                            </button>
                         </div>
                     </div>
                 </div>

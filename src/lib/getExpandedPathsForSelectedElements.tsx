@@ -1,5 +1,5 @@
 import { AssociatedDependencyData } from "./cddTypes";
-import { findIndexOfDependency, findIndexOfElement } from "./elementCRUD";
+import { findIndexOfDependency, findIndexOfElement } from "./diagramCRUD";
 
 /**
  * Returns a list of JSON paths related to the selected diagram elements.
