@@ -3,7 +3,7 @@
  * These will generally be memoized by various components.
  */
 
-import { AssociatedDependencyData, DependencyRole } from "./cddTypes";
+import { AssociatedDependencyData, DependencyRole } from "./Diagram/cddTypes";
 import { cleanComponentDisplay } from "./cleanupNames";
 
 /**

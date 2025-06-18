@@ -1,11 +1,10 @@
 import React, { useState, useMemo, useEffect } from "react";
 import Xarrow, { useXarrow, Xwrapper } from "react-xarrows";
 import DiagramElement from "./DiagramElement";
-import { evaluateModel } from "../../lib/evaluateModel"
+import { evaluateModel } from "../../lib/Diagram/evaluateModel"
 import { getIODataMap, getFunctionMap, getControlsMap, getDiagramElementMap, getDiaElemAssociatedDepsMap } from "../../lib/modelPreprocessing";
-import { causalTypeColors } from "../../lib/cddTypes";
-import { updateElementSelection } from "../../lib/updateElementSelection";
-import { getExpandedPathsForSelectedElements } from "../../lib/getExpandedPathsForSelectedElements";
+import { causalTypeColors } from "../../lib/Diagram/cddTypes";
+import { getExpandedPathsForSelectedDiagramElements } from "../../lib/JSONEditorPathExpansion";
 import ElementCRUDPanel from "../ElementCRUDPanel";
 import ModelMetaInfoPanel from "./ModelMetaInfoPanel";
 
@@ -104,16 +103,19 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
 
     //Holds a simple list of the UUIDs of selected elements, in the order they were selected.
     const [selectionBuffer, setSelectionBuffer] = useState(() => {let arr: string[] = []; return arr;});
-    //Updating is handled by lib/updateElementSelection.ts
     //This function simplifies, removing the need to supply the correct buffer
-    const updateBuffer = (selectionUUID: string, select = true) => {
-        setSelectionBuffer(updateElementSelection(selectionBuffer, selectionUUID, select));
+    const updateBuffer = (selectionUUID: string) => {
+        setSelectionBuffer((prev: Array<string>) => 
+            prev.includes(selectionUUID)
+                ? prev.filter(idToCheck => idToCheck !== selectionUUID)
+                : [...prev, selectionUUID]
+        );
     }
 
     //Mirror graphical element selections in the JSON editor
     useEffect(() => {
         setExpandedPaths(
-            getExpandedPathsForSelectedElements(selectionBuffer, model, elementAssociatedDependenciesMap, selectedDiagramIndex)
+            getExpandedPathsForSelectedDiagramElements(selectionBuffer, model, elementAssociatedDependenciesMap, selectedDiagramIndex)
         );
     }, [selectionBuffer])
 
@@ -221,7 +223,7 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
         <div className="diagram-contents">
             {/*Transparent Div. Covers the whole diagram display Div. Catches click events UNIQUE to the graph background */}
             {/*Click events from diagram elements won't bubble up to this div, because it's a leaf in the DOM tree.*/}
-            <div style={{width: "100%", height: "100%" }} onClick={() => (setSelectionBuffer(updateElementSelection(selectionBuffer, null)))}></div>
+            <div style={{width: "100%", height: "100%" }} onClick={() => (setSelectionBuffer([]))}></div>
             {/*Wrapper for Xarrows*/}
             <Xwrapper>
                 {/*Absolute positioning forces diagram to be drawn over the above click-catching Div.*/}

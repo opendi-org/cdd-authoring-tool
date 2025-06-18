@@ -6,9 +6,8 @@ import ReactMarkdown from "react-markdown";
 
 import Editor from "@monaco-editor/react"
 import { getActiveIOValues, getEvaluatableAssetMap, getIOMap } from "../../lib/modelPreprocessing";
-import { addControlToModel, addDisplayToControl, addIOsToControl, addIOToModel, addScriptToModel, deleteControl, deleteDisplayFromControl, deleteEvaluatableAssetFromModel, deleteIOFromModel, moveIOsInControl, removeIOsFromControl, updateScript } from "../../lib/runnableCRUD";
+import { addControlToModel, addDisplayToControl, addIOsToControl, addIOToModel, addScriptToModel, deleteControl, deleteDisplayFromControl, deleteEvaluatableAssetFromModel, deleteIOFromModel, moveIOsInControl, removeIOsFromControl, updateScript } from "../../lib/RunnableModelEditor/runnableCRUD";
 import { undefinedIOJSON } from "../../lib/defaultJSON";
-import { addRunnableModelToModel } from "../../lib/api/modelCRUD";
 
 type RunnableModelEditorProps = {
     model: any;

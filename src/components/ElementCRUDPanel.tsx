@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { addDisplayToElement, addNewElement, deleteDisplayFromElement, deleteElement, toggleDependency } from "../lib/diagramCRUD";
-import { AssociatedDependencyData } from "../lib/cddTypes";
+import { addDisplayToElement, addNewElement, deleteDisplayFromElement, deleteElement, toggleDependency } from "../lib/Diagram/diagramCRUD";
+import { AssociatedDependencyData } from "../lib/Diagram/cddTypes";
 import DisplayTypeRegistry from "./Diagram/Displays/DisplayTypeRegistry";
 import { cleanDisplayTypeName, cleanComponentDisplay } from "../lib/cleanupNames";
 

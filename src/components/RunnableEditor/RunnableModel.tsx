@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { cleanComponentDisplay } from "../../lib/cleanupNames";
 import "./RunnableModel.css"
 import ReactMarkdown from "react-markdown";
-import { addIOToEvalElement, addNewEvaluatableElement, deleteEvaluatableElement, moveIOsInEvalElement, removeIOFromEvalElement, updateEvalAssetUsedByRunnableElement, updateFunctionNameUsedByRunnableElement } from "../../lib/runnableCRUD";
+import { addIOToEvalElement, addNewEvaluatableElement, deleteEvaluatableElement, moveIOsInEvalElement, removeIOFromEvalElement, updateEvalAssetUsedByRunnableElement, updateFunctionNameUsedByRunnableElement } from "../../lib/RunnableModelEditor/runnableCRUD";
 import { undefinedIOJSON } from "../../lib/defaultJSON";
 import { getEvaluatableAssetFunctionNamesMap } from "../../lib/modelPreprocessing";
 

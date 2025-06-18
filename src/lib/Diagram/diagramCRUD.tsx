@@ -1,6 +1,6 @@
 import { AssociatedDependencyData, DependencyRole } from './cddTypes';
-import DisplayTypeRegistry from '../components/Diagram/Displays/DisplayTypeRegistry';
-import { defaultDependencyJSON, defaultDiagramElementJSON } from './defaultJSON';
+import DisplayTypeRegistry from '../../components/Diagram/Displays/DisplayTypeRegistry';
+import { defaultDependencyJSON, defaultDiagramElementJSON } from '../defaultJSON';
 
 /**
  * Get index of an element or dependency within its JSON array by its UUID.

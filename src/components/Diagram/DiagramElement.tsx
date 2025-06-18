@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import DisplayTypeRegistry from "./Displays/DisplayTypeRegistry";
 import DisplaysSection from "./Displays/DisplaysSection";
 import Draggable from "react-draggable";
-import { causalTypeColors } from "../../lib/cddTypes";
+import { causalTypeColors } from "../../lib/Diagram/cddTypes";
 import { cleanComponentName } from "../../lib/cleanupNames";
 
 type DiagramElementProps = {
@@ -44,7 +44,7 @@ const DiagramElement: React.FC<DiagramElementProps> = ({
 
     //Passes a request to toggle my selection state up to the diagram's selection buffer
     const toggleMySelection = () => {
-      updateElementSelection(elementData.meta.uuid, !isSelected);
+      updateElementSelection(elementData.meta.uuid);
     }
 
     //For consistent dynamic styling

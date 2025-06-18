@@ -1,5 +1,5 @@
-import { AssociatedDependencyData } from "./cddTypes";
-import { findIndexOfDependency, findIndexOfElement } from "./diagramCRUD";
+import { AssociatedDependencyData } from "./Diagram/cddTypes";
+import { findIndexOfDependency, findIndexOfElement } from "./Diagram/diagramCRUD";
 
 /**
  * Returns a list of JSON paths related to the selected diagram elements.
@@ -10,7 +10,7 @@ import { findIndexOfDependency, findIndexOfElement } from "./diagramCRUD";
  * @param associatedDependenciesMap Map from diagram element UUIDs to list of dependencies associated with that element
  * @returns List of JSON paths to expand related to the selected diagram elements
  */
-export function getExpandedPathsForSelectedElements(
+export function getExpandedPathsForSelectedDiagramElements(
     selectionBuffer: Array<string>,
     model: any,
     associatedDependenciesMap: Map<string, Set<AssociatedDependencyData>>,

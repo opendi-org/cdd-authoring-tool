@@ -1,5 +1,5 @@
-import { cleanComponentDisplay } from "./cleanupNames";
-import { defaultControlJSON, defaultEvaluatableElementJSON, defaultInputOutputValueJSON, defaultScriptJSON } from "./defaultJSON";
+import { cleanComponentDisplay } from "../cleanupNames";
+import { defaultControlJSON, defaultEvaluatableElementJSON, defaultInputOutputValueJSON, defaultScriptJSON } from "../defaultJSON";
 
 /**
  * Pure/immutable: Updates the given IO Value UUID list to add or remove the
