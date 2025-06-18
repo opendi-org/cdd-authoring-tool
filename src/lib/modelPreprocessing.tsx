@@ -4,6 +4,7 @@
  */
 
 import { AssociatedDependencyData, DependencyRole } from "./cddTypes";
+import { cleanComponentDisplay } from "./cleanupNames";
 
 /**
  * Gets a diagram element map out of the full JSON for a causal decision model.
@@ -101,6 +102,30 @@ export function getActiveIOValues(model: any, selectedRunnableModelIndices: numb
 }
 
 /**
+ * Extract the function map defined in the given script, provided as a Base64-encoded string.
+ * If the script fails to define a proper function map, this will throw an error.
+ * 
+ * @param base64Script Base64-encoded script string to extract the function map from
+ * @returns Function map for the given script. Maps function name (string) to funciton code (via eval)
+ * @throws An error if the script fails to eval(), or does not define a "funcMap" as expected.
+ */
+export function extractFunctionMapFromScript(base64Script: string)
+{
+    try {
+        const decodedScriptString = atob(base64Script);
+        const scriptCode = eval(decodedScriptString);
+        if(scriptCode.funcMap)
+        {
+            return scriptCode.funcMap;
+        }
+    } catch (error)
+    {
+        throw error;
+    }
+    throw new Error("Script does not define a valid function map.");
+}
+
+/**
  * Gets a function map out of the full JSON for a causal decision model.
  * @param model Schema-compliant JSON for a causal decision model
  * @returns A map from function name to the actual evaluated code of the function -- "<Eval Asset UUID>_<Function Name>": function
@@ -110,17 +135,51 @@ export function getFunctionMap(model: any): Map<string, any> {
     model.evaluatableAssets?.forEach((evalAsset: any) => {
         if(evalAsset.evalType == "Script" && evalAsset.content.language == "javascript")
         {
-            const scriptString = atob(evalAsset.content.script);
-            //scriptCode returns a function map with function names as keys and function code as values
-            const scriptCode = eval(scriptString);
-    
-            const thisScriptFunctionMap = scriptCode.funcMap;
-            Object.keys(thisScriptFunctionMap).forEach((funcName) => { 
-                funcMap.set(`${evalAsset.meta.uuid}_${funcName}`, thisScriptFunctionMap[funcName]) //"<Eval Asset UUID>_<Function Name>": function
-            })
+            try {
+                const thisScriptFunctionMap = extractFunctionMapFromScript(evalAsset.content.script);
+                Object.keys(thisScriptFunctionMap).forEach((funcName) => { 
+                    funcMap.set(`${evalAsset.meta.uuid}_${funcName}`, thisScriptFunctionMap[funcName]) //"<Eval Asset UUID>_<Function Name>": function
+                })
+            } catch(error)
+            {
+                console.error(`Error interpreting script from eval asset ${cleanComponentDisplay(evalAsset.meta, "Evaluatable Asset")}\nSkipping...`, error);
+            }
         }
     });
     return funcMap;
+}
+
+/**
+ * Get a map from evaluatable asset UUID (string) to the raw JSON data for that evaluatable asset (any)
+ * @param model Schema-compliant JSON for a causal decision model
+ * @returns A map from evaluatable asset UUID to the raw JSON data for that evaluatable asset
+ */
+export function getEvaluatableAssetMap(model: any): Map<string, any> {
+    const evalMap = new Map();
+    model.evaluatableAssets?.forEach((evalAssetJSON: any) => {
+        evalMap.set(String(evalAssetJSON.meta.uuid), evalAssetJSON)
+    })
+    return evalMap;
+}
+
+/**
+ * Get a map from evaluatable asset UUID (string) to a list of all function names defined by the script in the given asset (string[])
+ * @param model Schema-compliant JSON for a causal decision model
+ * @returns A map from evaluatable asset UUID to a list of all function names defined by the script in the given asset
+ */
+export function getEvaluatableAssetFunctionNamesMap(model: any): Map<string, string[]> {
+    const namesMap = new Map();
+    const evalAssetMap = getEvaluatableAssetMap(model);
+    evalAssetMap.forEach((evalAsset: any, assetUUID: string) => {
+        try {
+            const assetFuncMap = extractFunctionMapFromScript(evalAsset.content?.script ?? "");
+            namesMap.set(assetUUID, Object.keys(assetFuncMap))
+        } catch (error)
+        {
+            console.error(`Error getting function names from ${cleanComponentDisplay(evalAsset.meta, "Evaluatable Asset")}\nSkipping...`, error);
+        }
+    })
+    return namesMap;
 }
 
 /**

@@ -5,8 +5,10 @@ import './RunnableModelEditor.css';
 import ReactMarkdown from "react-markdown";
 
 import Editor from "@monaco-editor/react"
-import { getActiveIOValues, getIOMap } from "../../lib/modelPreprocessing";
-import { addIOsToControl, moveIOsInControl, removeIOsFromControl } from "../../lib/runnableCRUD";
+import { getActiveIOValues, getEvaluatableAssetMap, getIOMap } from "../../lib/modelPreprocessing";
+import { addControlToModel, addDisplayToControl, addIOsToControl, addIOToModel, addScriptToModel, deleteControl, deleteDisplayFromControl, deleteEvaluatableAssetFromModel, deleteIOFromModel, moveIOsInControl, removeIOsFromControl, updateScript } from "../../lib/runnableCRUD";
+import { undefinedIOJSON } from "../../lib/defaultJSON";
+import { addRunnableModelToModel } from "../../lib/api/modelCRUD";
 
 type RunnableModelEditorProps = {
     model: any;
@@ -56,6 +58,8 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
 
     }, [model]);
 
+
+    const evalAssetMap = useMemo(() => getEvaluatableAssetMap(model), [model]);
     const ioMap = useMemo(() => getIOMap(model), [model]);
 
     //These components will generate JSX for runnable models, including eval elements and I/O values
@@ -67,6 +71,7 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
                 setModel={setModel}
                 activeModelIndex={idx}
                 ioMap={ioMap}
+                evalAssetMap={evalAssetMap}
                 selectedIOValues={selectedIOValues}
                 generateIOToggleFunction={generateIOToggleFunction}
             />
@@ -122,10 +127,12 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
     //Generate JSX for evaluatable assets list
     //These are scripts, API calls, etc. Currently only really works for scripts.
     const [editorCode, setEditorCode] = useState("");
+    const [editorEvalAssetUUID, setEditorEvalAssetUUID] = useState("");
     const evalAssetsList = useMemo(() => {
         const evalAssetListEntries = model.evaluatableAssets && model.evaluatableAssets.map((evalAsset: any) => {
             const openEditor = () => {
                 setEditorCode(atob(evalAsset.content.script));
+                setEditorEvalAssetUUID(evalAsset.meta.uuid);
             }
             return (
                 <div key={evalAsset.meta.uuid} className="eval-asset-info">
@@ -133,8 +140,16 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
                     <p><b>Type: </b>{evalAsset.evalType}</p>
                     {evalAsset.meta.summary && <ReactMarkdown children={evalAsset.meta.summary}/>}
                     <div>
-                        <button onClick={openEditor}>{`Edit ${evalAsset.evalType}`}</button>
-                        <button>{`Delete ${evalAsset.evalType}`}</button>
+                        <button
+                            onClick={openEditor}
+                        >
+                            {`Edit ${evalAsset.evalType}`}
+                        </button>
+                        <button
+                            onClick={() => setModel(deleteEvaluatableAssetFromModel(model, evalAsset.meta))}
+                        >
+                            {`Delete ${evalAsset.evalType}`}
+                        </button>
                     </div>
                 </div>
             )
@@ -144,19 +159,53 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
     const closeEditor = (save: boolean) => {
         if(save)
         {
-            alert("Not implemented.");
-            return;
+            setModel(updateScript(model, editorEvalAssetUUID, btoa(editorCode)));
         }
         setEditorCode("");
     }
 
     //Generate JSX for model controls list
     const modelControlsList = useMemo(() => {
+        const generateDisplaysOptionsForControl = (controlUUID: string) => {
+            const options= [
+                <option value={undefined} key={`option-control-${controlUUID}-display-none`}>(Pick)</option>
+            ]
+
+            const activeOptions: JSX.Element[] = [];
+            const inactiveOptions: JSX.Element[] = [];
+            const displaysAlreadyInList: Set<string> = new Set();
+
+            let diagramIdx = 0;
+            model.diagrams?.forEach((diagram: any) => {
+                const thisDiaDisplays = [...(diagramDisplaysMap.get(diagram.meta?.uuid ?? "") ?? [])];
+                thisDiaDisplays.forEach((displayUUID: string) => {
+                    const displayInfo = displayIDMap.get(displayUUID);
+                    const thisDisplayOption = <option value={displayUUID} key={`option-control${controlUUID}-display-${displayUUID}`}>{cleanComponentDisplay(displayInfo.meta, "Display")}</option>
+                    if(!displaysAlreadyInList.has(displayUUID))
+                    {
+                        if(diagramIdx === selectedDiagramIndex) activeOptions.push(thisDisplayOption);
+                        else inactiveOptions.push(thisDisplayOption);
+
+                        displaysAlreadyInList.add(displayUUID);
+                    }
+                })
+                diagramIdx++;
+            })
+
+            options.push(...[...activeOptions, ...inactiveOptions]);
+            
+            return (
+                <select name="Display Options for Control" value={undefined} onChange={(event) => {
+                    setModel(addDisplayToControl(model, controlUUID, event.target.value))
+                }}>{options}</select>
+            )
+        }
         const getControlJSX = (control: any) => {
             const getControlIOList = () => {
                 let IOCount = 0;
+                const totalIOCount = [...(control.inputOutputValues ?? [])].length;
                 return control.inputOutputValues && control.inputOutputValues.map((IOValueID: string) => {
-                    const thisIOVal = ioMap.get(IOValueID);
+                    const thisIOVal = ioMap.get(IOValueID) ?? undefinedIOJSON(IOValueID);
                     const thisIOValIdx = IOCount;
                     IOCount++;
                     return <div className={`model-option ${thisIOValIdx % 2 == 1 ? "odd-entry" : ""}`}>
@@ -164,11 +213,13 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
                         <div>
                             <button
                                 onClick={() => {setModel(moveIOsInControl(model, thisIOVal.meta.uuid, control.meta.uuid, -1))}}
+                                disabled={thisIOValIdx == 0}
                             >
                                 ↑
                             </button>
                             <button
                                 onClick={() => {setModel(moveIOsInControl(model, thisIOVal.meta.uuid, control.meta.uuid, 1))}}
+                                disabled={thisIOValIdx == totalIOCount - 1}
                             >
                                 ↓
                             </button>
@@ -193,7 +244,11 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
                         <div key={key} className={`model-option ${thisDisplayNumber % 2 == 1 ? "odd-entry" : ""}`}>
                             <label>{displayLabel}</label>
                             <div>
-                                <button>Remove</button>
+                                <button
+                                    onClick={() => setModel(deleteDisplayFromControl(model, control.meta.uuid, displayMeta.uuid))}
+                                >
+                                    Remove
+                                </button>
                             </div>
                         </div>
                     )
@@ -236,15 +291,19 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
                                 {getControlDisplaysList()}
                             </div>
                             <div>
-                                <select>
-                                    <option>Pick a Display...</option>
-                                </select>
-                                <button>Add to Control</button>
+                                <p>
+                                    Select a display to add it to control:
+                                </p>
+                                {generateDisplaysOptionsForControl(control.meta.uuid)}
                             </div>
                         </div>
                     </div>
                     <div>
-                        <button>Delete Control</button>
+                        <button
+                            onClick={() => setModel(deleteControl(model, control.meta.uuid))}
+                        >
+                            Delete Control
+                        </button>
                     </div>
                 </div>
             )
@@ -282,8 +341,20 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
                     <h2>I/O Values</h2>
                     {inputOutputList}
                     <div>
-                        <button>Add New I/O</button>
-                        <button>Delete Selected I/O</button>
+                        <button
+                            onClick={() => setModel(addIOToModel(model))}
+                        >
+                            Add New I/O
+                        </button>
+                        <button
+                            onClick={() => {
+                                    setModel(deleteIOFromModel(model, selectedIOValues));
+                                    setSelectedIOValues([]);
+                                }
+                            }
+                        >
+                            Delete Selected I/O
+                        </button>
                         <button onClick={() => setSelectedIOValues(new Array<string>())}>Clear I/O Selection</button>
                     </div>
                 </div>
@@ -291,9 +362,6 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
                     <h2>Active Runnable Models</h2>
                     <div className="runnable-models">
                         {runnableModelsList}
-                    </div>
-                    <div>
-                        <button>Add New Model</button>
                     </div>
                 </div>
             </div>
@@ -304,7 +372,11 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
                         {evalAssetsList}
                     </div>
                     <div>
-                        <button>Add New Script</button>
+                        <button
+                            onClick={() => setModel(addScriptToModel(model))}
+                        >
+                            Add New Script
+                        </button>
                     </div>
                 </div>
                 {editorCode != "" && (
@@ -331,7 +403,11 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
                         {modelControlsList}
                     </div>
                     <div>
-                        <button>Add New Control</button>
+                        <button
+                            onClick={() => setModel(addControlToModel(model))}
+                        >
+                            Add New Control
+                        </button>
                     </div>
                 </div>
             </div>

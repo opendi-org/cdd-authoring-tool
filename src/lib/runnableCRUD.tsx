@@ -1,3 +1,5 @@
+import { cleanComponentDisplay } from "./cleanupNames";
+import { defaultControlJSON, defaultEvaluatableElementJSON, defaultInputOutputValueJSON, defaultScriptJSON } from "./defaultJSON";
 
 /**
  * Pure/immutable: Updates the given IO Value UUID list to add or remove the
@@ -232,3 +234,305 @@ export function moveIOsInControl(model: any, ioUUID: string, controlUUID: string
     return workingModel;
 }
 
+/**
+ * Pure/immutable: Updates the given model JSON, deleting the specified Eval Element in the specified
+ * runnable model
+ * 
+ * @param model Model JSON to modify (contains the evaluatable element being deleted)
+ * @param evalUUID UUID of the evaluatable element (within model) to delete
+ * @param runnableModelIndex Index of the Runnable Model (within model) to delete Eval Element from
+ * @returns Updated model, with the result of the delete applied
+ */
+export function deleteEvaluatableElement(model: any, evalUUID: string, runnableModelIndex: number)
+{
+    let workingModel = structuredClone(model);
+    if(workingModel.runnableModels && workingModel.runnableModels[runnableModelIndex] !== undefined)
+    {
+        if(workingModel.runnableModels[runnableModelIndex].elements)
+        {
+            const newElements = workingModel.runnableModels[runnableModelIndex].elements.filter((evalElemJSON: any) => evalElemJSON.meta?.uuid !== evalUUID);
+            workingModel.runnableModels[runnableModelIndex].elements = newElements;
+        }
+    }
+    return workingModel;
+}
+
+/**
+ * Pure/immutable: Updates the given model JSON, adding a new Evaluatable Element to the specified
+ * runnable model.
+ * 
+ * @param model Model JSON to modify (contains the runnable model to add eval element to)
+ * @param runnableModelIndex Index of the Runnable Model (within model) to add a new Eval Element to
+ * @returns Updated model, with the result of the add applied
+ */
+export function addNewEvaluatableElement(model: any, runnableModelIndex: number)
+{
+    let workingModel = structuredClone(model);
+    if(workingModel.runnableModels && workingModel.runnableModels[runnableModelIndex] !== undefined)
+    {
+        const newElementJSON = defaultEvaluatableElementJSON();
+        let evalElemList = workingModel.runnableModels[runnableModelIndex].elements ?? [];
+        evalElemList = [...evalElemList, newElementJSON];
+        workingModel.runnableModels[runnableModelIndex].elements = evalElemList;
+    }
+    return workingModel;
+}
+
+/**
+ * Pure/immutable: Updates the given model JSON, deleting the specified Control
+ * 
+ * @param model Model JSON to modify (contains the control to be deleted)
+ * @param controlUUID UUID of the Control (within model) to delete
+ * @returns Updated model, with the result of the delete applied
+ */
+export function deleteControl(model: any, controlUUID: string)
+{
+    let workingModel = structuredClone(model);
+    if(workingModel.controls)
+    {
+        workingModel.controls = workingModel.controls.filter((controlJSON: any) => controlJSON.meta.uuid !== controlUUID)
+    }
+    return workingModel;
+}
+
+/**
+ * Pure/immutable: Updates the given model JSON, deleting the specified Display from the specified
+ * Control
+ * 
+ * @param model Model JSON to modify (contains the Control to modify)
+ * @param controlUUID UUID of the control to modify (contains the Display to delete)
+ * @param displayUUID UUID of the display to delete from the given control (within model)
+ * @returns Updated model, with the result of the delete applied
+ */
+export function deleteDisplayFromControl(model: any, controlUUID: string, displayUUID: string)
+{
+    let workingModel = structuredClone(model);
+    if(workingModel.controls)
+    {
+        const controlIndex = workingModel.controls.findIndex((controlJSON: any) => controlJSON.meta.uuid === controlUUID);
+        if(controlIndex >= 0 && workingModel.controls[controlIndex].displays)
+        {
+            workingModel.controls[controlIndex].displays = workingModel.controls[controlIndex].displays.filter(
+                (entryUUID: string) => entryUUID !== displayUUID
+            );
+        }
+    }
+    return workingModel;
+}
+
+/**
+ * Pure/immutable: Updates the given model JSON, adding the specified Display to the specified
+ * Control
+ * 
+ * @param model Model JSON to modify (contains the control being modified)
+ * @param controlUUID UUID of the Control (within model) to add display to
+ * @param displayUUID UUID of the display to add to the given control (within model)
+ * @returns Updated model, with the result of the add applied
+ */
+export function addDisplayToControl(model: any, controlUUID: string, displayUUID: string)
+{
+    let workingModel = structuredClone(model);
+    if(workingModel.controls)
+    {
+        const controlIndex = workingModel.controls.findIndex((controlJSON: any) => controlJSON.meta.uuid === controlUUID);
+        if(controlIndex >= 0 && workingModel.controls[controlIndex].displays)
+        {
+            workingModel.controls[controlIndex].displays = [...workingModel.controls[controlIndex].displays.filter(
+                (entryUUID: string) => entryUUID !== displayUUID
+            ), displayUUID]
+        }
+    }
+    return workingModel;
+}
+
+/**
+ * Pure/immutable: Updates the given model JSON, adding a new Control with the given I/O list and
+ * Displays
+ * 
+ * @param model Model JSON to modify
+ * @param inputOutputValues List of I/O Value UUIDs to register with this control
+ * @param displays List of Display UUIDs to register with this control
+ * @returns Updated model, with the result of the add applied
+ */
+export function addControlToModel(model: any, inputOutputValues: string[] = [], displays: string[] = [])
+{
+    let workingModel = structuredClone(model);
+    workingModel.controls = [...(workingModel.controls ?? []), defaultControlJSON(inputOutputValues, displays)];
+    return workingModel;
+}
+
+/**
+ * Pure/immutable: Updates the given model JSON, adding a new Script Evaluatable Asset to the model
+ * 
+ * @param model Model JSON to modify
+ * @returns Updated model, with the result of the add applied
+ */
+export function addScriptToModel(model: any)
+{
+    let workingModel = structuredClone(model);
+    workingModel.evaluatableAssets = [...(workingModel.evaluatableAssets ?? []), defaultScriptJSON()];
+    return workingModel;
+}
+
+/**
+ * Pure/immutable: Updates the given model JSON, deleting the requested Evaluatable Asset from the
+ * model (after confirming with user)
+ * 
+ * @param model Model JSON to modify
+ * @param assetMeta Meta JSON data for the Evaluatable Asset to be deleted
+ * @returns Updated model, with the result of the delete applied
+ */
+export function deleteEvaluatableAssetFromModel(model: any, assetMeta: any)
+{
+    let workingModel = structuredClone(model);
+    if(workingModel.evaluatableAssets && confirm(`Deleting ${cleanComponentDisplay(assetMeta, "Asset", 5)}\nAre you sure?`))
+    {
+        workingModel.evaluatableAssets = workingModel.evaluatableAssets.filter((assetJSON: any) => assetJSON.meta.uuid !== assetMeta.uuid)
+    }
+    return workingModel;
+}
+
+/**
+ * Pure/immutable: Updates the given model JSON, replacing the script on the specified Evaluatable
+ * Asset with the new provided Base64-encoded script
+ * 
+ * @param model Model JSON to modify (contains the Eval Asset to update)
+ * @param assetUUID UUID of the Evaluatable Asset whose script will be updated
+ * @param base64Script Base64-encoded string of the new script to assign to the specified Eval Asset
+ * @returns Updated model, with the result of the script update applied
+ */
+export function updateScript(model: any, assetUUID: string, base64Script: string)
+{
+    let workingModel = structuredClone(model);
+    if(workingModel.evaluatableAssets)
+    {
+        let workingAsset = workingModel.evaluatableAssets.find((assetJSON: any) => assetJSON.meta.uuid === assetUUID);
+        if(workingAsset && workingAsset.content && workingAsset.content.script)
+        {
+            workingAsset.content.script = base64Script;
+        }
+    }
+    return workingModel;
+}
+
+/**
+ * Pure/immutable: Updates the given model JSON, adding a new I/O value to the model
+ * 
+ * @param model Model JSON to modify
+ * @returns Updated model, with the result of the add applied
+ */
+export function addIOToModel(model: any)
+{
+    let workingModel = structuredClone(model);
+    workingModel.inputOutputValues = [...(workingModel.inputOutputValues ?? []), defaultInputOutputValueJSON()];
+    return workingModel;
+}
+
+/**
+ * Pure/immutable: Updates the given model JSON, scrubbing all references to the I/O UUIDs given in
+ * ioSelectionBuffer from the model. Removes I/O references from Evaluatable Elements and Controls.
+ * I/O values should be deleted from the I/O list separately.
+ * 
+ * @see deleteIOFromModel (Calls this function)
+ * 
+ * @param model Model JSON to modify
+ * @param ioSelectionBuffer Buffer of I/O UUIDs to scrub from the model
+ * @returns Updated model, with all references to the I/O values in the selection buffer removed
+ */
+function scrubIOReferencesFromModel(model: any, ioSelectionBuffer: string[])
+{
+    let workingModel = structuredClone(model);
+    if(workingModel.runnableModels)
+    {
+        workingModel.runnableModels.forEach((runnableModelJSON: any) => {
+            if(runnableModelJSON.elements)
+            {
+                runnableModelJSON.elements.forEach((evalElement: any) => {
+                    evalElement.inputs = (evalElement.inputs ?? []).filter((inputUUID: string) => !ioSelectionBuffer.includes(inputUUID));
+                    evalElement.outputs = (evalElement.outputs ?? []).filter((outputUUID: string) => !ioSelectionBuffer.includes(outputUUID));
+                });
+            }
+        })
+    }
+    if(workingModel.controls)
+    {
+        workingModel.controls.forEach((controlJSON: any) => {
+            controlJSON.inputOutputValues = (controlJSON.inputOutputValues ?? []).filter((ioUUID: string) => !ioSelectionBuffer.includes(ioUUID));
+        })
+    }
+    return workingModel;
+}
+
+/**
+ * Pure/immutable: Updates the given model JSON, deleting the I/O values specified in the buffer from the
+ * model, including any references to those I/O value UUIDs in Evaluatable Elements and Controls.
+ * 
+ * @param model Model JSON to modify (contains the I/O values to be deleted)
+ * @param ioSelectionBuffer Buffer of I/O value UUIDs to delete from the model
+ * @returns Updated model, with the result of the deletion(s) applied
+ */
+export function deleteIOFromModel(model: any, ioSelectionBuffer: string[])
+{
+    let workingModel = structuredClone(model);
+    const toDeleteCount = ioSelectionBuffer.length;
+    if(confirm(`Deleting ${toDeleteCount} I/O value${toDeleteCount > 1 ? "s" : ""}.\nAll references in evaluatable elements and controls will also be deleted.\nAre you sure?`))
+    {
+        //Delete from main I/O list
+        ioSelectionBuffer.forEach((ioUUID: string) => {
+            workingModel.inputOutputValues = (workingModel.inputOutputValues ?? []).filter((ioJSON: any) => ioJSON.meta.uuid !== ioUUID);
+        })
+        //Delete all references
+        workingModel = scrubIOReferencesFromModel(workingModel, ioSelectionBuffer);
+    }
+    return workingModel;
+}
+
+/**
+ * Pure/immutable: Updates the given model JSON, changing the specified Evaluatable Element so that it
+ * uses a new (specified) evaluatable asset. This un-sets the associated Function Name used by the Element.
+ * 
+ * @param model Model JSON to modify (contains the specified runnable model, element, and evaluatable asset)
+ * @param runnableModelIndex Index of the runnable model containing the specified Evaluatable Element
+ * @param evalElementUUID UUID of the evaluatable element to associate with the given Evaluatable Asset
+ * @param evalAssetUUID UUID of the evaluatable asset to associate with the given Evaluatable Element
+ * @returns Updated model, with the result of the eval element update applied
+ */
+export function updateEvalAssetUsedByRunnableElement(model: any, runnableModelIndex: number, evalElementUUID: string, evalAssetUUID: string)
+{
+    let workingModel = structuredClone(model);
+    if(workingModel.runnableModels && workingModel.runnableModels[runnableModelIndex] && workingModel.runnableModels[runnableModelIndex].elements)
+    {
+        const elemToUpdate = workingModel.runnableModels[runnableModelIndex].elements.find((elementJSON: any) => elementJSON.meta?.uuid === evalElementUUID);
+        if(elemToUpdate)
+        {
+            elemToUpdate.evaluatableAsset = evalAssetUUID;
+            elemToUpdate.functionName = "";
+        }
+    }
+    return workingModel;
+}
+
+/**
+ * Pure/immutable: Updates the given model JSON, changing the specified Evaluatable Element so that it
+ * uses a new (specified) function name. This name should be defined by the element's associated Evaluatable
+ * Asset, though this function DOES NOT VALIDATE THIS.
+ * 
+ * @param model Model JSON to modify (contains the specified runnable model, and element)
+ * @param runnableModelIndex Index of the runnable model containing the specified Evaluatable Element
+ * @param evalElementUUID UUID of the evaluatable element to associate with a new Function Name
+ * @param functionName Name of the function to associate with the given evaluatable element
+ * @returns Updated model, with the result of the eval element update applied
+ */
+export function updateFunctionNameUsedByRunnableElement(model: any, runnableModelIndex: number, evalElementUUID: string, functionName: string)
+{
+    let workingModel = structuredClone(model);
+    if(workingModel.runnableModels && workingModel.runnableModels[runnableModelIndex] && workingModel.runnableModels[runnableModelIndex].elements)
+    {
+        const elemToUpdate = workingModel.runnableModels[runnableModelIndex].elements.find((elementJSON: any) => elementJSON.meta?.uuid === evalElementUUID);
+        if(elemToUpdate)
+        {
+            elemToUpdate.functionName = functionName;
+        }
+    }
+    return workingModel;
+}
