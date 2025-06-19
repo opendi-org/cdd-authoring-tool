@@ -19,6 +19,15 @@
         margin: 0.5em;
     }
 
+    .json-link {
+        background: none;
+        border: none;
+        color: var(--runnable-editor-header-color)
+    }
+    .json-link:hover {
+        cursor: pointer;
+    }
+
     .editor-row {
         display: flex;
         flex-direction: row;

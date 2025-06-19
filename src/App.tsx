@@ -5,6 +5,7 @@ import { getNewModel } from "./lib/api/modelCRUD";
 import { APIInterface } from "./lib/api/api";
 import { NoAPI } from "./lib/api/noApi";
 import RunnableModelEditor from "./components/RunnableEditor/RunnableModelEditor";
+import { RIGHT_MENU_TABS } from "./lib/rightMenu/menuTabIDs";
 
 function App() {
     // This is the single source of truth for Model JSON, used by both VanillaJSONEditor and CausalDecisionDiagram.
@@ -92,6 +93,8 @@ function App() {
     useEffect(() => {
         localStorage.setItem("menu", menuIsOpen ? "open" : "closed");
     }, [menuIsOpen]);
+    const [activeRightMenuTab, setActiveRightMenuTab] = useState(() => localStorage.getItem("tab") || RIGHT_MENU_TABS.JSON);
+
     const [expandedPaths, setExpandedPaths] = useState([]);
 
     const [leftEditorState, setLeftEditorState] = useState("cdd");
@@ -109,6 +112,9 @@ function App() {
                                 setModel={setModelJSON}
                                 selectedRunnableModelIndices={selectedRunnableModelIndices}
                                 selectedDiagramIndex={selectedDiagramIndex}
+                                setExpandedPaths={setExpandedPaths}
+                                setActiveRightMenuTab={setActiveRightMenuTab}
+                                setMenuIsOpen={setMenuIsOpen}
                             />
                             <div
                                 className="menu-toggle-button"
@@ -156,6 +162,8 @@ function App() {
                         apiInstance={apiInstance}
                         setApiInstance={setApiInstance}
                         setLeftEditorState={setLeftEditorState}
+                        activeRightMenuTab={activeRightMenuTab}
+                        setActiveRightMenuTab={setActiveRightMenuTab}
                     />
                 </div>
             </div>

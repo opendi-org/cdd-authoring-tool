@@ -4,7 +4,7 @@ import DiagramElement from "./DiagramElement";
 import { evaluateModel } from "../../lib/Diagram/evaluateModel"
 import { getIODataMap, getFunctionMap, getControlsMap, getDiagramElementMap, getDiaElemAssociatedDepsMap } from "../../lib/modelPreprocessing";
 import { causalTypeColors } from "../../lib/Diagram/cddTypes";
-import { getExpandedPathsForSelectedDiagramElements } from "../../lib/JSONEditorPathExpansion";
+import { getExpandedPathsForSelectedDiagramElements } from "../../lib/rightMenu/JSONEditorPathExpansion";
 import ElementCRUDPanel from "../ElementCRUDPanel";
 import ModelMetaInfoPanel from "./ModelMetaInfoPanel";
 

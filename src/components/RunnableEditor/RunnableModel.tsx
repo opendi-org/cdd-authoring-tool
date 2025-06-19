@@ -5,6 +5,7 @@ import ReactMarkdown from "react-markdown";
 import { addIOToEvalElement, addNewEvaluatableElement, deleteEvaluatableElement, moveIOsInEvalElement, removeIOFromEvalElement, updateEvalAssetUsedByRunnableElement, updateFunctionNameUsedByRunnableElement } from "../../lib/RunnableModelEditor/runnableCRUD";
 import { undefinedIOJSON } from "../../lib/defaultJSON";
 import { getEvaluatableAssetFunctionNamesMap } from "../../lib/modelPreprocessing";
+import { getExpandedPathForEvaluatableElement, getExpandedPathForRunnableModel } from "../../lib/rightMenu/JSONEditorPathExpansion";
 
 type RunnableModelProps = {
     model: any;
@@ -14,6 +15,7 @@ type RunnableModelProps = {
     evalAssetMap: Map<string, any>;
     selectedIOValues: Array<string>;
     generateIOToggleFunction: Function;
+    expandNonIOComponentInJSON: Function;
 }
 
 const RunnableModel: React.FC<RunnableModelProps> = ({
@@ -24,6 +26,7 @@ const RunnableModel: React.FC<RunnableModelProps> = ({
     evalAssetMap,
     selectedIOValues,
     generateIOToggleFunction,
+    expandNonIOComponentInJSON,
 }) => {
     if(activeModelIndex === undefined) activeModelIndex = 0;
     if(!(model.runnableModels && model.runnableModels[activeModelIndex])) return null;
@@ -134,7 +137,7 @@ const RunnableModel: React.FC<RunnableModelProps> = ({
     const evalElementsList = thisModel.elements.map((runnableElement: any) => {
         return (
             <div className="eval-element-info">
-                <h3>{cleanComponentDisplay(runnableElement.meta, "Element")}</h3>
+                <h3>{cleanComponentDisplay(runnableElement.meta, "Element")} <button className="json-link" onClick={() => expandNonIOComponentInJSON(getExpandedPathForEvaluatableElement(runnableElement.meta?.uuid, model))}>(Reveal in JSON)</button></h3>
                 <div>
                     <p>
                         <b>Evaluatable Asset Used: </b>{generateEvalAssetsOptionsForElement(runnableElement.meta.uuid, runnableElement.evaluatableAsset)}
@@ -221,7 +224,7 @@ const RunnableModel: React.FC<RunnableModelProps> = ({
 
     return (
         <div className="runnable-model-info">
-            <h3>{cleanComponentDisplay(thisModel.meta, "Runnable Model")}</h3>
+            <h3>{cleanComponentDisplay(thisModel.meta, "Runnable Model")} <button className="json-link" onClick={() => expandNonIOComponentInJSON(getExpandedPathForRunnableModel(thisModel.meta?.uuid, model))}>(Reveal in JSON)</button></h3>
             <div className="model-options-list">
                 {evalElementsList}
             </div>

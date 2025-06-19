@@ -6,6 +6,7 @@ import { getValidator, validateGraphData } from "../../lib/validation";
 import { Mode } from "vanilla-jsoneditor";
 import FileTab from "./FileTab";
 import { APIInterface } from "../../lib/api/api";
+import { RIGHT_MENU_TABS } from "../../lib/rightMenu/menuTabIDs";
 
 
 type EditorAndHelpMenuProps = {
@@ -19,14 +20,9 @@ type EditorAndHelpMenuProps = {
     apiInstance: APIInterface;
     setApiInstance: Function;
     setLeftEditorState: Function;
+    activeRightMenuTab: string;
+    setActiveRightMenuTab: Function;
 }
-
-const TABS = {
-    HELP: "help",
-    GLOSSARY: "glossary",
-    JSON: "jsoneditor",
-    FILE: "file",
-};
 
 /**
  * Renders the right-side menu for the authoring tool. Holds the
@@ -44,12 +40,13 @@ const EditorAndHelpMenu: React.FC<EditorAndHelpMenuProps> = ({
     apiInstance,
     setApiInstance,
     setLeftEditorState,
+    activeRightMenuTab,
+    setActiveRightMenuTab
 }) => {
-    const [activeTab, setActiveTab] = useState(() => localStorage.getItem("tab") || TABS.JSON);
 
     useEffect(() => {
-        localStorage.setItem("tab", activeTab);
-    }, [activeTab]);
+        localStorage.setItem("tab", activeRightMenuTab);
+    }, [activeRightMenuTab]);
 
     /**
      * Tracks whether the JSON editor is in tree, text, or table mode.
@@ -72,36 +69,36 @@ const EditorAndHelpMenu: React.FC<EditorAndHelpMenuProps> = ({
                     <div className="menu-tab-container"> {/* Menu tab buttons */}
                         <div
                             id="file-tab-btn"
-                            className={`menu-tab ${activeTab === TABS.FILE ? "selected-tab" : ""}`}
-                            onClick={() => setActiveTab(TABS.FILE)}
+                            className={`menu-tab ${activeRightMenuTab === RIGHT_MENU_TABS.FILE ? "selected-tab" : ""}`}
+                            onClick={() => setActiveRightMenuTab(RIGHT_MENU_TABS.FILE)}
                         >
                             File
                         </div>
                         <div
                             id="advanced-tab-btn"
-                            className={`menu-tab ${activeTab === TABS.JSON ? "selected-tab" : ""}`}
-                            onClick={() => setActiveTab(TABS.JSON)}
+                            className={`menu-tab ${activeRightMenuTab === RIGHT_MENU_TABS.JSON ? "selected-tab" : ""}`}
+                            onClick={() => setActiveRightMenuTab(RIGHT_MENU_TABS.JSON)}
                         >
                             JSON Editor
                         </div>
                         <div
                             id="help-tab-btn"
-                            className={`menu-tab ${activeTab === TABS.HELP ? "selected-tab" : ""}`}
-                            onClick={() => setActiveTab(TABS.HELP)}
+                            className={`menu-tab ${activeRightMenuTab === RIGHT_MENU_TABS.HELP ? "selected-tab" : ""}`}
+                            onClick={() => setActiveRightMenuTab(RIGHT_MENU_TABS.HELP)}
                         >
                             Help
                         </div>
                         <div
                             id="glossary-btn"
-                            className={`menu-tab ${activeTab === TABS.GLOSSARY ? "selected-tab" : ""}`}
-                            onClick={() => setActiveTab(TABS.GLOSSARY)}
+                            className={`menu-tab ${activeRightMenuTab === RIGHT_MENU_TABS.GLOSSARY ? "selected-tab" : ""}`}
+                            onClick={() => setActiveRightMenuTab(RIGHT_MENU_TABS.GLOSSARY)}
                         >
                             Glossary
                         </div>
                     </div>
                 </div>
                 <div id="menu-contents"> {/* Actual menu content */}
-                    <div className={`file-tab info-menu ${activeTab === TABS.FILE ? "" : "hidden"}`}>
+                    <div className={`file-tab info-menu ${activeRightMenuTab === RIGHT_MENU_TABS.FILE ? "" : "hidden"}`}>
                         <FileTab
                             model={modelJSON}
                             setModel={setModelJSON}
@@ -114,7 +111,7 @@ const EditorAndHelpMenu: React.FC<EditorAndHelpMenuProps> = ({
                             setLeftEditorState={setLeftEditorState}
                         />
                     </div>
-                    <div className={`info-menu-json ${activeTab === TABS.JSON ? "" : "hidden"}`}>
+                    <div className={`info-menu-json ${activeRightMenuTab === RIGHT_MENU_TABS.JSON ? "" : "hidden"}`}>
                         <VanillaJSONEditor
                             content={content}
                             onChange={(newContent: any, _previousContent, { contentErrors, patchResult: _ }) => {
@@ -145,10 +142,10 @@ const EditorAndHelpMenu: React.FC<EditorAndHelpMenuProps> = ({
                             mode={editorMode}
                         />
                     </div>
-                    <div className={`info-menu ${activeTab === TABS.HELP ? "" : "hidden"}`}>
+                    <div className={`info-menu ${activeRightMenuTab === RIGHT_MENU_TABS.HELP ? "" : "hidden"}`}>
                         <HelpTab />
                     </div>
-                    <div className={`info-menu ${activeTab === TABS.GLOSSARY ? "" : "hidden"}`}>
+                    <div className={`info-menu ${activeRightMenuTab === RIGHT_MENU_TABS.GLOSSARY ? "" : "hidden"}`}>
                         <GlossaryTab />
                     </div>
                 </div>

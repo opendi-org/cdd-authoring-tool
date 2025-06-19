@@ -8,12 +8,17 @@ import Editor from "@monaco-editor/react"
 import { getActiveIOValues, getEvaluatableAssetMap, getIOMap } from "../../lib/modelPreprocessing";
 import { addControlToModel, addDisplayToControl, addIOsToControl, addIOToModel, addScriptToModel, deleteControl, deleteDisplayFromControl, deleteEvaluatableAssetFromModel, deleteIOFromModel, moveIOsInControl, removeIOsFromControl, updateScript } from "../../lib/RunnableModelEditor/runnableCRUD";
 import { undefinedIOJSON } from "../../lib/defaultJSON";
+import { getExpandedPathForControl, getExpandedPathForEvaluatableAsset, getExpandedPathsForSelectedIOValues } from "../../lib/rightMenu/JSONEditorPathExpansion";
+import { RIGHT_MENU_TABS } from "../../lib/rightMenu/menuTabIDs";
 
 type RunnableModelEditorProps = {
     model: any;
     setModel: Function;
     selectedRunnableModelIndices: Array<number>;
     selectedDiagramIndex: number;
+    setExpandedPaths: Function;
+    setActiveRightMenuTab: Function;
+    setMenuIsOpen: Function;
 }
 
 const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
@@ -21,11 +26,15 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
     setModel,
     selectedRunnableModelIndices,
     selectedDiagramIndex,
+    setExpandedPaths: setExpandedJSONPaths,
+    setActiveRightMenuTab,
+    setMenuIsOpen: setRightMenuIsOpen,
 }) => {
 
     let [displayIDMap, setDisplayIDMap] = useState(new Map<string, any>());
     let [diagramDisplaysMap, setDiagramDisplaysMap] = useState(new Map<string, Set<string>>());
     let [selectedIOValues, setSelectedIOValues] = useState(new Array<string>());
+
     const generateIOToggleFunction = (id: string) => {
         const toggleIOValue = () => {
             setSelectedIOValues((prev: Array<string>) => 
@@ -35,6 +44,23 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
             );
         }
         return toggleIOValue;
+    }
+
+    useEffect(() => {
+        setExpandedJSONPaths(getExpandedPathsForSelectedIOValues(selectedIOValues, model, selectedRunnableModelIndices));
+    }, [selectedIOValues])
+
+    const expandNonIOComponentInJSON = (componentPath: string[]) =>
+    {
+        console.log(componentPath);
+        if(componentPath.length > 0)
+        {
+            setRightMenuIsOpen("open");
+            setActiveRightMenuTab(RIGHT_MENU_TABS.JSON);
+            setExpandedJSONPaths([
+                componentPath,
+            ])
+        }
     }
 
     useEffect(() => {
@@ -73,6 +99,7 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
                 evalAssetMap={evalAssetMap}
                 selectedIOValues={selectedIOValues}
                 generateIOToggleFunction={generateIOToggleFunction}
+                expandNonIOComponentInJSON={expandNonIOComponentInJSON}
             />
         })
     }, [model, selectedRunnableModelIndices, selectedIOValues]);
@@ -135,7 +162,7 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
             }
             return (
                 <div key={evalAsset.meta.uuid} className="eval-asset-info">
-                    <h3>{cleanComponentDisplay(evalAsset.meta, "Evaluatable Asset")}</h3>
+                    <h3>{cleanComponentDisplay(evalAsset.meta, "Evaluatable Asset")} <button className="json-link" onClick={() => expandNonIOComponentInJSON(getExpandedPathForEvaluatableAsset(evalAsset.meta?.uuid, model))}>(Reveal in JSON)</button></h3>
                     <p><b>Type: </b>{evalAsset.evalType}</p>
                     {evalAsset.meta.summary && <ReactMarkdown children={evalAsset.meta.summary}/>}
                     <div>
@@ -256,7 +283,7 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
 
             return (
                 <div key={control.meta.uuid} className="control-info">
-                    <h3>{cleanComponentDisplay(control.meta, "Control")}</h3>
+                    <h3>{cleanComponentDisplay(control.meta, "Control")} <button className="json-link" onClick={() => expandNonIOComponentInJSON(getExpandedPathForControl(control.meta?.uuid, model))}>(Reveal in JSON)</button> </h3>
                     <div className="control-hooks">
                         <div className="control-hooks-list">
                             <h4>Input/Output Values</h4>
@@ -354,7 +381,7 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
                         >
                             Delete Selected I/O
                         </button>
-                        <button onClick={() => setSelectedIOValues(new Array<string>())}>Clear I/O Selection</button>
+                        <button onClick={() => setSelectedIOValues(new Array<string>())}>Clear I/O and JSON Selections</button>
                     </div>
                 </div>
                 <div className="editor-panel runnable-models">
