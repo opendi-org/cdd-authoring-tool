@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import CausalDecisionDiagram from "./components/CausalDecisionDiagram";
+import CausalDecisionDiagram from "./components/Diagram/CausalDecisionDiagram";
 import EditorAndHelpMenu from "./components/RightMenu/EditorAndHelpMenu";
 import { getNewModel } from "./lib/api/modelCRUD";
 import { APIInterface } from "./lib/api/api";
 import { NoAPI } from "./lib/api/noApi";
+import RunnableModelEditor from "./components/RunnableEditor/RunnableModelEditor";
+import { RIGHT_MENU_TABS } from "./lib/rightMenu/menuTabIDs";
 
 function App() {
     // This is the single source of truth for Model JSON, used by both VanillaJSONEditor and CausalDecisionDiagram.
@@ -91,35 +93,63 @@ function App() {
     useEffect(() => {
         localStorage.setItem("menu", menuIsOpen ? "open" : "closed");
     }, [menuIsOpen]);
+    const [activeRightMenuTab, setActiveRightMenuTab] = useState(() => localStorage.getItem("tab") || RIGHT_MENU_TABS.JSON);
+
     const [expandedPaths, setExpandedPaths] = useState([]);
+
+    const [leftEditorState, setLeftEditorState] = useState("cdd");
 
     return (
         <div style={{ paddingRight:"0.75%" }}>
-            <h2 className="title-header">OpenDI CDD Authoring Tool</h2>
-            <div className="cdd-editor">
-                {/* Diagram view / engine */}
-                <div className="cdd-editor left">
-                    <CausalDecisionDiagram
-                        model={modelJSON}
-                        setModelJSON={setModelJSON}
-                        setExpandedPaths={setExpandedPaths}
-                        selectedDiagramIndex={selectedDiagramIndex}
-                        selectedRunnableModelIndices={selectedRunnableModelIndices}
-                    />
-                    <div id="controls-legend">
-                        <b>Move element:</b> Click and drag element's top bar.<br/>
-                        <b>Select element(s):</b> Toggle element's top-right checkbox.<br/>
-                        <b>Deselect all:</b> Click diagram background.
-                    </div>
-                    <div
-                        className="menu-toggle-button"
-                        onClick={() => setMenuIsOpen(!menuIsOpen)}
-                    >
-                        {menuIsOpen ? "-" : "+"}
-                    </div>
+            <h2 className="title-header">OpenDI Causal Decision Model Authoring Tool</h2>
+            <div className="authoring-tool-container">
+                <div className="left">
+                    {/* Runnable Model Editor */}
+                    {leftEditorState == "runnable" && (
+                        <div className={`editor`}>
+                            <RunnableModelEditor
+                                model={modelJSON}
+                                setModel={setModelJSON}
+                                selectedRunnableModelIndices={selectedRunnableModelIndices}
+                                selectedDiagramIndex={selectedDiagramIndex}
+                                setExpandedPaths={setExpandedPaths}
+                                setActiveRightMenuTab={setActiveRightMenuTab}
+                                setMenuIsOpen={setMenuIsOpen}
+                            />
+                            <div
+                                className="menu-toggle-button"
+                                onClick={() => setMenuIsOpen(!menuIsOpen)}
+                            >
+                                {menuIsOpen ? "-" : "+"}
+                            </div>
+                        </div>
+                    )}
+                    {/* Diagram view / engine */}
+                    {leftEditorState == "cdd" && (
+                        <div className={`editor`}>
+                            <CausalDecisionDiagram
+                                model={modelJSON}
+                                setModelJSON={setModelJSON}
+                                setExpandedPaths={setExpandedPaths}
+                                selectedDiagramIndex={selectedDiagramIndex}
+                                selectedRunnableModelIndices={selectedRunnableModelIndices}
+                            />
+                            <div id="controls-legend">
+                                <b>Move element:</b> Click and drag element's top bar.<br/>
+                                <b>Select element(s):</b> Toggle element's top-right checkbox.<br/>
+                                <b>Deselect all:</b> Click diagram background.
+                            </div>
+                            <div
+                                className="menu-toggle-button"
+                                onClick={() => setMenuIsOpen(!menuIsOpen)}
+                            >
+                                {menuIsOpen ? "-" : "+"}
+                            </div>
+                        </div>
+                    )}
                 </div>
 
-                <div className={`cdd-editor right ${menuIsOpen ? "" : "hidden"}`}>
+                <div className={`editor right ${menuIsOpen ? "" : "hidden"}`}>
                     {/*JSON Editor*/}
                     <EditorAndHelpMenu
                         modelJSON={modelJSON}
@@ -131,6 +161,9 @@ function App() {
                         expandedPaths={expandedPaths}
                         apiInstance={apiInstance}
                         setApiInstance={setApiInstance}
+                        setLeftEditorState={setLeftEditorState}
+                        activeRightMenuTab={activeRightMenuTab}
+                        setActiveRightMenuTab={setActiveRightMenuTab}
                     />
                 </div>
             </div>

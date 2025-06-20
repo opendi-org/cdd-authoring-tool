@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@canvasjs/react-charts": "^1.0.2",
+    "@monaco-editor/react": "^4.7.0",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
     "chart.js": "^4.4.2",

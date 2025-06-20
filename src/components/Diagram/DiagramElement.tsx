@@ -1,10 +1,9 @@
 import React, { useMemo } from "react";
-import DisplayTypeRegistry from "./DisplayTypeRegistry";
-import DisplaysSection from "./DisplaysSection";
+import DisplayTypeRegistry from "./Displays/DisplayTypeRegistry";
+import DisplaysSection from "./Displays/DisplaysSection";
 import Draggable from "react-draggable";
-import { causalTypeColors } from "../lib/cddTypes";
-import {v4 as uuidv4} from "uuid"
-import { cleanComponentName } from "../lib/cleanupNames";
+import { causalTypeColors } from "../../lib/Diagram/cddTypes";
+import { cleanComponentName } from "../../lib/cleanupNames";
 
 type DiagramElementProps = {
     elementData: any;
@@ -45,7 +44,7 @@ const DiagramElement: React.FC<DiagramElementProps> = ({
 
     //Passes a request to toggle my selection state up to the diagram's selection buffer
     const toggleMySelection = () => {
-      updateElementSelection(elementData.meta.uuid, !isSelected);
+      updateElementSelection(elementData.meta.uuid);
     }
 
     //For consistent dynamic styling
@@ -176,23 +175,5 @@ const DiagramElement: React.FC<DiagramElementProps> = ({
       </Draggable>
     )
   };
-
-  /**
-   * Generate schema-compliant JSON for a new diagram element
-   * @param position Position of the new element
-   * @returns JSON for a new diagram element, formatted for schema compliance
-   */
-  export function defaultDiagramElementJSON(
-    position={ x: 100, y: 250 }
-  ): any {
-    return {
-      meta: {
-        uuid: uuidv4(),
-        name: "New Element"
-      },
-      causalType: "CUSTOM_(No causal type)",
-      position,
-    };
-  }
 
   export default DiagramElement;

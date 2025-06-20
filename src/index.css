@@ -8,15 +8,11 @@
     padding-inline: 0.5%;
 }
 
-/* CDD Editor will use a flexbox layout, favoring the graph display. */
-/* See https://css-tricks.com/snippets/css/a-guide-to-flexbox/ for a nice intro */
-.cdd-editor {
+.authoring-tool-container {
     display: flex;
-    min-height: 300px;
+    flex-direction: row;
     height: 80vh;
-    max-height: 80vh; /* Leave a little room at bottom of screen to reveal instruction text */
-    position: relative;
-    background-color: #BBBBBB;
+    max-height: 80vh;
 
     --info-menu-margin: 10px;
     --info-menu-background: #000526;
@@ -27,21 +23,57 @@
     --info-menu-font-size: normal;
 }
 
+.editor {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background-color: #BBBBBB;
+}
+
+
+.left {
+    flex: 2;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+}
+
+.right {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+}
+
+.menu-toggle-button {
+    background-color: var(--info-menu-tab-background);
+    color: white;
+    height: var(--info-menu-banner-height);
+    font-size: var(--info-menu-font-size);
+    padding-right: 0.6em;
+    padding-left: 0.6em;
+    line-height: var(--info-menu-banner-height);
+    padding-bottom: 0.3px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border: var(--info-menu-tab-border);
+    border-right: 0px;
+    display: inline-block;
+    position: absolute;
+    z-index: 10;
+    top: 0px;
+    right: 0px;
+}
+.menu-toggle-button:hover {
+    cursor: pointer;
+    background-color: #5d637c;
+}
+
 .diagram-contents {
     width: 100%;
     height: 100%;
     overflow: auto;
     position: relative;
-}
-
-.left {
-    width: 100%;
-}
-
-.right {
-    width: 34%;
-    min-width: 34%;
-    height: 100%;
 }
 
 .model-controls {
@@ -262,6 +294,7 @@ body {
 #menu-contents {
     overflow-y: auto;
     height: 100%;
+    border-left: 2.5px solid black;
 }
 
 .menu-tab-container {
@@ -336,20 +369,17 @@ body {
     border-top: 2px solid var(--info-menu-background);
 }
 
-.info-menu div.model-options-list {
+.model-options-list {
     padding: 0px;
     display:flex;
     flex-direction: column;
-    height: 7.3em;
-    max-height: 7.3em;
     overflow-y: auto;
-    border-top: 1.5px solid #252525;
-    border-bottom: 1.5px solid #252525;
 }
-.info-menu div.model-option {
+
+.model-option {
     padding: 0px;
-    padding-top: 5px;
-    padding-bottom: 5px;
+    padding-top: 0.3em;
+    padding-bottom: 0.3em;
     padding-inline-start: 20px;
     display: flex;
     flex-direction: row;
@@ -357,22 +387,16 @@ body {
     background-color: #00000090;
 }
 
-.info-menu div.model-option.odd-entry {
+.model-option.odd-entry {
     background-color: #ffffff10;
 }
 
 .model-option div {
-    padding: 0px !important;
+    padding: 0px;
     flex: 2;
-}
-.model-option label {
-    flex: 2;
-    display: block;
-    overflow: auto;
-    max-height: 3em;
 }
 
-.info-menu div {
+.info-menu-content {
     padding-top: 12px;
     padding-bottom: 12px;
     padding-inline: 20px;
@@ -430,54 +454,11 @@ body {
     right: 15px;
 }
 
-.menu-toggle-button {
-    background-color: var(--info-menu-tab-background);
-    color: white;
-    height: var(--info-menu-banner-height);
-    font-size: var(--info-menu-font-size);
-    padding-right: 0.6em;
-    padding-left: 0.6em;
-    line-height: var(--info-menu-banner-height);
-    padding-bottom: 0.3px;
-    display: inline-block;
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-    border: var(--info-menu-tab-border);
-    border-right: 0px;
-    position: absolute;
-    z-index: 10;
-    top: 0px;
-    right: 0px;
-}
-.menu-toggle-button:hover {
-    cursor: pointer;
-    background-color: #5d637c;
-}
-
 /* Mobile-specific (small screens) */
 @media (max-aspect-ratio: 6/5) or (max-width: 650px)
 {
-    .cdd-editor {
+    .authoring-tool-container {
         flex-direction: column;
-        padding-inline: 0%;
-        height: 90vh;
-        max-height: 90vh;
-        max-width: 100%;
-    }
-    .left {
-        width: 100%;
-        max-width: 100%;
-        min-width: 100%;
-        min-height: 60%;
-    }
-    .right {
-        width: 100%;
-        max-width: 100%;
-        min-width: 100%;
-        height: 40%;
-        max-height: 40%;
-        min-height: 40%;
-        margin:0;
     }
     #jsoneditor {
         height: 100%;
