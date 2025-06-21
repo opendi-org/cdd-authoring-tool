@@ -79,19 +79,28 @@ export function evaluateModel(model: any, funcMap: Map<string, Function>, ioMap:
             {
                 if(debugLogs) console.log("Evaluating ", uuid, " - Populated IO Values: ", knownIOValues);
 
-                //Get the function from our function map and run it to get our new outputs
-                const evalFunction = funcMap.get(`${evalElem.evaluatableAsset}_${evalElem.functionName}`) ?? (() => {return []})
-                const evaluatedOutputs = evalFunction(evalInputs)
-            
-                //Function outputs are assumed to be given in the same order as they're listed in the eval element
-                for(let i = 0; i < evalElem.outputs.length && i < evaluatedOutputs.length; i++) {
-                    workingIOMap.set(evalElem.outputs[i], evaluatedOutputs[i]);
-                    knownIOValues.add(evalElem.outputs[i]);
-                }
+                try
+                {
+                    //Get the function from our function map and run it to get our new outputs
+                    const evalFunction = funcMap.get(`${evalElem.evaluatableAsset}_${evalElem.functionName}`) ?? (() => {return []})
+                    const evaluatedOutputs = evalFunction(evalInputs)
 
-                //Right now there's no validation step to confirm that an element evaluated successfully.
-                //It's just assumed successful after we load and run the function.
-                toRemoveFromUnevaluated.add(uuid);
+                    //Function outputs are assumed to be given in the same order as they're listed in the eval element
+                    for(let i = 0; i < evalElem.outputs.length && i < evaluatedOutputs.length; i++) {
+                        workingIOMap.set(evalElem.outputs[i], evaluatedOutputs[i]);
+                        knownIOValues.add(evalElem.outputs[i]);
+                    }
+
+                    //Right now there's no validation step to confirm that an element evaluated successfully.
+                    //It's just assumed successful after we load and run the function.
+                    toRemoveFromUnevaluated.add(uuid);
+
+                } catch (error)
+                {
+                    let message = `Error evaluating element ${uuid}:\n`;
+                    message += `Error executing function ${evalElem.functionName} from Evaluatable Asset ${evalElem.evaluatableAsset}:\n`;
+                    console.error(message, error);
+                }
             }
         })
 
@@ -104,11 +113,11 @@ export function evaluateModel(model: any, funcMap: Map<string, Function>, ioMap:
         if(unevaluated.length == prevUnevalLength) {
             console.error("List of unevaluated elements has not changed between evaluation iterations. Terminating evaluation.");
             evalInProgress = false;
-        }
-        prevUnevalLength = unevaluated.length;
-        }
-        if(debugLogs) console.log("Eval Complete! IO Values: ", workingIOMap);
-
-        return workingIOMap;
-        
     }
+    prevUnevalLength = unevaluated.length;
+    }
+    if(debugLogs) console.log("Eval Complete! IO Values: ", workingIOMap);
+
+    return workingIOMap;
+    
+}

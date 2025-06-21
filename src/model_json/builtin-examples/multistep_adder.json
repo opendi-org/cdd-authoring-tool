@@ -66,35 +66,35 @@
     {
       "meta": {
         "uuid": "0dd65d95-d90a-454e-9489-34237d740afd",
-        "title": "Add_Input_1"
+        "name": "Add_Input_1"
       },
       "data": 30
     },
     {
       "meta": {
         "uuid": "b5a14d60-3abc-4306-bc12-3c0678851279",
-        "title": "Add_Input_2"
+        "name": "Add_Input_2"
       },
       "data": 27
     },
     {
       "meta": {
         "uuid": "74c6b8cf-ea6b-4ae0-bc52-dc67e0efe630",
-        "title": "Add_Output"
+        "name": "Add_Output"
       },
       "data": null
     },
     {
       "meta": {
         "uuid": "58b995d2-9618-4b87-8ecd-5f63ecc91721",
-        "title": "Add_2_Input_1"
+        "name": "Add_2_Input_1"
       },
       "data": 71
     },
     {
       "meta": {
         "uuid": "c9617a40-c9eb-4b4d-bf68-5d9b4547991b",
-        "title": "Add_2_Output"
+        "name": "Add_2_Output"
       },
       "data": null
     }

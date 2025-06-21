@@ -1,12 +1,11 @@
 import React, { useState, useMemo, useEffect } from "react";
 import Xarrow, { useXarrow, Xwrapper } from "react-xarrows";
 import DiagramElement from "./DiagramElement";
-import { evaluateModel } from "../lib/evaluateModel"
-import { getIOMapFromModelJSON } from "../lib/getIOMapFromModelJSON";
-import { AssociatedDependencyData, causalTypeColors, DependencyRole } from "../lib/cddTypes";
-import { updateElementSelection } from "../lib/updateElementSelection";
-import { getExpandedPathsForSelectedElements } from "../lib/getExpandedPathsForSelectedElements";
-import ElementCRUDPanel from "./ElementCRUDPanel";
+import { evaluateModel } from "../../lib/Diagram/evaluateModel"
+import { getIODataMap, getFunctionMap, getControlsMap, getDiagramElementMap, getDiaElemAssociatedDepsMap } from "../../lib/modelPreprocessing";
+import { causalTypeColors } from "../../lib/Diagram/cddTypes";
+import { getExpandedPathsForSelectedDiagramElements } from "../../lib/rightMenu/JSONEditorPathExpansion";
+import ElementCRUDPanel from "../ElementCRUDPanel";
 import ModelMetaInfoPanel from "./ModelMetaInfoPanel";
 
 type CausalDecisionDiagramProps = {
@@ -47,30 +46,14 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
     }
 
     //Evaluatable Assets: Import functions from their Base64-encoded string values
-    const functionMap = useMemo(() => { //"<ScriptUUID>_<FunctionName>": function
-        const funcMap = new Map();
-        model.evaluatableAssets?.forEach((evalAsset: any) => {
-            if(evalAsset.evalType == "Script" && evalAsset.content.language == "javascript")
-            {
-                const scriptString = atob(evalAsset.content.script);
-                //scriptCode returns a function map with function names as keys and function code as values
-                const scriptCode = eval(scriptString);
-        
-                const thisScriptFunctionMap = scriptCode.funcMap;
-                Object.keys(thisScriptFunctionMap).forEach((funcName) => {
-                    funcMap.set(`${evalAsset.meta.uuid}_${funcName}`, thisScriptFunctionMap[funcName])
-                })
-            }
-        });
-        return funcMap;
-    }, [model]);
+    const functionMap = useMemo(() => getFunctionMap(model), [model]);
 
     //InitialIOValues is IMMUTABLE.
     //Used to check whether incoming model JSON has an edited IO values list.
     //We can't let React check this itself because it just checks refs. This is a value comparison.
-    const [initialIOValues, setInitialIOValues] = useState(() => getIOMapFromModelJSON(model));
+    const [initialIOValues, setInitialIOValues] = useState(() => getIODataMap(model));
     useEffect(() => {
-        const incomingIOMap = getIOMapFromModelJSON(model);
+        const incomingIOMap = getIODataMap(model);
 
         const didIOValuesChange = () => {
             if (incomingIOMap.size !== initialIOValues.size) return true;
@@ -110,74 +93,29 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
     }, [model, functionMap, IOValues, selectedRunnableModelIndices]);
 
     //Maps diagram element UUIDs to their list of associated I/O values. Associated via their control.
-    const controlsMap = useMemo(() => {
-        const controls = new Map<string, Array<string>>();
-        model.controls?.forEach((control: any) => {
-            control.displays.forEach((displayUUID: any) => {
-                if(!controls.has(displayUUID)) {
-                    controls.set(displayUUID, control.inputOutputValues);
-                }
-                else
-                {
-                    console.error(
-                        `Error: Multiple Control elements found for Diagram Element ${displayUUID}.`,
-                        `Engine will only use the first control processed for this element. Ignoring control: `,
-                        control,
-                        ` - This element has these associated I/O values: `,
-                        controls.get(displayUUID)
-                    )
-                }
-            });
-        });
-        return controls;
-    }, [model]);
+    const controlsMap = useMemo(() => getControlsMap(model), [model]);
 
     //Maps diagram element UUIDs to their JSON information
-    const diagramElementMap = useMemo(() => {
-        const diaElems = new Map<string, any>();
-        if(model.diagrams && model.diagrams[selectedDiagramIndex] && model.diagrams[selectedDiagramIndex].elements)
-        {
-            model.diagrams[selectedDiagramIndex].elements.forEach((elem: any) => {
-                diaElems.set(elem.meta.uuid, elem);
-            })
-        }
-        return diaElems;
-    }, [model, selectedDiagramIndex])
+    const diagramElementMap = useMemo(() => getDiagramElementMap(model, selectedDiagramIndex), [model, selectedDiagramIndex])
 
     //Maps element UUIDs to a set of information about all dependencies associated with that element.
-    //"Associated" means that the dia elem is either a "source" or "target" for the dependency.
-    //AssociatedDependencyData contains dep UUID, the key element's role in the dep, and UUID of
-    //the other element involved in the dependency, whether source or target
-    const elementAssociatedDependenciesMap = useMemo(() => {
-        const elemAssociatedDeps = new Map<string, Set<AssociatedDependencyData>>();
-        const addEntry = (elemUUID: string, depUUID: string, role: DependencyRole, otherElemUUID: string) => {
-            let currentDeps = elemAssociatedDeps.get(elemUUID) ?? new Set<AssociatedDependencyData>();
-            currentDeps.add({uuid: depUUID, role: role, otherElement: otherElemUUID});
-            elemAssociatedDeps.set(elemUUID, currentDeps);
-        }
-        if(model.diagrams)
-        {
-            model.diagrams[selectedDiagramIndex]?.dependencies?.forEach((dep: any) => {
-                addEntry(dep.source, dep.meta.uuid, DependencyRole.source, dep.target);
-                addEntry(dep.target, dep.meta.uuid, DependencyRole.target, dep.source);
-            })
-        }
-
-        return elemAssociatedDeps;
-    }, [model, selectedDiagramIndex])
+    const elementAssociatedDependenciesMap = useMemo(() => getDiaElemAssociatedDepsMap(model, selectedDiagramIndex), [model, selectedDiagramIndex])
 
     //Holds a simple list of the UUIDs of selected elements, in the order they were selected.
     const [selectionBuffer, setSelectionBuffer] = useState(() => {let arr: string[] = []; return arr;});
-    //Updating is handled by lib/updateElementSelection.ts
     //This function simplifies, removing the need to supply the correct buffer
-    const updateBuffer = (selectionUUID: string, select = true) => {
-        setSelectionBuffer(updateElementSelection(selectionBuffer, selectionUUID, select));
+    const updateBuffer = (selectionUUID: string) => {
+        setSelectionBuffer((prev: Array<string>) => 
+            prev.includes(selectionUUID)
+                ? prev.filter(idToCheck => idToCheck !== selectionUUID)
+                : [...prev, selectionUUID]
+        );
     }
 
     //Mirror graphical element selections in the JSON editor
     useEffect(() => {
         setExpandedPaths(
-            getExpandedPathsForSelectedElements(selectionBuffer, model, elementAssociatedDependenciesMap, selectedDiagramIndex)
+            getExpandedPathsForSelectedDiagramElements(selectionBuffer, model, elementAssociatedDependenciesMap, selectedDiagramIndex)
         );
     }, [selectionBuffer])
 
@@ -285,7 +223,7 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
         <div className="diagram-contents">
             {/*Transparent Div. Covers the whole diagram display Div. Catches click events UNIQUE to the graph background */}
             {/*Click events from diagram elements won't bubble up to this div, because it's a leaf in the DOM tree.*/}
-            <div style={{width: "100%", height: "100%" }} onClick={() => (setSelectionBuffer(updateElementSelection(selectionBuffer, null)))}></div>
+            <div style={{width: "100%", height: "100%" }} onClick={() => (setSelectionBuffer([]))}></div>
             {/*Wrapper for Xarrows*/}
             <Xwrapper>
                 {/*Absolute positioning forces diagram to be drawn over the above click-catching Div.*/}

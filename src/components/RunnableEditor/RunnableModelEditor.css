@@ -1,0 +1,181 @@
+.runnable-model-editor {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+    background-color: #021f1f;
+    color: white;
+    --runnable-editor-border: 1.5px solid #414141;
+    --runnable-editor-header-color: #d3e6f3;
+    font-size: 0.85em;
+
+    h2 {
+        margin-top: 0em;
+        margin-left: 2em;
+        color: var(--runnable-editor-header-color);
+    }
+
+    button {
+        margin: 0.5em;
+    }
+
+    .json-link {
+        background: none;
+        border: none;
+        color: var(--runnable-editor-header-color)
+    }
+    .json-link:hover {
+        cursor: pointer;
+    }
+
+    .editor-row {
+        display: flex;
+        flex-direction: row;
+        overflow: hidden;
+    }
+    .top {
+        flex: 2.5;
+    }
+    .bottom {
+        flex: 2;
+    }
+
+    .code-editor-open {
+        flex: 6 !important;
+    }
+    
+    .editor-panel {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background-color: #021919;
+        border: var(--runnable-editor-border);
+        padding-bottom: 1em;
+        padding-top: 1em;
+        overflow-y: auto;
+    }
+
+    .model-options-list {
+        .model-option {
+            label {
+                flex: 4;
+            }
+            input {
+                margin-right: 1em;
+            }
+        }
+    }
+
+    .io-values {
+        flex: 2;
+        h3 {
+            color: var(--runnable-editor-header-color)
+        }
+        .model-options-list {
+            overflow-y: auto;
+            border: var(--runnable-editor-border);
+
+            .model-option {
+                padding-top: 0px;
+                padding-bottom: 0px;
+
+                div, label{
+                    padding-top: 0.3em;
+                    padding-bottom: 0.3em;
+                    padding-right: 0.3em;
+                }
+                div {
+                    padding-left: 1em;
+                    border-left: var(--runnable-editor-border);
+                }
+            }
+        }
+    }
+
+    .runnable-models {
+        flex: 3;
+        overflow-y: auto;
+        max-height: 100%;
+    }
+
+    .eval-assets {
+        flex: 2;
+        overflow-y: auto;
+        .eval-assets-list {
+            overflow-y: auto;
+            .eval-asset-info {
+                background: #00000055;
+                padding: 1em;
+                border-top: var(--runnable-editor-border);
+                border-bottom: var(--runnable-editor-border);
+                display: flex;
+                flex-direction: column; 
+                .eval-asset-code {
+                    background-color: rgb(0, 17, 3);
+                    padding: 1em;
+                    overflow: auto;
+                    height: 10em;
+                    border: var(--runnable-editor-border);
+                }
+            }
+        }
+    }
+
+    .code-editor {
+        flex: 8;
+    }
+
+    .controls {
+        flex: 3;
+        overflow-y: auto;
+        h3 {
+            color: var(--runnable-editor-header-color)
+        }
+        .controls-list {
+            overflow-y: auto;
+            padding-bottom: 4em;
+            .control-info {
+                h3 {
+                    color: unset;
+                }
+                background: #00000055;
+                padding: 1em;
+                border-top: var(--runnable-editor-border);
+                border-bottom: var(--runnable-editor-border);
+                display: flex;
+                flex-direction: column; 
+
+                .control-hooks {
+                    display: flex;
+                    flex-direction: row;
+
+                    .control-hooks-list {
+                        flex: 1;
+                        background: #021919;
+                        padding: 0.5em;
+                        border: 1px solid black;
+                        
+
+                        .model-option {
+                            label {
+                                flex: 4;
+                            }
+                            div {
+                                padding-inline: 1em;
+                                flex: 1;
+                            }
+                            button {
+                                margin: 0em;
+                                margin-inline-end: 0.2em;
+                                font-size: smaller;
+                                padding-inline: 0.1em;
+                                padding-top: 0.1em;
+                                padding-bottom: 0.1em;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
