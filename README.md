@@ -28,9 +28,10 @@ For local testing instructions that include the API and reverse proxy services, 
 
 To test this project on its own (outside of a Docker container), clone this repo to a local directory. Then:  
 1. [Install npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm). This setup was initially performed on npm v9.6.6, and Node.js v18.16.0
-2. From your installed directory, run `npm i` in a command prompt to install required node dependencies
-3. In the same directory, run `npm start` to run webpack, initialize the dev server, and open the main project in a browser
-4. If step 3 does not open your browser automatically, open a browser and navigate to http://localhost:8080/
+2. From your installed directory, get the required json schema by running `git submodule init` and then `git submodule update`
+3. From your installed directory, run `npm i` in a command prompt to install required node dependencies
+4. In the same directory, run `npm start` to run webpack, initialize the dev server, and open the main project in a browser
+5. If step 3 does not open your browser automatically, open a browser and navigate to http://localhost:8080/
 
 ## Contributing
 
