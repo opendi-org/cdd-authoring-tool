@@ -31,7 +31,7 @@
     "vanilla-jsoneditor": "^3.3.0"
   },
   "devDependencies": {
-    "@faker-js/faker": "^8.4.1",
+    "@faker-js/faker": "^9.8.0",
     "@types/color": "^3.0.6",
     "@types/d3": "^7.4.3",
     "@types/file-saver": "^2.0.7",
