@@ -2,6 +2,7 @@ import React from "react";
 import Slider from "./interactivePieces/Slider";
 import { CommonDisplayProps } from "../DisplayTypeRegistry"
 import { v4 as uuidv4 } from "uuid";
+import Gauge from "./interactivePieces/Gauge";
 
 /**
  * Renders a Controllable Numeric Range Display. These attach
@@ -35,19 +36,32 @@ const ControlRange: React.FC<CommonDisplayProps> = ({
 
     return (
         <div>
-            <Slider
-                title={displayJSON.meta.name ?? ""}
-                min={displayJSON.content.controlParameters?.min ?? 0}
-                max={displayJSON.content.controlParameters?.max ?? 0}
-                step={displayJSON.content.controlParameters?.step ?? 1}
-                currentValue={
-                    computedIOValues.get(String(displayIOValuesList[0])) ??
-                    IOValues.get(displayJSON.meta.uuid) ??
-                    displayJSON.content.controlParameters?.value ??
-                    -1
-                }
-                setCurrentValue={isInteractive ? setSingleValue : () => {} }
-            />
+            {(isInteractive
+                ? <Slider
+                    title={displayJSON.meta.name ?? ""}
+                    min={displayJSON.content.controlParameters?.min ?? 0}
+                    max={displayJSON.content.controlParameters?.max ?? 0}
+                    step={displayJSON.content.controlParameters?.step ?? 1}
+                    currentValue={
+                        computedIOValues.get(String(displayIOValuesList[0])) ??
+                        IOValues.get(displayJSON.meta.uuid) ??
+                        displayJSON.content.controlParameters?.value ??
+                        -1
+                    }
+                    setCurrentValue={isInteractive ? setSingleValue : () => {} }
+                />
+                : <Gauge
+                    currentValue={
+                        computedIOValues.get(String(displayIOValuesList[0])) ??
+                        IOValues.get(displayJSON.meta.uuid) ??
+                        displayJSON.content.controlParameters?.value ??
+                        -1
+                    }
+                    title={displayJSON.meta.name ?? ""}
+                    min={displayJSON.content.controlParameters?.min ?? 0}
+                    max={displayJSON.content.controlParameters?.max ?? 0}
+                />
+            )}
         </div>
     );
 };
