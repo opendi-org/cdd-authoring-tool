@@ -1,0 +1,295 @@
+{
+    "$schema": "./schemas/Causal-Decision-Model.json",
+    "meta": {
+        "uuid": "bdf2b560-e07c-4d4f-a02a-c66af9eae6fb",
+        "name": "Bar Graph Demo: Dynamic Categories",
+        "summary": "Demonstrates stacked bar chart functionality with a 2-series dataset, with a dynamic number of categories. Each series is generated based on inputs from the Levers and External.\n\nEach series represents total profit over time from one of two sources. Number of days determines the length of both series. Each series is a simple linear accumulation of profit from the given source over the given period of days.\n\nUnlike the 2D Array demo, this demo passes information to the bar chart in the form of a \"data\" object containing complete information about each series, including the raw data for each series, the color associated with each series, and the x-axis labels for each category. This model's single script takes all 3 of the diagram's inputs, generates data for each series, and constructs the final \"data\" object passed to the bar chart.",
+        "documentation": {
+            "content": "",
+            "MIMEType": "text/plain"
+        },
+        "version": "0.1",
+        "draft": true,
+        "createdDate": "2025-07-18T16:50:18-04:00"
+    },
+    "diagrams": [
+        {
+            "meta": {
+                "uuid": "8bd35575-7774-43f4-8023-80230eff7aea",
+                "name": "Dynamic Category Control",
+                "createdDate": "2025-07-18T16:50:18-04:00"
+            },
+            "elements": [
+                {
+                    "meta": {
+                        "uuid": "c7b2c60a-8072-4143-bb07-cbf2ae30d424",
+                        "name": "Profit per day - Source 1"
+                    },
+                    "causalType": "Lever",
+                    "position": {
+                        "x": 130.5,
+                        "y": 191.5
+                    },
+                    "displays": [
+                        {
+                            "meta": {
+                                "uuid": "ae9ccdc4-c954-44f5-88f6-4759a4b317da",
+                                "name": "Source 1 $/Day"
+                            },
+                            "displayType": "controlRange",
+                            "content": {
+                                "controlParameters": {
+                                    "min": 0,
+                                    "max": 10,
+                                    "step": 1,
+                                    "value": 5,
+                                    "isInteractive": true
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "meta": {
+                        "uuid": "e3de2eca-6c6b-4bc0-809b-af9ba146c90e",
+                        "name": "Profit per day - Source 2"
+                    },
+                    "causalType": "Lever",
+                    "position": {
+                        "x": 131.5,
+                        "y": 363.5
+                    },
+                    "displays": [
+                        {
+                            "meta": {
+                                "uuid": "9d6e01d1-39ec-427d-83b7-3328b872fa71",
+                                "name": "Source 2 $/Day"
+                            },
+                            "displayType": "controlRange",
+                            "content": {
+                                "controlParameters": {
+                                    "min": 0,
+                                    "max": 10,
+                                    "step": 1,
+                                    "value": 5,
+                                    "isInteractive": true
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "meta": {
+                        "uuid": "07715d47-edae-49a1-be81-77e4fd91bb99",
+                        "name": "#Days"
+                    },
+                    "causalType": "External",
+                    "position": {
+                        "x": 356.5,
+                        "y": 565.5
+                    },
+                    "displays": [
+                        {
+                            "meta": {
+                                "uuid": "9c405ee4-cb1f-4404-b23a-1314821e2a8c",
+                                "name": "Days"
+                            },
+                            "displayType": "controlRange",
+                            "content": {
+                                "controlParameters": {
+                                    "min": 0,
+                                    "max": 12,
+                                    "step": 1,
+                                    "value": 2,
+                                    "isInteractive": true
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "meta": {
+                        "uuid": "b04c6d16-93b2-4030-b13f-a7bda27e7844",
+                        "name": "Total profit over tme"
+                    },
+                    "causalType": "Outcome",
+                    "position": {
+                        "x": 830.5,
+                        "y": 221.5
+                    },
+                    "displays": [
+                        {
+                            "meta": {
+                                "uuid": "e7fa7ea2-72e3-4c65-aa92-67ea957d9755",
+                                "name": "[Y-axis: Total profit ($)] [X-axis: Time passed (days)]"
+                            },
+                            "displayType": "stackedBarChart",
+                            "content": {
+                                "data": {
+                                    "xAxisLabels": [
+                                        "Day 1"
+                                    ],
+                                    "series": [
+                                        {
+                                            "title": "Series 0",
+                                            "values": []
+                                        }
+                                    ]
+                                },
+                                "minY": 0,
+                                "maxY": 240,
+                                "stepHeight": 5
+                            }
+                        }
+                    ]
+                }
+            ],
+            "dependencies": [
+                {
+                    "meta": {
+                        "uuid": "e0a5483a-6dd2-4025-80bf-c794bea014c5",
+                        "name": "Profit per day - Source 1 --> Profit"
+                    },
+                    "source": "c7b2c60a-8072-4143-bb07-cbf2ae30d424",
+                    "target": "b04c6d16-93b2-4030-b13f-a7bda27e7844"
+                },
+                {
+                    "meta": {
+                        "uuid": "428823a9-846a-4607-96dd-034a090fc191",
+                        "name": "Profit per day - Source 2 --> Profit"
+                    },
+                    "source": "e3de2eca-6c6b-4bc0-809b-af9ba146c90e",
+                    "target": "b04c6d16-93b2-4030-b13f-a7bda27e7844"
+                },
+                {
+                    "meta": {
+                        "uuid": "c612d1a3-f502-4a04-84f7-04988e6df051",
+                        "name": "#Days --> Profit"
+                    },
+                    "source": "07715d47-edae-49a1-be81-77e4fd91bb99",
+                    "target": "b04c6d16-93b2-4030-b13f-a7bda27e7844"
+                }
+            ]
+        }
+    ],
+    "runnableModels": [
+        {
+            "meta": {
+                "uuid": "cdb60074-932d-44df-99f9-4594d0df6a15",
+                "name": "Dynamic Category Control",
+                "createdDate": "2025-07-18T16:50:18-04:00"
+            },
+            "elements": [
+                {
+                    "meta": {
+                        "uuid": "038ae219-2553-4b06-bc5f-9af062ddca6f",
+                        "name": "Generate data"
+                    },
+                    "evaluatableAsset": "8055a8f6-4187-4853-bb81-5a87d36d9421",
+                    "functionName": "generateData",
+                    "inputs": [
+                        "5fcae84b-0ade-4e34-998f-70891141e68e",
+                        "dd05df26-f63a-4562-a149-459f08ef7b97",
+                        "5a3cae53-38fe-46eb-bc3a-db6033bfb80e"
+                    ],
+                    "outputs": [
+                        "292902a5-a7a3-4947-8cb7-e11fd9fe829f"
+                    ]
+                }
+            ]
+        }
+    ],
+    "inputOutputValues": [
+        {
+            "meta": {
+                "uuid": "5fcae84b-0ade-4e34-998f-70891141e68e",
+                "name": "Daily Profit Source 1"
+            },
+            "data": 10
+        },
+        {
+            "meta": {
+                "uuid": "dd05df26-f63a-4562-a149-459f08ef7b97",
+                "name": "Daily Profit Source 2"
+            },
+            "data": 8
+        },
+        {
+            "meta": {
+                "uuid": "5a3cae53-38fe-46eb-bc3a-db6033bfb80e",
+                "name": "# Days"
+            },
+            "data": 4
+        },
+        {
+            "meta": {
+                "uuid": "292902a5-a7a3-4947-8cb7-e11fd9fe829f",
+                "name": "Bar Graph Data Object"
+            },
+            "data": null
+        }
+    ],
+    "evaluatableAssets": [
+        {
+            "meta": {
+                "uuid": "8055a8f6-4187-4853-bb81-5a87d36d9421",
+                "name": "Generate data"
+            },
+            "evalType": "Script",
+            "content": {
+                "language": "javascript",
+                "script": "KGZ1bmN0aW9uICgpIHsKCiAgICAvL0lNUExFTUVOVCBZT1VSIEZVTkNUSU9OIEFTIEEgQ09OU1QgSEVSRToKICAgIGNvbnN0IG15U2NyaXB0RnVuY3Rpb24gPSBmdW5jdGlvbiAoaW5wdXRzKSB7CiAgICAgICAgLy9UYWtlIHRoZSBkYWlseSBwcm9maXQgZnJvbSBlYWNoIHNvdXJjZSwgYW5kIGdlbmVyYXRlIHByb2ZpdCBkYXRhIGZvciB0aGUgZ2l2ZW4gbnVtYmVyIG9mIGRheXMKICAgICAgICAvL1RoZSBudW1iZXIgb2YgZGF5cyB3aWxsIGRldGVybWluZSB0aGUgbnVtYmVyIG9mIHgtYXhpcyBjYXRlZ29yaWVzCiAgICAgICAgLy9CZWNhdXNlIHdlIGhhdmUgYSBkeW5hbWljICMgb2YgY2F0ZWdvcmllcywgd2UnbGwgbmVlZCB0byBwcm92aWRlIHRoZSBlbnRpcmUgZGF0YSBvYmplY3QsIGluc3RlYWQKICAgICAgICAvL29mIGp1c3QgZ2l2aW5nIHRoZSBncmFwaCBhIDJkIGFycmF5IG9mIGRhdGEgdmFsdWVzCgogICAgICAgIGNvbnN0IHNvdXJjZTFQcm9maXRSYXRlID0gaW5wdXRzWzBdOwogICAgICAgIGNvbnN0IHNvdXJjZTJQcm9maXRSYXRlID0gaW5wdXRzWzFdOwogICAgICAgIGNvbnN0IG51bURheXMgPSBpbnB1dHNbMl07CgogICAgICAgIGxldCBkYXRhID0gewogICAgICAgICAgICB4QXhpc0xhYmVsczogW10sCiAgICAgICAgICAgIHNlcmllczogWwogICAgICAgICAgICAgICAgewogICAgICAgICAgICAgICAgICAgIHRpdGxlOiAiUHJvZml0IGZyb20gc291cmNlIDEiLAogICAgICAgICAgICAgICAgICAgIHZhbHVlczogW10sCiAgICAgICAgICAgICAgICAgICAgY29sb3I6ICIjZjVhNzQyIgogICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgIHsKICAgICAgICAgICAgICAgICAgICB0aXRsZTogIlByb2ZpdCBmcm9tIHNvdXJjZSAyIiwKICAgICAgICAgICAgICAgICAgICB2YWx1ZXM6IFtdLAogICAgICAgICAgICAgICAgICAgIGNvbG9yOiAiI2Y1Y2Y5ZiIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgXQogICAgICAgIH0KCiAgICAgICAgZm9yKGxldCBpID0gMTsgaSA8PSBudW1EYXlzOyBpKyspCiAgICAgICAgewogICAgICAgICAgICBkYXRhLnhBeGlzTGFiZWxzLnB1c2goU3RyaW5nKGkpKTsgLy9EYXkgaQogICAgICAgICAgICBkYXRhLnNlcmllc1swXS52YWx1ZXMucHVzaChzb3VyY2UxUHJvZml0UmF0ZSAqIGkpOyAvL0FjY3VtdWxhdGVkIHByb2ZpdCBmcm9tIHNvdXJjZSAxIG9uIGRheSBpCiAgICAgICAgICAgIGRhdGEuc2VyaWVzWzFdLnZhbHVlcy5wdXNoKHNvdXJjZTJQcm9maXRSYXRlICogaSk7IC8vQWNjdW11bGF0ZWQgcHJvZml0IGZyb20gc291cmNlIDIgb24gZGF5IGkKICAgICAgICB9CgogICAgICAgIHJldHVybiBbZGF0YV07CiAgICB9CgogICAgLy9NQVAgWU9VUiBGVU5DVElPTiBUTyBBIFNUUklORyBOQU1FIEhFUkU6CiAgICByZXR1cm4geyBmdW5jTWFwOiB7ImdlbmVyYXRlRGF0YSI6IG15U2NyaXB0RnVuY3Rpb259IH07Cgp9KSgpOwoKCi8vIFRvIGltcG9ydCBhIHNjcmlwdCwgaXQgbXVzdCB1c2UgYSBzaW1pbGFyIHN0cnVjdHVyZSB0byB0aGUgZXhhbXBsZSBjb2RlIGFib3ZlLiBJdCBzaG91bGQgdGFrZSB0aGUgZm9ybSBvZgovLyBhbiBpbW1lZGlhdGVseSBpbnZva2VkIGZ1bmN0aW9uIGV4cHJlc3Npb246IGh0dHBzOi8vZGV2ZWxvcGVyLm1vemlsbGEub3JnL2VuLVVTL2RvY3MvR2xvc3NhcnkvSUlGRSB3aGVyZSB0aGUKLy8gZnVuY3Rpb24gcmV0dXJucyBhIGZ1bmN0aW9uIG1hcCBjYWxsZWQgZnVuY01hcC4KLy8gCi8vIGZ1bmNNYXAgc2hvdWxkIGhhdmUgc3RyaW5nIGtleXMgYW5kIGZ1bmN0aW9uIHZhbHVlcy4gU3RyaW5nIGtleXMgd2lsbCBiZSB1c2VkIGJ5IEV2YWx1YXRhYmxlIEVsZW1lbnRzCi8vIHRvIHBhc3MgaW5wdXRzIHRvIGFuZCByZWNlaXZlIG91dHB1dHMgZnJvbSB0aGUgZnVuY3Rpb25zLgovLyAKLy8gRWFjaCBzY3JpcHQgbWF5IGRlZmluZSBhcmJpdHJhcmlseSBtYW55IGZ1bmN0aW9ucywgc28gbG9uZyBhcyB0aGV5J3JlIGFsbCBleHBvc2VkIHZpYSBmdW5jTWFwLgovLyAKLy8gRnVuY3Rpb24gaW5wdXRzIHdpbGwgdGFrZSB0aGUgZm9ybSBvZiBhIHNpbmdsZSBhcnJheSBvZiA8YW55PiB2YWx1ZXMuCi8vIEZ1bmN0aW9ucyBzaG91bGQgbGlrZXdpc2UgcmV0dXJuIGFuIGFycmF5IG9mIDxhbnk+IHZhbHVlcy4KLy8gTWVhbmluZyBmb3IgYXJndW1lbnRzIGFuZCByZXR1cm4gdmFsdWVzIGlzIGRldGVybWluZWQgYnkgdGhlaXIgb3JkZXIgaW4gdGhlIGFycmF5Lg=="
+            }
+        }
+    ],
+    "controls": [
+        {
+            "meta": {
+                "uuid": "b88580da-9fe1-4895-bdc5-dadcd1059f4c",
+                "name": "Profit source 1"
+            },
+            "inputOutputValues": [
+                "5fcae84b-0ade-4e34-998f-70891141e68e"
+            ],
+            "displays": [
+                "ae9ccdc4-c954-44f5-88f6-4759a4b317da"
+            ]
+        },
+        {
+            "meta": {
+                "uuid": "80642673-5b1e-468d-9b0a-e4b2f41a27fe",
+                "name": "Profit source 2"
+            },
+            "inputOutputValues": [
+                "dd05df26-f63a-4562-a149-459f08ef7b97"
+            ],
+            "displays": [
+                "9d6e01d1-39ec-427d-83b7-3328b872fa71"
+            ]
+        },
+        {
+            "meta": {
+                "uuid": "550d51d0-cb11-4e19-83bf-d4203a7dd37e",
+                "name": "Days"
+            },
+            "inputOutputValues": [
+                "5a3cae53-38fe-46eb-bc3a-db6033bfb80e"
+            ],
+            "displays": [
+                "9c405ee4-cb1f-4404-b23a-1314821e2a8c"
+            ]
+        },
+        {
+            "meta": {
+                "uuid": "6ade4d07-4fa4-4599-8cd3-e88ea4fc20eb",
+                "name": "Graph data"
+            },
+            "inputOutputValues": [
+                "292902a5-a7a3-4947-8cb7-e11fd9fe829f"
+            ],
+            "displays": [
+                "e7fa7ea2-72e3-4c65-aa92-67ea957d9755"
+            ]
+        }
+    ]
+}

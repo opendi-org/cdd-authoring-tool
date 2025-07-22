@@ -1,0 +1,722 @@
+{
+    "$schema": "./schemas/Causal-Decision-Model.json",
+    "meta": {
+        "uuid": "cac41783-eb02-4e06-8482-8d2b41cbc675",
+        "name": "Bar Graph Demo: 2D Array",
+        "summary": "Demonstrates stacked bar chart functionality with a 2-series, 4-category dataset. Each number in each series can be adjusted via slider. Each series displays on the bar chart in the Outcome and in raw list form, printed as strings below the bar chart.\n\nThe runnable model uses two scripts. One script combines the individual numbers from each slider into a list format. The other script converts lists into string format. This model demonstrates one of the two ways to connect a bar chart to data, where each series is fed into the bar chart as a separate list, in series order, via the same control. This leaves the rest of the chart's configuration up to the original JSON (y-axis min/max, category labels, and number of categories).",
+        "documentation": {
+            "content": "",
+            "MIMEType": "text/plain"
+        },
+        "version": "0.1",
+        "draft": true,
+        "createdDate": "2025-07-07T10:51:09-04:00"
+    },
+    "diagrams": [
+        {
+            "meta": {
+                "uuid": "1d8a640c-88ef-41c6-8b18-2b118545460e",
+                "name": "2-Series Stacked Bar Graph",
+                "createdDate": "2025-07-07T10:51:09-04:00"
+            },
+            "elements": [
+                {
+                    "meta": {
+                        "uuid": "7852adcf-e15b-4bcd-bc93-0a7eb8be83b1",
+                        "name": "-"
+                    },
+                    "causalType": "Lever",
+                    "position": {
+                        "x": 250,
+                        "y": 50
+                    },
+                    "displays": [
+                        {
+                            "meta": {
+                                "uuid": "fef21be5-3825-4f28-af0d-cf01943ab4ee",
+                                "name": "Series 1, Category 1"
+                            },
+                            "displayType": "controlRange",
+                            "content": {
+                                "controlParameters": {
+                                    "min": 0,
+                                    "max": 100,
+                                    "step": 1,
+                                    "value": 50,
+                                    "isInteractive": true
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "meta": {
+                        "uuid": "8ba4739e-ebec-413e-9b9c-f8bcb10870bb",
+                        "name": "-"
+                    },
+                    "causalType": "Lever",
+                    "position": {
+                        "x": 575,
+                        "y": 50
+                    },
+                    "displays": [
+                        {
+                            "meta": {
+                                "uuid": "a8d42c6e-ec23-4d80-bf07-e71bc30c6b35",
+                                "name": "Series 1, Category 2"
+                            },
+                            "displayType": "controlRange",
+                            "content": {
+                                "controlParameters": {
+                                    "min": 0,
+                                    "max": 100,
+                                    "step": 1,
+                                    "value": 50,
+                                    "isInteractive": true
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "meta": {
+                        "uuid": "f375bc3a-be05-46dd-8171-a68688052950",
+                        "name": "-"
+                    },
+                    "causalType": "Lever",
+                    "position": {
+                        "x": 250,
+                        "y": 220
+                    },
+                    "displays": [
+                        {
+                            "meta": {
+                                "uuid": "94759b92-4286-4dfa-a4ad-8bdbdf01d7a5",
+                                "name": "Series 1, Category 3"
+                            },
+                            "displayType": "controlRange",
+                            "content": {
+                                "controlParameters": {
+                                    "min": 0,
+                                    "max": 100,
+                                    "step": 1,
+                                    "value": 50,
+                                    "isInteractive": true
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "meta": {
+                        "uuid": "bf5f6146-7267-4868-88bf-c1f283bd3f05",
+                        "name": "-"
+                    },
+                    "causalType": "Lever",
+                    "position": {
+                        "x": 575,
+                        "y": 220
+                    },
+                    "displays": [
+                        {
+                            "meta": {
+                                "uuid": "b3b0d141-5c50-4a5c-a89a-1332032187e4",
+                                "name": "Series 1, Category 4"
+                            },
+                            "displayType": "controlRange",
+                            "content": {
+                                "controlParameters": {
+                                    "min": 0,
+                                    "max": 100,
+                                    "step": 1,
+                                    "value": 50,
+                                    "isInteractive": true
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "meta": {
+                        "uuid": "023d1f95-cc1d-4b82-afdf-0bf6147b754f",
+                        "name": "-"
+                    },
+                    "causalType": "Outcome",
+                    "position": {
+                        "x": 762.5,
+                        "y": 500
+                    },
+                    "displays": [
+                        {
+                            "meta": {
+                                "uuid": "e513e06b-e592-4426-b222-5542087d7cad",
+                                "name": "Bar Chart"
+                            },
+                            "displayType": "stackedBarChart",
+                            "content": {
+                                "data": {
+                                    "xAxisLabels": [
+                                        "Category 1",
+                                        "Category 2",
+                                        "Category 3",
+                                        "Category 4"
+                                    ],
+                                    "series": [
+                                        {
+                                            "title": "Series 0",
+                                            "values": [
+                                                100,
+                                                70,
+                                                12,
+                                                33
+                                            ]
+                                        },
+                                        {
+                                            "title": "Series 1",
+                                            "values": [
+                                                0,
+                                                10,
+                                                53,
+                                                100
+                                            ]
+                                        }
+                                    ]
+                                },
+                                "minY": 0,
+                                "maxY": 200,
+                                "stepHeight": 5
+                            }
+                        },
+                        {
+                            "meta": {
+                                "uuid": "ced2be47-6767-4454-bd12-8cb8c66e4179",
+                                "name": "Series 2"
+                            },
+                            "displayType": "controlText",
+                            "content": {
+                                "controlParameters": {
+                                    "value": " ",
+                                    "isInteractive": false
+                                }
+                            }
+                        },
+                        {
+                            "meta": {
+                                "uuid": "96ccc294-acb8-4c23-a402-5e2e5a2becfc",
+                                "name": "Series 1"
+                            },
+                            "displayType": "controlText",
+                            "content": {
+                                "controlParameters": {
+                                    "value": " ",
+                                    "isInteractive": false
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "meta": {
+                        "uuid": "c6ba0c35-dfc8-414e-a070-80ac612c766b",
+                        "name": "-"
+                    },
+                    "causalType": "Lever",
+                    "position": {
+                        "x": 950,
+                        "y": 50
+                    },
+                    "displays": [
+                        {
+                            "meta": {
+                                "uuid": "a8368bc2-2951-4398-a70d-23f5f9c4490d",
+                                "name": "Series 2, Category 1"
+                            },
+                            "displayType": "controlRange",
+                            "content": {
+                                "controlParameters": {
+                                    "min": 0,
+                                    "max": 100,
+                                    "step": 1,
+                                    "value": 50,
+                                    "isInteractive": true
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "meta": {
+                        "uuid": "b91e5a49-09e5-40dc-a60a-4b9361c9f14f",
+                        "name": "-"
+                    },
+                    "causalType": "Lever",
+                    "position": {
+                        "x": 950,
+                        "y": 220
+                    },
+                    "displays": [
+                        {
+                            "meta": {
+                                "uuid": "e5b04792-74e0-4a8f-8934-17d697df6497",
+                                "name": "Series 2, Category 3"
+                            },
+                            "displayType": "controlRange",
+                            "content": {
+                                "controlParameters": {
+                                    "min": 0,
+                                    "max": 100,
+                                    "step": 1,
+                                    "value": 50,
+                                    "isInteractive": true
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "meta": {
+                        "uuid": "342635b9-ee63-4ad8-9ac7-4d2730a359d8",
+                        "name": "-"
+                    },
+                    "causalType": "Lever",
+                    "position": {
+                        "x": 1275,
+                        "y": 50
+                    },
+                    "displays": [
+                        {
+                            "meta": {
+                                "uuid": "584a7d23-810f-4207-aee3-3a040b4622bf",
+                                "name": "Series 2, Category 2"
+                            },
+                            "displayType": "controlRange",
+                            "content": {
+                                "controlParameters": {
+                                    "min": 0,
+                                    "max": 100,
+                                    "step": 1,
+                                    "value": 50,
+                                    "isInteractive": true
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "meta": {
+                        "uuid": "8a3c6ca5-b261-4049-87cf-9bf4f7b1a646",
+                        "name": "-"
+                    },
+                    "causalType": "Lever",
+                    "position": {
+                        "x": 1275,
+                        "y": 220
+                    },
+                    "displays": [
+                        {
+                            "meta": {
+                                "uuid": "89c5a3e5-9230-438e-b63b-160a916626e9",
+                                "name": "Series 2, Category 4"
+                            },
+                            "displayType": "controlRange",
+                            "content": {
+                                "controlParameters": {
+                                    "min": 0,
+                                    "max": 100,
+                                    "step": 1,
+                                    "value": 50,
+                                    "isInteractive": true
+                                }
+                            }
+                        }
+                    ]
+                }
+            ],
+            "dependencies": [
+                {
+                    "meta": {
+                        "uuid": "77d49e0a-ba11-42ce-a2ef-725339a7d24e",
+                        "name": "New Diagram Element --> New Diagram Element"
+                    },
+                    "source": "7852adcf-e15b-4bcd-bc93-0a7eb8be83b1",
+                    "target": "023d1f95-cc1d-4b82-afdf-0bf6147b754f"
+                },
+                {
+                    "meta": {
+                        "uuid": "93ee65b8-70e2-4475-81c4-63e6791d1e23",
+                        "name": "New Diagram Element --> New Diagram Element"
+                    },
+                    "source": "8ba4739e-ebec-413e-9b9c-f8bcb10870bb",
+                    "target": "023d1f95-cc1d-4b82-afdf-0bf6147b754f"
+                },
+                {
+                    "meta": {
+                        "uuid": "574e277c-2025-49f9-8b5e-74c47f35e66d",
+                        "name": "New Diagram Element --> New Diagram Element"
+                    },
+                    "source": "f375bc3a-be05-46dd-8171-a68688052950",
+                    "target": "023d1f95-cc1d-4b82-afdf-0bf6147b754f"
+                },
+                {
+                    "meta": {
+                        "uuid": "8b69d8a3-4a20-425b-99fe-26f7ae9884b7",
+                        "name": "New Diagram Element --> New Diagram Element"
+                    },
+                    "source": "bf5f6146-7267-4868-88bf-c1f283bd3f05",
+                    "target": "023d1f95-cc1d-4b82-afdf-0bf6147b754f"
+                },
+                {
+                    "meta": {
+                        "uuid": "6ffb6f38-d34a-4ab0-8e43-e7ef5c1523e6",
+                        "name": "- --> -"
+                    },
+                    "source": "c6ba0c35-dfc8-414e-a070-80ac612c766b",
+                    "target": "023d1f95-cc1d-4b82-afdf-0bf6147b754f"
+                },
+                {
+                    "meta": {
+                        "uuid": "aa3201cc-11ed-4868-8845-a3c1a39003f2",
+                        "name": "- --> -"
+                    },
+                    "source": "342635b9-ee63-4ad8-9ac7-4d2730a359d8",
+                    "target": "023d1f95-cc1d-4b82-afdf-0bf6147b754f"
+                },
+                {
+                    "meta": {
+                        "uuid": "b055e954-a33c-4988-8a77-c0383ce39df9",
+                        "name": "- --> -"
+                    },
+                    "source": "b91e5a49-09e5-40dc-a60a-4b9361c9f14f",
+                    "target": "023d1f95-cc1d-4b82-afdf-0bf6147b754f"
+                },
+                {
+                    "meta": {
+                        "uuid": "1ca9110d-fba5-4c09-b06a-1695f8d0d1eb",
+                        "name": "- --> -"
+                    },
+                    "source": "8a3c6ca5-b261-4049-87cf-9bf4f7b1a646",
+                    "target": "023d1f95-cc1d-4b82-afdf-0bf6147b754f"
+                }
+            ]
+        }
+    ],
+    "runnableModels": [
+        {
+            "meta": {
+                "uuid": "24de44dc-69f3-4544-9e3c-48a751bb77b3",
+                "name": "2-Series Stacked Bar Graph",
+                "createdDate": "2025-07-07T10:51:09-04:00"
+            },
+            "elements": [
+                {
+                    "meta": {
+                        "uuid": "bde8fea5-d427-405d-ac29-768f09f9ac6e",
+                        "name": "Series 1: Convert to list"
+                    },
+                    "evaluatableAsset": "cbac5e57-3914-49bb-af2a-40b3c8c65d34",
+                    "functionName": "toList",
+                    "inputs": [
+                        "a24c98a5-a3c8-4d2c-89df-3fbeb3dbd676",
+                        "da5cfe9b-fcc0-4d27-b631-e17198aa25e1",
+                        "de5d689b-05c0-4cb6-a93e-f2af75bc97c9",
+                        "866f92e0-7c65-4f68-a70f-ace2ee2b5df0"
+                    ],
+                    "outputs": [
+                        "a78c8e20-b850-4a57-9a99-b0547bf01b17"
+                    ]
+                },
+                {
+                    "meta": {
+                        "uuid": "cc7dac39-fe8b-4220-bb36-92430a46bb3a",
+                        "name": "Series 1: Convert list to string"
+                    },
+                    "evaluatableAsset": "40f5ca9e-10b0-48bd-b868-688e11e703db",
+                    "functionName": "listAsStrings",
+                    "inputs": [
+                        "a78c8e20-b850-4a57-9a99-b0547bf01b17"
+                    ],
+                    "outputs": [
+                        "2057cc49-984f-491c-bd2f-6acad007d81e"
+                    ]
+                },
+                {
+                    "meta": {
+                        "uuid": "ace3bc07-ca8a-4684-963d-570ce338519d",
+                        "name": "Series 2: Convert to list"
+                    },
+                    "evaluatableAsset": "cbac5e57-3914-49bb-af2a-40b3c8c65d34",
+                    "functionName": "toList",
+                    "inputs": [
+                        "46e85d9b-c902-4897-8128-b9d548514958",
+                        "3557f16a-5eae-4c94-8a03-8e082555fdcb",
+                        "a351f27d-9305-4e65-914b-bdd4fb608cfc",
+                        "b062e03a-1be9-46e3-8922-85e60b38ac22"
+                    ],
+                    "outputs": [
+                        "a3aa941b-2f74-427d-929f-0181ec0bcc63"
+                    ]
+                },
+                {
+                    "meta": {
+                        "uuid": "80a795d3-9b26-4ee2-9b7a-68c6365f9fee",
+                        "name": "Series 2: Convert list to string"
+                    },
+                    "evaluatableAsset": "40f5ca9e-10b0-48bd-b868-688e11e703db",
+                    "functionName": "listAsStrings",
+                    "inputs": [
+                        "a3aa941b-2f74-427d-929f-0181ec0bcc63"
+                    ],
+                    "outputs": [
+                        "f61952ec-376f-4c45-b655-78c092059eaa"
+                    ]
+                }
+            ]
+        }
+    ],
+    "inputOutputValues": [
+        {
+            "meta": {
+                "uuid": "a24c98a5-a3c8-4d2c-89df-3fbeb3dbd676",
+                "name": "Series 1, Category 1"
+            },
+            "data": 100
+        },
+        {
+            "meta": {
+                "uuid": "da5cfe9b-fcc0-4d27-b631-e17198aa25e1",
+                "name": "Series 1, Category 2"
+            },
+            "data": 70
+        },
+        {
+            "meta": {
+                "uuid": "de5d689b-05c0-4cb6-a93e-f2af75bc97c9",
+                "name": "Series 1, Category 3"
+            },
+            "data": 12
+        },
+        {
+            "meta": {
+                "uuid": "866f92e0-7c65-4f68-a70f-ace2ee2b5df0",
+                "name": "Series 1, Category 4"
+            },
+            "data": 33
+        },
+        {
+            "meta": {
+                "uuid": "a78c8e20-b850-4a57-9a99-b0547bf01b17",
+                "name": "Series 1 List"
+            },
+            "data": []
+        },
+        {
+            "meta": {
+                "uuid": "2057cc49-984f-491c-bd2f-6acad007d81e",
+                "name": "Series 1 List as String"
+            },
+            "data": ""
+        },
+        {
+            "meta": {
+                "uuid": "46e85d9b-c902-4897-8128-b9d548514958",
+                "name": "Series 2, Category 1"
+            },
+            "data": 0
+        },
+        {
+            "meta": {
+                "uuid": "3557f16a-5eae-4c94-8a03-8e082555fdcb",
+                "name": "Series 2, Category 2"
+            },
+            "data": 10
+        },
+        {
+            "meta": {
+                "uuid": "a351f27d-9305-4e65-914b-bdd4fb608cfc",
+                "name": "Series 2, Category 3"
+            },
+            "data": 53
+        },
+        {
+            "meta": {
+                "uuid": "b062e03a-1be9-46e3-8922-85e60b38ac22",
+                "name": "Series 2, Category 4"
+            },
+            "data": 100
+        },
+        {
+            "meta": {
+                "uuid": "a3aa941b-2f74-427d-929f-0181ec0bcc63",
+                "name": "Series 2 List"
+            },
+            "data": null
+        },
+        {
+            "meta": {
+                "uuid": "f61952ec-376f-4c45-b655-78c092059eaa",
+                "name": "Series 2 List as String"
+            },
+            "data": null
+        }
+    ],
+    "evaluatableAssets": [
+        {
+            "meta": {
+                "uuid": "cbac5e57-3914-49bb-af2a-40b3c8c65d34",
+                "name": "Inputs To List"
+            },
+            "evalType": "Script",
+            "content": {
+                "language": "javascript",
+                "script": "KGZ1bmN0aW9uICgpIHsKCiAgICAvL0lNUExFTUVOVCBZT1VSIEZVTkNUSU9OIEFTIEEgQ09OU1QgSEVSRToKICAgIGNvbnN0IG15U2NyaXB0RnVuY3Rpb24gPSBmdW5jdGlvbiAoaW5wdXRzKSB7CiAgICAgICAgcmV0dXJuIFtpbnB1dHNdOwogICAgfQoKICAgIC8vTUFQIFlPVVIgRlVOQ1RJT04gVE8gQSBTVFJJTkcgTkFNRSBIRVJFOgogICAgcmV0dXJuIHsgZnVuY01hcDogeyJ0b0xpc3QiOiBteVNjcmlwdEZ1bmN0aW9ufSB9OwoKfSkoKTsKCgovLyBUbyBpbXBvcnQgYSBzY3JpcHQsIGl0IG11c3QgdXNlIGEgc2ltaWxhciBzdHJ1Y3R1cmUgdG8gdGhlIGV4YW1wbGUgY29kZSBhYm92ZS4gSXQgc2hvdWxkIHRha2UgdGhlIGZvcm0gb2YKLy8gYW4gaW1tZWRpYXRlbHkgaW52b2tlZCBmdW5jdGlvbiBleHByZXNzaW9uOiBodHRwczovL2RldmVsb3Blci5tb3ppbGxhLm9yZy9lbi1VUy9kb2NzL0dsb3NzYXJ5L0lJRkUgd2hlcmUgdGhlCi8vIGZ1bmN0aW9uIHJldHVybnMgYSBmdW5jdGlvbiBtYXAgY2FsbGVkIGZ1bmNNYXAuCi8vIAovLyBmdW5jTWFwIHNob3VsZCBoYXZlIHN0cmluZyBrZXlzIGFuZCBmdW5jdGlvbiB2YWx1ZXMuIFN0cmluZyBrZXlzIHdpbGwgYmUgdXNlZCBieSBFdmFsdWF0YWJsZSBFbGVtZW50cwovLyB0byBwYXNzIGlucHV0cyB0byBhbmQgcmVjZWl2ZSBvdXRwdXRzIGZyb20gdGhlIGZ1bmN0aW9ucy4KLy8gCi8vIEVhY2ggc2NyaXB0IG1heSBkZWZpbmUgYXJiaXRyYXJpbHkgbWFueSBmdW5jdGlvbnMsIHNvIGxvbmcgYXMgdGhleSdyZSBhbGwgZXhwb3NlZCB2aWEgZnVuY01hcC4KLy8gCi8vIEZ1bmN0aW9uIGlucHV0cyB3aWxsIHRha2UgdGhlIGZvcm0gb2YgYSBzaW5nbGUgYXJyYXkgb2YgPGFueT4gdmFsdWVzLgovLyBGdW5jdGlvbnMgc2hvdWxkIGxpa2V3aXNlIHJldHVybiBhbiBhcnJheSBvZiA8YW55PiB2YWx1ZXMuCi8vIE1lYW5pbmcgZm9yIGFyZ3VtZW50cyBhbmQgcmV0dXJuIHZhbHVlcyBpcyBkZXRlcm1pbmVkIGJ5IHRoZWlyIG9yZGVyIGluIHRoZSBhcnJheS4="
+            }
+        },
+        {
+            "meta": {
+                "uuid": "40f5ca9e-10b0-48bd-b868-688e11e703db",
+                "name": "List as String"
+            },
+            "evalType": "Script",
+            "content": {
+                "language": "javascript",
+                "script": "KGZ1bmN0aW9uICgpIHsKCiAgICAvL0lNUExFTUVOVCBZT1VSIEZVTkNUSU9OIEFTIEEgQ09OU1QgSEVSRToKICAgIGNvbnN0IG15U2NyaXB0RnVuY3Rpb24gPSBmdW5jdGlvbiAoaW5wdXRzKSB7CiAgICAgICAgbGV0IGlucHV0c0FzU3RyaW5nID0gIlsiOwogICAgICAgIGlucHV0cy5mb3JFYWNoKChpbnB1dCkgPT4ge2lucHV0c0FzU3RyaW5nICs9IGAke2lucHV0fSBgfSk7CiAgICAgICAgaW5wdXRzQXNTdHJpbmcgKz0gIl0iOwogICAgICAgIHJldHVybiBbaW5wdXRzQXNTdHJpbmddOwogICAgfQoKICAgIC8vTUFQIFlPVVIgRlVOQ1RJT04gVE8gQSBTVFJJTkcgTkFNRSBIRVJFOgogICAgcmV0dXJuIHsgZnVuY01hcDogeyJsaXN0QXNTdHJpbmdzIjogbXlTY3JpcHRGdW5jdGlvbn0gfTsKCn0pKCk7CgoKLy8gVG8gaW1wb3J0IGEgc2NyaXB0LCBpdCBtdXN0IHVzZSBhIHNpbWlsYXIgc3RydWN0dXJlIHRvIHRoZSBleGFtcGxlIGNvZGUgYWJvdmUuIEl0IHNob3VsZCB0YWtlIHRoZSBmb3JtIG9mCi8vIGFuIGltbWVkaWF0ZWx5IGludm9rZWQgZnVuY3Rpb24gZXhwcmVzc2lvbjogaHR0cHM6Ly9kZXZlbG9wZXIubW96aWxsYS5vcmcvZW4tVVMvZG9jcy9HbG9zc2FyeS9JSUZFIHdoZXJlIHRoZQovLyBmdW5jdGlvbiByZXR1cm5zIGEgZnVuY3Rpb24gbWFwIGNhbGxlZCBmdW5jTWFwLgovLyAKLy8gZnVuY01hcCBzaG91bGQgaGF2ZSBzdHJpbmcga2V5cyBhbmQgZnVuY3Rpb24gdmFsdWVzLiBTdHJpbmcga2V5cyB3aWxsIGJlIHVzZWQgYnkgRXZhbHVhdGFibGUgRWxlbWVudHMKLy8gdG8gcGFzcyBpbnB1dHMgdG8gYW5kIHJlY2VpdmUgb3V0cHV0cyBmcm9tIHRoZSBmdW5jdGlvbnMuCi8vIAovLyBFYWNoIHNjcmlwdCBtYXkgZGVmaW5lIGFyYml0cmFyaWx5IG1hbnkgZnVuY3Rpb25zLCBzbyBsb25nIGFzIHRoZXkncmUgYWxsIGV4cG9zZWQgdmlhIGZ1bmNNYXAuCi8vIAovLyBGdW5jdGlvbiBpbnB1dHMgd2lsbCB0YWtlIHRoZSBmb3JtIG9mIGEgc2luZ2xlIGFycmF5IG9mIDxhbnk+IHZhbHVlcy4KLy8gRnVuY3Rpb25zIHNob3VsZCBsaWtld2lzZSByZXR1cm4gYW4gYXJyYXkgb2YgPGFueT4gdmFsdWVzLgovLyBNZWFuaW5nIGZvciBhcmd1bWVudHMgYW5kIHJldHVybiB2YWx1ZXMgaXMgZGV0ZXJtaW5lZCBieSB0aGVpciBvcmRlciBpbiB0aGUgYXJyYXku"
+            }
+        }
+    ],
+    "controls": [
+        {
+            "meta": {
+                "uuid": "4d2dd7a1-f885-4cc7-85e1-c65f39eed82b",
+                "name": "Series 1, Category 1"
+            },
+            "inputOutputValues": [
+                "a24c98a5-a3c8-4d2c-89df-3fbeb3dbd676"
+            ],
+            "displays": [
+                "fef21be5-3825-4f28-af0d-cf01943ab4ee"
+            ]
+        },
+        {
+            "meta": {
+                "uuid": "75cbb145-21c3-40eb-bfbb-6317267d8616",
+                "name": "Series 1, Category 2"
+            },
+            "inputOutputValues": [
+                "da5cfe9b-fcc0-4d27-b631-e17198aa25e1"
+            ],
+            "displays": [
+                "a8d42c6e-ec23-4d80-bf07-e71bc30c6b35"
+            ]
+        },
+        {
+            "meta": {
+                "uuid": "2422d412-346b-4eab-9145-bab278c48a7c",
+                "name": "Series 1, Category 3"
+            },
+            "inputOutputValues": [
+                "de5d689b-05c0-4cb6-a93e-f2af75bc97c9"
+            ],
+            "displays": [
+                "94759b92-4286-4dfa-a4ad-8bdbdf01d7a5"
+            ]
+        },
+        {
+            "meta": {
+                "uuid": "cdef5de2-1bb5-4a4b-96d8-2a81f747b960",
+                "name": "Series 1, Category 4"
+            },
+            "inputOutputValues": [
+                "866f92e0-7c65-4f68-a70f-ace2ee2b5df0"
+            ],
+            "displays": [
+                "b3b0d141-5c50-4a5c-a89a-1332032187e4"
+            ]
+        },
+        {
+            "meta": {
+                "uuid": "bcac53c1-822e-4b48-ad27-ea5a87bdb1ee",
+                "name": "Series 1: List printout below graph"
+            },
+            "inputOutputValues": [
+                "2057cc49-984f-491c-bd2f-6acad007d81e"
+            ],
+            "displays": [
+                "96ccc294-acb8-4c23-a402-5e2e5a2becfc"
+            ]
+        },
+        {
+            "meta": {
+                "uuid": "ed917b35-14fe-413c-b154-32cd1190e178",
+                "name": "BAR CHART",
+                "summary": "Feed all series to the bar chart display in the intended stack order order, bottom to top. Series 1 is given first, then Series 2. If we had more, they would be listed after."
+            },
+            "inputOutputValues": [
+                "a78c8e20-b850-4a57-9a99-b0547bf01b17",
+                "a3aa941b-2f74-427d-929f-0181ec0bcc63"
+            ],
+            "displays": [
+                "e513e06b-e592-4426-b222-5542087d7cad"
+            ]
+        },
+        {
+            "meta": {
+                "uuid": "a22e0ad7-7c20-4a11-ac6d-ab5e7eb99fb2",
+                "name": "Series 2, Category 1"
+            },
+            "inputOutputValues": [
+                "46e85d9b-c902-4897-8128-b9d548514958"
+            ],
+            "displays": [
+                "a8368bc2-2951-4398-a70d-23f5f9c4490d"
+            ]
+        },
+        {
+            "meta": {
+                "uuid": "f76a6885-9b3a-439b-a7d4-5c2de62f0eb5",
+                "name": "Series 2, Category 2"
+            },
+            "inputOutputValues": [
+                "3557f16a-5eae-4c94-8a03-8e082555fdcb"
+            ],
+            "displays": [
+                "584a7d23-810f-4207-aee3-3a040b4622bf"
+            ]
+        },
+        {
+            "meta": {
+                "uuid": "d572b91f-61b7-4977-893e-e6db2161c548",
+                "name": "Series 2, Category 3"
+            },
+            "inputOutputValues": [
+                "a351f27d-9305-4e65-914b-bdd4fb608cfc"
+            ],
+            "displays": [
+                "e5b04792-74e0-4a8f-8934-17d697df6497"
+            ]
+        },
+        {
+            "meta": {
+                "uuid": "3c38a0a3-db90-40d5-a794-7b7460c20836",
+                "name": "Series 2, Category 4"
+            },
+            "inputOutputValues": [
+                "b062e03a-1be9-46e3-8922-85e60b38ac22"
+            ],
+            "displays": [
+                "89c5a3e5-9230-438e-b63b-160a916626e9"
+            ]
+        },
+        {
+            "meta": {
+                "uuid": "c9a406b3-8a40-4278-b3a3-bf4c997450c5",
+                "name": "Series 2: List printout below graph"
+            },
+            "inputOutputValues": [
+                "f61952ec-376f-4c45-b655-78c092059eaa"
+            ],
+            "displays": [
+                "ced2be47-6767-4454-bd12-8cb8c66e4179"
+            ]
+        }
+    ]
+}

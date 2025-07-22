@@ -2,6 +2,7 @@ import React from "react";
 import ControlRange, { defaultControlRangeJSON } from "./displayTypes/ControlRange";
 import ControlText, { defaultControlTextJSON } from "./displayTypes/ControlText";
 import ControlBoolean, { defaultControlBooleanJSON } from "./displayTypes/ControlBoolean";
+import DisplayBarChart, { defaultDisplayBarChartJSON } from "./displayTypes/DisplayBarChart";
 import UnknownDisplay, { defaultUnkownDisplayJSON } from "./displayTypes/UnknownDisplay";
 
 export type CommonDisplayProps = {
@@ -21,6 +22,7 @@ const DisplayTypeRegistry: Record<string, DisplayRegistryEntry> = {
     controlRange: {component: ControlRange, defaultJSON: defaultControlRangeJSON},
     controlText: {component: ControlText, defaultJSON: defaultControlTextJSON},
     controlBoolean: {component: ControlBoolean, defaultJSON: defaultControlBooleanJSON},
+    stackedBarChart: {component: DisplayBarChart, defaultJSON: defaultDisplayBarChartJSON},
     unknown: {component: UnknownDisplay, defaultJSON: defaultUnkownDisplayJSON},
 };
 
