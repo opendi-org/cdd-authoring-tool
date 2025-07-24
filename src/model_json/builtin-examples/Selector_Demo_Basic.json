@@ -1,0 +1,292 @@
+{
+    "$schema": "./schemas/Causal-Decision-Model.json",
+    "meta": {
+        "uuid": "c6481835-a413-4a3c-a535-be7aabfaf0b4",
+        "name": "Selector Demo: Basic",
+        "summary": "This demo shows basic selector functionality, with all possible options listed in the Display JSON definition in each Lever.\n\nThe runnable model uses one evaluatable element, which takes the two operands (numbers) and the operation (a string used to determine which math operation is performed), and returns the result of the operation. This result is then sent to the Text Display in the Outcome element.",
+        "documentation": {
+            "content": "",
+            "MIMEType": "text/plain"
+        },
+        "version": "0.1",
+        "draft": true,
+        "createdDate": "2025-07-23T17:23:26-04:00"
+    },
+    "diagrams": [
+        {
+            "meta": {
+                "uuid": "ec9e151e-b487-4e91-9640-ada3feea96ed",
+                "name": "Simple Math Operation",
+                "createdDate": "2025-07-23T17:23:26-04:00"
+            },
+            "elements": [
+                {
+                    "meta": {
+                        "uuid": "2213dda8-8d64-4c20-b359-1231b84734d9",
+                        "name": " "
+                    },
+                    "causalType": "Lever",
+                    "position": {
+                        "x": 521.5,
+                        "y": 216.5
+                    },
+                    "displays": [
+                        {
+                            "meta": {
+                                "uuid": "b5e94be3-b44c-4cb3-a847-a78684237fa2",
+                                "name": "Operation"
+                            },
+                            "displayType": "controlSelector",
+                            "content": {
+                                "controlParameters": {
+                                    "options": [
+                                        "plus",
+                                        "times"
+                                    ],
+                                    "selectedValue": "plus",
+                                    "isInteractive": true
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "meta": {
+                        "uuid": "7b8d7a39-24ce-4f70-b848-a4c39a66d480",
+                        "name": " "
+                    },
+                    "causalType": "Outcome",
+                    "position": {
+                        "x": 558.5,
+                        "y": 604.5
+                    },
+                    "displays": [
+                        {
+                            "meta": {
+                                "uuid": "0ea730fc-0eb2-40ee-89db-123570299950",
+                                "name": "Result"
+                            },
+                            "displayType": "controlText",
+                            "content": {
+                                "controlParameters": {
+                                    "value": " ",
+                                    "isInteractive": false
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "meta": {
+                        "uuid": "8b40f0e3-e685-4f98-9507-aea566a3142f",
+                        "name": " "
+                    },
+                    "causalType": "Lever",
+                    "position": {
+                        "x": 113.5,
+                        "y": 224.5
+                    },
+                    "displays": [
+                        {
+                            "meta": {
+                                "uuid": "a2fd80ea-2fea-4d9c-aa0f-77d7da912730",
+                                "name": "Left Operand"
+                            },
+                            "displayType": "controlSelector",
+                            "content": {
+                                "controlParameters": {
+                                    "options": [
+                                        1,
+                                        2,
+                                        3,
+                                        4
+                                    ],
+                                    "selectedValue": 2,
+                                    "isInteractive": true
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "meta": {
+                        "uuid": "5545af43-1b5e-44fe-bcfe-1dbc4fea0705",
+                        "name": " "
+                    },
+                    "causalType": "Lever",
+                    "position": {
+                        "x": 985.5,
+                        "y": 220.5
+                    },
+                    "displays": [
+                        {
+                            "meta": {
+                                "uuid": "dec22efa-c129-41f5-9ca5-4e608cded101",
+                                "name": "Right Operand"
+                            },
+                            "displayType": "controlSelector",
+                            "content": {
+                                "controlParameters": {
+                                    "options": [
+                                        1,
+                                        2,
+                                        3,
+                                        4
+                                    ],
+                                    "selectedValue": 2,
+                                    "isInteractive": true
+                                }
+                            }
+                        }
+                    ]
+                }
+            ],
+            "dependencies": [
+                {
+                    "meta": {
+                        "uuid": "4770760a-82c6-41d8-afc6-0602ab3ee602",
+                        "name": "Operation --> Result"
+                    },
+                    "source": "2213dda8-8d64-4c20-b359-1231b84734d9",
+                    "target": "7b8d7a39-24ce-4f70-b848-a4c39a66d480"
+                },
+                {
+                    "meta": {
+                        "uuid": "1c6ee2b2-32cf-444f-a97e-2f21ce9b1d4b",
+                        "name": "Operand --> Result"
+                    },
+                    "source": "8b40f0e3-e685-4f98-9507-aea566a3142f",
+                    "target": "7b8d7a39-24ce-4f70-b848-a4c39a66d480"
+                },
+                {
+                    "meta": {
+                        "uuid": "05d788e8-e30c-4dbb-9701-0f46dc87c7ac",
+                        "name": "  -->  "
+                    },
+                    "source": "5545af43-1b5e-44fe-bcfe-1dbc4fea0705",
+                    "target": "7b8d7a39-24ce-4f70-b848-a4c39a66d480"
+                }
+            ]
+        }
+    ],
+    "runnableModels": [
+        {
+            "meta": {
+                "uuid": "3ce52eea-7b6e-42fe-aad6-c2ef27f12a65",
+                "name": "Perform Operation",
+                "createdDate": "2025-07-23T17:23:26-04:00"
+            },
+            "elements": [
+                {
+                    "meta": {
+                        "uuid": "32b22217-21d3-43e1-87ff-c26c8208ebe6",
+                        "name": "Perform Operation"
+                    },
+                    "evaluatableAsset": "f20d42b0-4896-478a-9cef-1608777e9050",
+                    "functionName": "performOperation",
+                    "inputs": [
+                        "2cbe8763-246d-4118-9084-2d59724984a7",
+                        "2b16bd0a-56ed-46e5-adfd-9dd4066c837c",
+                        "cfc39d19-5730-46f6-b890-d72c9d355a57"
+                    ],
+                    "outputs": [
+                        "d2f3aa23-83eb-416f-8815-04fb4ad0b5d2"
+                    ]
+                }
+            ]
+        }
+    ],
+    "inputOutputValues": [
+        {
+            "meta": {
+                "uuid": "2cbe8763-246d-4118-9084-2d59724984a7",
+                "name": "Selected Operation"
+            },
+            "data": "plus"
+        },
+        {
+            "meta": {
+                "uuid": "2b16bd0a-56ed-46e5-adfd-9dd4066c837c",
+                "name": "Left Operand"
+            },
+            "data": 2
+        },
+        {
+            "meta": {
+                "uuid": "d2f3aa23-83eb-416f-8815-04fb4ad0b5d2",
+                "name": "Result of Operation"
+            },
+            "data": null
+        },
+        {
+            "meta": {
+                "uuid": "cfc39d19-5730-46f6-b890-d72c9d355a57",
+                "name": "Right Operand"
+            },
+            "data": 2
+        }
+    ],
+    "controls": [
+        {
+            "meta": {
+                "uuid": "1f25dac8-d90a-4168-aaf1-b979c446528f",
+                "name": "Operation"
+            },
+            "inputOutputValues": [
+                "2cbe8763-246d-4118-9084-2d59724984a7"
+            ],
+            "displays": [
+                "b5e94be3-b44c-4cb3-a847-a78684237fa2"
+            ]
+        },
+        {
+            "meta": {
+                "uuid": "d8e17ac3-a44a-4e86-9784-ff7344fdf761",
+                "name": "Left Operand"
+            },
+            "inputOutputValues": [
+                "2b16bd0a-56ed-46e5-adfd-9dd4066c837c"
+            ],
+            "displays": [
+                "a2fd80ea-2fea-4d9c-aa0f-77d7da912730"
+            ]
+        },
+        {
+            "meta": {
+                "uuid": "e484f504-cc0a-4c66-ad67-7b28f48e28c0",
+                "name": "Result of Operation"
+            },
+            "inputOutputValues": [
+                "d2f3aa23-83eb-416f-8815-04fb4ad0b5d2"
+            ],
+            "displays": [
+                "0ea730fc-0eb2-40ee-89db-123570299950"
+            ]
+        },
+        {
+            "meta": {
+                "uuid": "da3c2d8b-9669-4dd8-b888-a65995abab6f",
+                "name": "Right Operand"
+            },
+            "inputOutputValues": [
+                "cfc39d19-5730-46f6-b890-d72c9d355a57"
+            ],
+            "displays": [
+                "dec22efa-c129-41f5-9ca5-4e608cded101"
+            ]
+        }
+    ],
+    "evaluatableAssets": [
+        {
+            "meta": {
+                "uuid": "f20d42b0-4896-478a-9cef-1608777e9050",
+                "name": "Perform Operation"
+            },
+            "evalType": "Script",
+            "content": {
+                "language": "javascript",
+                "script": "KGZ1bmN0aW9uICgpIHsKCiAgICAvL0lNUExFTUVOVCBZT1VSIEZVTkNUSU9OIEFTIEEgQ09OU1QgSEVSRToKICAgIGNvbnN0IG15U2NyaXB0RnVuY3Rpb24gPSBmdW5jdGlvbiAoaW5wdXRzKSB7CiAgICAgICAgY29uc3Qgb3BlcmF0aW9uID0gaW5wdXRzWzBdOwogICAgICAgIGNvbnN0IGxlZnRPcGVyYW5kID0gTnVtYmVyKGlucHV0c1sxXSk7CiAgICAgICAgY29uc3QgcmlnaHRPcGVyYW5kID0gTnVtYmVyKGlucHV0c1syXSk7CgogICAgICAgIGNvbnN0IHJlc3VsdCA9IG9wZXJhdGlvbiA9PSAicGx1cyIKICAgICAgICAgICAgPyBsZWZ0T3BlcmFuZCArIHJpZ2h0T3BlcmFuZAogICAgICAgICAgICA6IGxlZnRPcGVyYW5kICogcmlnaHRPcGVyYW5kOwogICAgICAgIAogICAgICAgIGNvbnN0IG91dCA9IGAke2xlZnRPcGVyYW5kfSAke29wZXJhdGlvbn0gJHtyaWdodE9wZXJhbmR9IGVxdWFscyAke3Jlc3VsdH1gCiAgICAgICAgcmV0dXJuIFtvdXRdOwogICAgfQoKICAgIC8vTUFQIFlPVVIgRlVOQ1RJT04gVE8gQSBTVFJJTkcgTkFNRSBIRVJFOgogICAgcmV0dXJuIHsgZnVuY01hcDogeyJwZXJmb3JtT3BlcmF0aW9uIjogbXlTY3JpcHRGdW5jdGlvbn0gfTsKCn0pKCk7CgoKLy8gVG8gaW1wb3J0IGEgc2NyaXB0LCBpdCBtdXN0IHVzZSBhIHNpbWlsYXIgc3RydWN0dXJlIHRvIHRoZSBleGFtcGxlIGNvZGUgYWJvdmUuIEl0IHNob3VsZCB0YWtlIHRoZSBmb3JtIG9mCi8vIGFuIGltbWVkaWF0ZWx5IGludm9rZWQgZnVuY3Rpb24gZXhwcmVzc2lvbjogaHR0cHM6Ly9kZXZlbG9wZXIubW96aWxsYS5vcmcvZW4tVVMvZG9jcy9HbG9zc2FyeS9JSUZFIHdoZXJlIHRoZQovLyBmdW5jdGlvbiByZXR1cm5zIGEgZnVuY3Rpb24gbWFwIGNhbGxlZCBmdW5jTWFwLgovLyAKLy8gZnVuY01hcCBzaG91bGQgaGF2ZSBzdHJpbmcga2V5cyBhbmQgZnVuY3Rpb24gdmFsdWVzLiBTdHJpbmcga2V5cyB3aWxsIGJlIHVzZWQgYnkgRXZhbHVhdGFibGUgRWxlbWVudHMKLy8gdG8gcGFzcyBpbnB1dHMgdG8gYW5kIHJlY2VpdmUgb3V0cHV0cyBmcm9tIHRoZSBmdW5jdGlvbnMuCi8vIAovLyBFYWNoIHNjcmlwdCBtYXkgZGVmaW5lIGFyYml0cmFyaWx5IG1hbnkgZnVuY3Rpb25zLCBzbyBsb25nIGFzIHRoZXkncmUgYWxsIGV4cG9zZWQgdmlhIGZ1bmNNYXAuCi8vIAovLyBGdW5jdGlvbiBpbnB1dHMgd2lsbCB0YWtlIHRoZSBmb3JtIG9mIGEgc2luZ2xlIGFycmF5IG9mIDxhbnk+IHZhbHVlcy4KLy8gRnVuY3Rpb25zIHNob3VsZCBsaWtld2lzZSByZXR1cm4gYW4gYXJyYXkgb2YgPGFueT4gdmFsdWVzLgovLyBNZWFuaW5nIGZvciBhcmd1bWVudHMgYW5kIHJldHVybiB2YWx1ZXMgaXMgZGV0ZXJtaW5lZCBieSB0aGVpciBvcmRlciBpbiB0aGUgYXJyYXku"
+            }
+        }
+    ]
+}

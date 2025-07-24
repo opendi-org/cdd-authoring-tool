@@ -1,9 +1,11 @@
 import ExampleCoffee from  "./coffee.json" assert { type: "json" };
 import ExampleCoffeeNonInteractive from "./coffee_noninteractive.json" assert { type: "json" };
-import ExampleBasicAdder from "./basic_adder.json" assert { type: "json" };
-import ExampleMultistepAdder from "./multistep_adder.json" assert { type: "json" };
-import ExampleStringsBools from "./strings_bools.json" assert { type: "json" };
-import ExampleStringsBoolsMultidisplay from "./strings_bools_multidisplays.json" assert { type: "json" };
+import ExampleBasicAdder from "./Range_Demo_Basic_Adder.json" assert { type: "json" };
+import ExampleMultistepAdder from "./Range_Demo_Multistep_Adder.json" assert { type: "json" };
+import ExampleStringsBools from "./Text_and_Bool_Demo_Word_Combination.json" assert { type: "json" };
+import ExampleStringsBoolsMultidisplay from "./Text_and_Bool_Demo_Word_Combination_Multi.json" assert { type: "json" };
+import ExampleSelectorBasic from "./Selector_Demo_Basic.json" assert { type: "json" };
+import ExampleSelectorDynamic from "./Selector_Demo_Dynamic.json" assert { type: "json" };
 import ExampleBarGraph2DArray from "./Bar_Graph_Demo_2D_Array.json" assert { type: "json" };
 import ExampleBarGraphDynamicCategories from "./Bar_Graph_Demo_Dynamic_Categories.json" assert { type: "json" };
 
@@ -29,6 +31,8 @@ export const BuiltInModels: Record<string, BuiltInModelRecord> = {};
     ExampleMultistepAdder,
     ExampleStringsBools,
     ExampleStringsBoolsMultidisplay,
+    ExampleSelectorBasic,
+    ExampleSelectorDynamic,
     ExampleBarGraph2DArray,
     ExampleBarGraphDynamicCategories,
 ].forEach((model) => {
