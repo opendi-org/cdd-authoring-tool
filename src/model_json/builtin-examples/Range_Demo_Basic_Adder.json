@@ -113,6 +113,27 @@
                                     "value": -1,
                                     "isInteractive": true
                                 }
+                            },
+                            "addons": {
+                                "ADDON_OpenDIAuthoringTool": {
+                                    "addonMeta": {
+                                        "uuid": "ec427cfd-5f80-4262-afe7-d58e6c4ba566",
+                                        "name": "OpenDI Authoring Tool"
+                                    },
+                                    "owner": {
+                                        "uuid": "f79ae5c2-6ca9-48a2-87fa-4615da6b0f08",
+                                        "name": "Placeholder Owner Info"
+                                    },
+                                    "data": {
+                                        "style": {
+                                            "isGauge": false,
+                                            "gaugeColorGradient": {
+                                                "start": "darkgoldenrod",
+                                                "end": "moccasin"
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     ]
@@ -141,6 +162,27 @@
                                     "value": -1,
                                     "isInteractive": true
                                 }
+                            },
+                            "addons": {
+                                "ADDON_OpenDIAuthoringTool": {
+                                    "addonMeta": {
+                                        "uuid": "ec427cfd-5f80-4262-afe7-d58e6c4ba566",
+                                        "name": "OpenDI Authoring Tool"
+                                    },
+                                    "owner": {
+                                        "uuid": "f79ae5c2-6ca9-48a2-87fa-4615da6b0f08",
+                                        "name": "Placeholder Owner Info"
+                                    },
+                                    "data": {
+                                        "style": {
+                                            "isGauge": false,
+                                            "gaugeColorGradient": {
+                                                "start": "darkgoldenrod",
+                                                "end": "moccasin"
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     ]
@@ -168,6 +210,27 @@
                                     "step": 1,
                                     "value": -1,
                                     "isInteractive": false
+                                }
+                            },
+                            "addons": {
+                                "ADDON_OpenDIAuthoringTool": {
+                                    "addonMeta": {
+                                        "uuid": "ec427cfd-5f80-4262-afe7-d58e6c4ba566",
+                                        "name": "OpenDI Authoring Tool"
+                                    },
+                                    "owner": {
+                                        "uuid": "f79ae5c2-6ca9-48a2-87fa-4615da6b0f08",
+                                        "name": "Placeholder Owner Info"
+                                    },
+                                    "data": {
+                                        "style": {
+                                            "isGauge": true,
+                                            "gaugeColorGradient": {
+                                                "start": "darkgoldenrod",
+                                                "end": "moccasin"
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }

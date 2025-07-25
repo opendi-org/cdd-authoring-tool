@@ -46,6 +46,27 @@
                                     "selectedValue": "plus",
                                     "isInteractive": true
                                 }
+                            },
+                            "addons": {
+                                "ADDON_OpenDIAuthoringTool": {
+                                    "addonMeta": {
+                                        "uuid": "ec427cfd-5f80-4262-afe7-d58e6c4ba566",
+                                        "name": "OpenDI Authoring Tool"
+                                    },
+                                    "owner": {
+                                        "uuid": "f79ae5c2-6ca9-48a2-87fa-4615da6b0f08",
+                                        "name": "Placeholder Owner Info"
+                                    },
+                                    "data": {
+                                        "style": {
+                                            "isDial": false,
+                                            "dialColorGradient": {
+                                                "start": "darkgoldenrod",
+                                                "end": "moccasin"
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     ]
@@ -99,10 +120,34 @@
                                         1,
                                         2,
                                         3,
-                                        4
+                                        4,
+                                        5,
+                                        6,
+                                        7
                                     ],
                                     "selectedValue": 2,
                                     "isInteractive": true
+                                }
+                            },
+                            "addons": {
+                                "ADDON_OpenDIAuthoringTool": {
+                                    "addonMeta": {
+                                        "uuid": "ec427cfd-5f80-4262-afe7-d58e6c4ba566",
+                                        "name": "OpenDI Authoring Tool"
+                                    },
+                                    "owner": {
+                                        "uuid": "f79ae5c2-6ca9-48a2-87fa-4615da6b0f08",
+                                        "name": "Placeholder Owner Info"
+                                    },
+                                    "data": {
+                                        "style": {
+                                            "isDial": true,
+                                            "dialColorGradient": {
+                                                "start": "darkgoldenrod",
+                                                "end": "moccasin"
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -131,10 +176,34 @@
                                         1,
                                         2,
                                         3,
-                                        4
+                                        4,
+                                        5,
+                                        6,
+                                        7
                                     ],
                                     "selectedValue": 2,
                                     "isInteractive": true
+                                }
+                            },
+                            "addons": {
+                                "ADDON_OpenDIAuthoringTool": {
+                                    "addonMeta": {
+                                        "uuid": "ec427cfd-5f80-4262-afe7-d58e6c4ba566",
+                                        "name": "OpenDI Authoring Tool"
+                                    },
+                                    "owner": {
+                                        "uuid": "f79ae5c2-6ca9-48a2-87fa-4615da6b0f08",
+                                        "name": "Placeholder Owner Info"
+                                    },
+                                    "data": {
+                                        "style": {
+                                            "isDial": true,
+                                            "dialColorGradient": {
+                                                "start": "darkgoldenrod",
+                                                "end": "moccasin"
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
