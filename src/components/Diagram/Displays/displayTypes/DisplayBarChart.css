@@ -1,0 +1,8 @@
+.disp-stackedBarChart {
+    overflow-x: hidden;
+    svg {
+        background: #00000055;
+        width: 100%;
+        margin-top: 0.5em;
+    }
+}
