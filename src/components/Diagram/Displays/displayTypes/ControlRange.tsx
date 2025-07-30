@@ -22,6 +22,32 @@ const ControlRange: React.FC<CommonDisplayProps> = ({
     
     // Consult the Controls map to see if there are I/O values associated with this Display
     const displayIOValuesList = controlsMap.get(displayJSON.meta.uuid) ?? [null];
+
+    //0th index is for associating an I/O value with the current value
+    let currentValue = (
+        computedIOValues.get(String(displayIOValuesList[0])) ??
+        IOValues.get(displayJSON.meta.uuid) ??
+        displayJSON.content.controlParameters?.value ??
+        -1
+    );
+
+    //1st index is optional, provided if the minimum range value should come from an I/O value. It'll be a number
+    const rangeMinimum = (
+        computedIOValues.get(String(displayIOValuesList[1])) ??
+        displayJSON.content.controlParameters?.min ?? 0
+    );
+
+    //2nd index is optional, provided if the maximum range value should come from an I/O value. It'll be a number
+    const rangeMaximum = (
+        computedIOValues.get(String(displayIOValuesList[2])) ??
+        displayJSON.content.controlParameters?.max ?? 0
+    );
+
+    //3rd index is optional, provided if the step amount value should come from an I/O value. It'll be a number
+    const rangeStep = (
+        computedIOValues.get(String(displayIOValuesList[3])) ??
+        displayJSON.content.controlParameters?.step ?? 1
+    );
     
     // Sets a single value in the IO Values map.
     // Assumes the value UUID is at displayIOValuesList[0]
@@ -43,27 +69,17 @@ const ControlRange: React.FC<CommonDisplayProps> = ({
             {(isInteractive || !isGauge
                 ? <Slider
                     title={displayJSON.meta.name ?? ""}
-                    min={displayJSON.content.controlParameters?.min ?? 0}
-                    max={displayJSON.content.controlParameters?.max ?? 0}
-                    step={displayJSON.content.controlParameters?.step ?? 1}
-                    currentValue={
-                        computedIOValues.get(String(displayIOValuesList[0])) ??
-                        IOValues.get(displayJSON.meta.uuid) ??
-                        displayJSON.content.controlParameters?.value ??
-                        -1
-                    }
+                    min={rangeMinimum}
+                    max={rangeMaximum}
+                    step={rangeStep}
+                    currentValue={currentValue}
                     setCurrentValue={isInteractive ? setSingleValue : () => {} }
                 />
                 : <Gauge
-                    currentValue={
-                        computedIOValues.get(String(displayIOValuesList[0])) ??
-                        IOValues.get(displayJSON.meta.uuid) ??
-                        displayJSON.content.controlParameters?.value ??
-                        -1
-                    }
+                    currentValue={currentValue}
                     title={displayJSON.meta.name ?? ""}
-                    min={displayJSON.content.controlParameters?.min ?? 0}
-                    max={displayJSON.content.controlParameters?.max ?? 0}
+                    min={rangeMinimum}
+                    max={rangeMaximum}
                     d3ColorScheme={interpolateHslLong(gaugeColor.start, gaugeColor.end)}
                 />
             )}

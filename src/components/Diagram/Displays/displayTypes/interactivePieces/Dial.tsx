@@ -23,7 +23,7 @@ function Dial({
   setCurrentValue,
   title,
   values,
-  radius = 200,
+  radius = 150,
   d3ColorScheme = d3.interpolateHslLong("darkblue", "skyblue"),
   reverseColorScheme = false,
   stroke = "white",

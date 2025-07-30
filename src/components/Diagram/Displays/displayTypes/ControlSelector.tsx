@@ -21,9 +21,6 @@ const ControlSelector: React.FC<CommonDisplayProps> = ({
     controlsMap
 }) => {
 
-    // Consult the Controls map to see if there are I/O values associated with this Display
-    const displayIOValuesList = controlsMap.get(displayJSON.meta.uuid) ?? [null];
-    
     // Sets a single value in the IO Values map.
     // Assumes the value UUID is at displayIOValuesList[0]
     const setSingleValue = (newValue: any) => {
@@ -31,7 +28,7 @@ const ControlSelector: React.FC<CommonDisplayProps> = ({
             const newIOVals = new Map(prevIOValues);
             newIOVals.set(displayIOValuesList[0] ?? displayJSON.meta.uuid, newValue);
             return newIOVals;
-        })
+        });
     }
 
     // Selector is "disabled" if it's non-interactive
@@ -40,26 +37,38 @@ const ControlSelector: React.FC<CommonDisplayProps> = ({
     // This display labels itself with its name
     const label = displayJSON.meta.name ?? "";
 
+    // Consult the Controls map to see if there are I/O values associated with this Display
+    const displayIOValuesList = controlsMap.get(displayJSON.meta.uuid) ?? [null];
+
+    //0th index is for associating an I/O value with the selected value
     let selectedValue = (
         computedIOValues.get(String(displayIOValuesList[0])) ??
         displayJSON.content.controlParameters?.selectedValue ??
         0
     );
 
+    //1st index is optional, provided if the list of options should come from an I/O value. It'll be an array.
     const optionValues = (
         computedIOValues.get(String(displayIOValuesList[1])) ??
         displayJSON.content.controlParameters?.options ??
         [0]
     );
 
+    if(Array.isArray(optionValues) && !optionValues.includes(selectedValue) && optionValues.length > 0)
+    {
+        setSingleValue(optionValues[0]);
+    }
+
+    const selectedIdx = Math.max(0, optionValues.indexOf(selectedValue));
+
     let optionIdx = 0;
     const optionsList = optionValues.map((optionValue: any) => {
         const thisIdx = optionIdx;
         optionIdx++;
         return (
-            <option value={optionValue} key={`selector-${displayJSON.meta.uuid}-option-${thisIdx}`}>{String(optionValue)}</option>
+            <option value={thisIdx} key={`selector-${displayJSON.meta.uuid}-option-${thisIdx}`}>{String(optionValue)}</option>
         )
-    })
+    });
 
     const isDial = displayJSON.addons?.ADDON_OpenDIAuthoringTool?.data?.style?.isDial ?? false;
     const dialColor = displayJSON.addons?.ADDON_OpenDIAuthoringTool?.data?.style?.dialColorGradient ?? {start: "darkgoldenrod", end: "moccasin"};
@@ -70,7 +79,7 @@ const ControlSelector: React.FC<CommonDisplayProps> = ({
             {
                 (!isDial ?
                     (<div>
-                        <select name="Control: Selector" value={selectedValue} onChange={(event) => {setSingleValue(event.target.value)}} disabled={!isInteractive}>
+                        <select name="Control: Selector" value={selectedIdx} onChange={(event) => {setSingleValue(optionValues[Number(event.target.value)])}} disabled={!isInteractive}>
                             {optionsList}
                         </select>
                     </div>) :
