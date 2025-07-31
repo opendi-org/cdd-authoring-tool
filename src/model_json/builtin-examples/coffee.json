@@ -525,6 +525,27 @@
                   "value": 9,
                   "isInteractive": true
                 }
+              },
+              "addons": {
+                "ADDON_OpenDIAuthoringTool": {
+                  "addonMeta": {
+                    "uuid": "ec427cfd-5f80-4262-afe7-d58e6c4ba566",
+                    "name": "OpenDI Authoring Tool"
+                  },
+                  "owner": {
+                    "uuid": "f79ae5c2-6ca9-48a2-87fa-4615da6b0f08",
+                    "name": "Placeholder Owner Info"
+                  },
+                  "data": {
+                    "style": {
+                      "isGauge": false,
+                      "gaugeColorGradient": {
+                        "start": "darkgoldenrod",
+                        "end": "moccasin"
+                      }
+                    }
+                  }
+                }
               }
             }
           ]
@@ -554,6 +575,27 @@
                   "value": 18,
                   "isInteractive": true
                 }
+              },
+              "addons": {
+                "ADDON_OpenDIAuthoringTool": {
+                  "addonMeta": {
+                    "uuid": "ec427cfd-5f80-4262-afe7-d58e6c4ba566",
+                    "name": "OpenDI Authoring Tool"
+                  },
+                  "owner": {
+                    "uuid": "f79ae5c2-6ca9-48a2-87fa-4615da6b0f08",
+                    "name": "Placeholder Owner Info"
+                  },
+                  "data": {
+                    "style": {
+                      "isGauge": false,
+                      "gaugeColorGradient": {
+                        "start": "darkgoldenrod",
+                        "end": "moccasin"
+                      }
+                    }
+                  }
+                }
               }
             }
           ]
@@ -582,6 +624,27 @@
                   "step": 0.5,
                   "value": 1,
                   "isInteractive": true
+                }
+              },
+              "addons": {
+                "ADDON_OpenDIAuthoringTool": {
+                  "addonMeta": {
+                    "uuid": "ec427cfd-5f80-4262-afe7-d58e6c4ba566",
+                    "name": "OpenDI Authoring Tool"
+                  },
+                  "owner": {
+                    "uuid": "f79ae5c2-6ca9-48a2-87fa-4615da6b0f08",
+                    "name": "Placeholder Owner Info"
+                  },
+                  "data": {
+                    "style": {
+                      "isGauge": false,
+                      "gaugeColorGradient": {
+                        "start": "darkgoldenrod",
+                        "end": "moccasin"
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -755,6 +818,27 @@
                   "value": 0,
                   "isInteractive": true
                 }
+              },
+              "addons": {
+                "ADDON_OpenDIAuthoringTool": {
+                  "addonMeta": {
+                    "uuid": "ec427cfd-5f80-4262-afe7-d58e6c4ba566",
+                    "name": "OpenDI Authoring Tool"
+                  },
+                  "owner": {
+                    "uuid": "f79ae5c2-6ca9-48a2-87fa-4615da6b0f08",
+                    "name": "Placeholder Owner Info"
+                  },
+                  "data": {
+                    "style": {
+                      "isGauge": false,
+                      "gaugeColorGradient": {
+                        "start": "darkgoldenrod",
+                        "end": "moccasin"
+                      }
+                    }
+                  }
+                }
               }
             }
           ]
@@ -784,6 +868,27 @@
                   "value": 7,
                   "isInteractive": true
                 }
+              },
+              "addons": {
+                "ADDON_OpenDIAuthoringTool": {
+                  "addonMeta": {
+                    "uuid": "ec427cfd-5f80-4262-afe7-d58e6c4ba566",
+                    "name": "OpenDI Authoring Tool"
+                  },
+                  "owner": {
+                    "uuid": "f79ae5c2-6ca9-48a2-87fa-4615da6b0f08",
+                    "name": "Placeholder Owner Info"
+                  },
+                  "data": {
+                    "style": {
+                      "isGauge": false,
+                      "gaugeColorGradient": {
+                        "start": "darkgoldenrod",
+                        "end": "moccasin"
+                      }
+                    }
+                  }
+                }
               }
             },
             {
@@ -799,6 +904,27 @@
                   "step": 0.25,
                   "value": 1,
                   "isInteractive": true
+                }
+              },
+              "addons": {
+                "ADDON_OpenDIAuthoringTool": {
+                  "addonMeta": {
+                    "uuid": "ec427cfd-5f80-4262-afe7-d58e6c4ba566",
+                    "name": "OpenDI Authoring Tool"
+                  },
+                  "owner": {
+                    "uuid": "f79ae5c2-6ca9-48a2-87fa-4615da6b0f08",
+                    "name": "Placeholder Owner Info"
+                  },
+                  "data": {
+                    "style": {
+                      "isGauge": false,
+                      "gaugeColorGradient": {
+                        "start": "darkgoldenrod",
+                        "end": "moccasin"
+                      }
+                    }
+                  }
                 }
               }
             },
@@ -816,6 +942,27 @@
                   "value": 2.5,
                   "isInteractive": true
                 }
+              },
+              "addons": {
+                "ADDON_OpenDIAuthoringTool": {
+                  "addonMeta": {
+                    "uuid": "ec427cfd-5f80-4262-afe7-d58e6c4ba566",
+                    "name": "OpenDI Authoring Tool"
+                  },
+                  "owner": {
+                    "uuid": "f79ae5c2-6ca9-48a2-87fa-4615da6b0f08",
+                    "name": "Placeholder Owner Info"
+                  },
+                  "data": {
+                    "style": {
+                      "isGauge": false,
+                      "gaugeColorGradient": {
+                        "start": "darkgoldenrod",
+                        "end": "moccasin"
+                      }
+                    }
+                  }
+                }
               }
             },
             {
@@ -832,6 +979,27 @@
                   "value": 10,
                   "isInteractive": true
                 }
+              },
+              "addons": {
+                "ADDON_OpenDIAuthoringTool": {
+                  "addonMeta": {
+                    "uuid": "ec427cfd-5f80-4262-afe7-d58e6c4ba566",
+                    "name": "OpenDI Authoring Tool"
+                  },
+                  "owner": {
+                    "uuid": "f79ae5c2-6ca9-48a2-87fa-4615da6b0f08",
+                    "name": "Placeholder Owner Info"
+                  },
+                  "data": {
+                    "style": {
+                      "isGauge": false,
+                      "gaugeColorGradient": {
+                        "start": "darkgoldenrod",
+                        "end": "moccasin"
+                      }
+                    }
+                  }
+                }
               }
             },
             {
@@ -847,6 +1015,27 @@
                   "step": 1,
                   "value": 1,
                   "isInteractive": true
+                }
+              },
+              "addons": {
+                "ADDON_OpenDIAuthoringTool": {
+                  "addonMeta": {
+                    "uuid": "ec427cfd-5f80-4262-afe7-d58e6c4ba566",
+                    "name": "OpenDI Authoring Tool"
+                  },
+                  "owner": {
+                    "uuid": "f79ae5c2-6ca9-48a2-87fa-4615da6b0f08",
+                    "name": "Placeholder Owner Info"
+                  },
+                  "data": {
+                    "style": {
+                      "isGauge": false,
+                      "gaugeColorGradient": {
+                        "start": "darkgoldenrod",
+                        "end": "moccasin"
+                      }
+                    }
+                  }
                 }
               }
             },
@@ -865,6 +1054,27 @@
                   "value": 0.25,
                   "isInteractive": true
                 }
+              },
+              "addons": {
+                "ADDON_OpenDIAuthoringTool": {
+                  "addonMeta": {
+                    "uuid": "ec427cfd-5f80-4262-afe7-d58e6c4ba566",
+                    "name": "OpenDI Authoring Tool"
+                  },
+                  "owner": {
+                    "uuid": "f79ae5c2-6ca9-48a2-87fa-4615da6b0f08",
+                    "name": "Placeholder Owner Info"
+                  },
+                  "data": {
+                    "style": {
+                      "isGauge": false,
+                      "gaugeColorGradient": {
+                        "start": "darkgoldenrod",
+                        "end": "moccasin"
+                      }
+                    }
+                  }
+                }
               }
             },
             {
@@ -880,6 +1090,27 @@
                   "step": 0.01,
                   "value": 0.1,
                   "isInteractive": true
+                }
+              },
+              "addons": {
+                "ADDON_OpenDIAuthoringTool": {
+                  "addonMeta": {
+                    "uuid": "ec427cfd-5f80-4262-afe7-d58e6c4ba566",
+                    "name": "OpenDI Authoring Tool"
+                  },
+                  "owner": {
+                    "uuid": "f79ae5c2-6ca9-48a2-87fa-4615da6b0f08",
+                    "name": "Placeholder Owner Info"
+                  },
+                  "data": {
+                    "style": {
+                      "isGauge": false,
+                      "gaugeColorGradient": {
+                        "start": "darkgoldenrod",
+                        "end": "moccasin"
+                      }
+                    }
+                  }
                 }
               }
             }
