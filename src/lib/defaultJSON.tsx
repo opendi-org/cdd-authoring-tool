@@ -97,7 +97,7 @@ export function defaultControlJSON(
 }
 
 /**
- * Generate schema-compliant JSON for a new evaluatable asset
+ * Generate schema-compliant JSON for a new evaluatable asset of type Script
  * @returns JSON for a new evaluatable asset, prepopulated as a script with the default JavaScript content
  */
 export function defaultScriptJSON(): any
@@ -115,6 +115,27 @@ export function defaultScriptJSON(): any
         content: {
             language: "javascript",
             script: baseScript
+        }
+    }
+}
+
+/**
+ * Generate schema-compliant JSON for a new evaluatable asset of type APICall
+ * @returns JSON for a new evaluatable asset, prepopulated with a basic API call
+ */
+export function defaultAPICallJSON(): any
+{
+    return {
+        meta: {
+            uuid: uuidv4(),
+            name: "New API Call"
+        },
+        evalType: "APICall",
+        content: {
+            endpointURI: "https://jsonplaceholder.typicode.com/posts",
+            restMethod: "GET",
+            defaultPayload: {},
+            defaultURIExtension: ""
         }
     }
 }

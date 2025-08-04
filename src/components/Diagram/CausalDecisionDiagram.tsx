@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import Xarrow, { useXarrow, Xwrapper } from "react-xarrows";
 import DiagramElement from "./DiagramElement";
 import { evaluateModel } from "../../lib/Diagram/evaluateModel"
-import { getIODataMap, getFunctionMap, getControlsMap, getDiagramElementMap, getDiaElemAssociatedDepsMap } from "../../lib/modelPreprocessing";
+import { getIODataMap, getFunctionMap, getControlsMap, getDiagramElementMap, getDiaElemAssociatedDepsMap, getEvaluatableAssetMap } from "../../lib/modelPreprocessing";
 import { causalTypeColors } from "../../lib/Diagram/cddTypes";
 import { getExpandedPathsForSelectedDiagramElements } from "../../lib/rightMenu/JSONEditorPathExpansion";
 import ElementCRUDPanel from "../ElementCRUDPanel";
@@ -45,6 +45,9 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
         })
     }
 
+    //Evaluatable Assets: Get basic map of evaluatable asset JSON data
+    const evalAssetMap = useMemo(() => getEvaluatableAssetMap(model), [model])
+
     //Evaluatable Assets: Import functions from their Base64-encoded string values
     const functionMap = useMemo(() => getFunctionMap(model), [model]);
 
@@ -86,11 +89,34 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
     //Holds the results of evaluation runs.
     //Whenever I/O values or the underlying model (etc) change, re-evaluate the model.
     //Displays will prefer to use THIS I/O map when setting their current values.
-    const computedIOValues = useMemo(() => {
-        let computedValues: Map<string, any> = new Map<string, any>();
-        computedValues = evaluateModel(model, functionMap, IOValues, selectedRunnableModelIndices);
-        return computedValues;
-    }, [model, functionMap, IOValues, selectedRunnableModelIndices]);
+    const [computedIOValues, setComputedIOValues] = useState<Map<string, any>>(new Map());
+
+    //Initiate an evaluation run. This needs to await evaluateModel in case there are API
+    //calls. This causes a delay, during which this useEffect may be activated again.
+    //If that happens, results of the now-outdated evaluation run are discarded.
+    useEffect(() => {
+        let componentHasBeenUnmounted = false;
+
+        const runEvaluation = async () => {
+            const result = await evaluateModel(
+                model, functionMap, evalAssetMap, IOValues, selectedRunnableModelIndices
+            );
+
+            if (!componentHasBeenUnmounted)
+            {
+                setComputedIOValues(result);
+            }
+        };
+
+        runEvaluation();
+
+        // UseEffect cleanup function. If this useEffect is re-triggered before runEvaluation has finished,
+        // react will run this function, setting this flag to true, so computedIOValues does not
+        // get set to now-outdated values
+        return () => {
+            componentHasBeenUnmounted = true;
+        }
+    }, [model, functionMap, evalAssetMap, IOValues, selectedRunnableModelIndices])
 
     //Maps diagram element UUIDs to their list of associated I/O values. Associated via their control.
     const controlsMap = useMemo(() => getControlsMap(model), [model]);

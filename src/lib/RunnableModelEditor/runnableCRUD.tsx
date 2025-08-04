@@ -1,5 +1,5 @@
 import { cleanComponentDisplay } from "../cleanupNames";
-import { defaultControlJSON, defaultEvaluatableElementJSON, defaultInputOutputValueJSON, defaultScriptJSON } from "../defaultJSON";
+import { defaultAPICallJSON, defaultControlJSON, defaultEvaluatableElementJSON, defaultInputOutputValueJSON, defaultScriptJSON } from "../defaultJSON";
 
 /**
  * Pure/immutable: Updates the given IO Value UUID list to add or remove the
@@ -371,6 +371,19 @@ export function addScriptToModel(model: any)
 {
     let workingModel = structuredClone(model);
     workingModel.evaluatableAssets = [...(workingModel.evaluatableAssets ?? []), defaultScriptJSON()];
+    return workingModel;
+}
+
+/**
+ * Pure/immutable: Updates the given model JSON, adding a new API Call Evaluatable Asset to the model
+ * 
+ * @param model Model JSON to modify
+ * @returns Updated model, with the result of the add applied
+ */
+export function addAPICallToModel(model: any)
+{
+    let workingModel = structuredClone(model);
+    workingModel.evaluatableAssets = [...(workingModel.evaluatableAssets ?? []), defaultAPICallJSON()];
     return workingModel;
 }
 
