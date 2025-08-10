@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import Xarrow, { useXarrow, Xwrapper } from "react-xarrows";
 import DiagramElement from "./DiagramElement";
-import { evaluateModel } from "../../lib/Diagram/evaluateModel"
+import { CachedAPIResult, evaluateModel } from "../../lib/Diagram/evaluateModel"
 import { getIODataMap, getFunctionMap, getControlsMap, getDiagramElementMap, getDiaElemAssociatedDepsMap, getEvaluatableAssetMap } from "../../lib/modelPreprocessing";
 import { causalTypeColors } from "../../lib/Diagram/cddTypes";
 import { getExpandedPathsForSelectedDiagramElements } from "../../lib/rightMenu/JSONEditorPathExpansion";
@@ -51,6 +51,14 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
     //Evaluatable Assets: Import functions from their Base64-encoded string values
     const functionMap = useMemo(() => getFunctionMap(model), [model]);
 
+    // Cache API Call results here, so the model doesn't absolutely spam all of its APIs all the time
+    // Key: UUID of the Eval Element that triggers the API call
+    // Value: Array of API Cache Results, which include the full URI for the call, a stringified version of the request body JSON, and
+    // a stringified version of the result JSON
+    // Each Evaluatable Element keeps one cached result for now.. This map might get huge if you have a lot
+    // of API stuff going on
+    const [apiCache, setAPICache] = useState<Map<string, Array<CachedAPIResult>>>(new Map());
+
     //InitialIOValues is IMMUTABLE.
     //Used to check whether incoming model JSON has an edited IO values list.
     //We can't let React check this itself because it just checks refs. This is a value comparison.
@@ -70,6 +78,7 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
         {
             setInitialIOValues(incomingIOMap);
             setIOValues(incomingIOMap);
+            setAPICache(new Map());
         }
         else
         {
@@ -99,7 +108,7 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
 
         const runEvaluation = async () => {
             const result = await evaluateModel(
-                model, functionMap, evalAssetMap, IOValues, selectedRunnableModelIndices
+                model, functionMap, evalAssetMap, IOValues, apiCache, setAPICache, selectedRunnableModelIndices
             );
 
             if (!componentHasBeenUnmounted)

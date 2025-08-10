@@ -10,6 +10,12 @@ type EvaluationResults = {
     populatedIOValues: Set<string>
 }
 
+export type CachedAPIResult = {
+    fullURI: string,
+    bodyJSON: string,
+    resultJSON: string,
+}
+
 /**
  * Evaluates a runnable model within the given model.
  * Performs one step of simulation for the decision. Feeds I/O Values from ioMap into their associated
@@ -19,12 +25,15 @@ type EvaluationResults = {
  * 
  * @param model Full model JSON. MUST adhere to OpenDI JSON Schema
  * @param funcMap For accessing script functions from model JSON. Maps name of function to the function itself
+ * @param evalAssetMap For API calls, to easily accesss info like URI, default request body, etc.
  * @param ioMap For accessing I/O values from model JSON. Maps I/O Value UUID to the data for that value
+ * @param apiCache Caches the results of API calls, so that repeat calls are much faster
+ * @param setAPICache Allows eval elements to update the API cache
  * @param activeRunnableModels List of indices for the runnable models to evaluate, in the model's runnableModels list
  * @param debugLogs Flag for whether to log lots of debug stuff to console
  * @returns A fresh copy of ioMap, with I/O values updated based on the results of one step of the decision simulation
  */
-export async function evaluateModel(model: any, funcMap: Map<string, Function>, evalAssetMap: Map<string, any>, ioMap: Map<string, any>, activeRunnableModels = [0], debugLogs = true): Promise<Map<string, any>> {
+export async function evaluateModel(model: any, funcMap: Map<string, Function>, evalAssetMap: Map<string, any>, ioMap: Map<string, any>, apiCache: Map<string, Array<CachedAPIResult>>, setAPICache: Function, activeRunnableModels = [0], debugLogs = false): Promise<Map<string, any>> {
     if(debugLogs) console.log("Eval start.");
 
     //Handle case where there's nothing to evaluate (Return a copy of IO Map unedited)
@@ -99,7 +108,7 @@ export async function evaluateModel(model: any, funcMap: Map<string, Function>, 
                         evalResults = evaluateScriptElement(evalElem, evalInputs, funcMap, workingIOMap);
                         break;
                     case "APICall":
-                        evalResults = await evaluateAPICallElement(evalElem, evalInputs, evalAsset, workingIOMap);
+                        evalResults = await evaluateAPICallElement(evalElem, evalInputs, evalAsset, workingIOMap, apiCache, setAPICache);
                         break;
                     default:
                         evalResults = {succeeded: false, newWorkingIOMap: workingIOMap, populatedIOValues: new Set()};
@@ -146,7 +155,7 @@ export async function evaluateModel(model: any, funcMap: Map<string, Function>, 
  * @param workingIOMap Map from I/O UUID (String) to raw I/O value. Working I/O map keeps updated values populated by the ongoing evaluation round. This function will update it with new output values from the API call
  * @returns @see EvaluationResults . Eval resuts with info about success status, the updated map of working I/O values, and a (0-1 length) list of I/O values that were populated as outputs by this API call
  */
-async function evaluateAPICallElement(evalElem: any, evalInputs: any, evalAsset: any, workingIOMap: Map<string, any>): Promise<EvaluationResults>
+async function evaluateAPICallElement(evalElem: any, evalInputs: any, evalAsset: any, workingIOMap: Map<string, any>, apiCache: Map<string, Array<CachedAPIResult>>, setAPICache: Function): Promise<EvaluationResults>
 {
     let succeeded = false;
     const ioMap = new Map(workingIOMap);
@@ -162,6 +171,29 @@ async function evaluateAPICallElement(evalElem: any, evalInputs: any, evalAsset:
     const uri: string = (evalAsset.content?.endpointURI ?? "") + uriExtension;
     const restMethod: string = evalAsset.content?.restMethod ?? "GET";
     const bodyJSON = JSON.stringify(evalInputs[0] ?? evalAsset.content?.defaultPayload ?? {});
+
+    //Check for existing cached results
+    const cachedCalls = structuredClone(apiCache.get(evalElem.meta?.uuid ?? "") ?? new Array<CachedAPIResult>());
+    for (let i = 0; i < cachedCalls.length; i++)
+    {
+        const cachedResult = cachedCalls[i];
+        if(uri == cachedResult.fullURI && bodyJSON == cachedResult.bodyJSON)
+        {
+            ioMap.set(evalElem.outputs[0], JSON.parse(cachedResult.resultJSON)),    //Update working I/O map with new output values
+            populatedIOValues.add(evalElem.outputs[0]);     //Tell the evaluation function to add these to the list of "known" values
+            succeeded = true;
+
+            //Update cache
+            cachedCalls.unshift(cachedCalls.splice(i, 1)[0]); //Move to front
+            setAPICache((prev: Map<string, Array<CachedAPIResult>>) => {
+                let newCache = structuredClone(prev);
+                newCache.set(evalElem.meta.uuid, cachedCalls);
+                return newCache;
+            });
+
+            return {succeeded, newWorkingIOMap: ioMap, populatedIOValues};
+        }
+    }
 
     const request = (restMethod == "GET"
         ? {
@@ -195,6 +227,24 @@ async function evaluateAPICallElement(evalElem: any, evalInputs: any, evalAsset:
         //Right now there's no validation step to confirm that an element evaluated successfully.
         //It's just assumed successful after we get an OK response with no errors thrown.
         succeeded = true;
+
+        //Update cached results
+        const newResult: CachedAPIResult = {fullURI: uri, bodyJSON, resultJSON: JSON.stringify(json)};
+        cachedCalls.unshift(newResult);
+        const maxCacheSize = Number(evalElem.apiCacheSize);
+        if(maxCacheSize > 0)
+        {
+            if (cachedCalls.length > maxCacheSize)
+            {
+                cachedCalls.pop();
+            }
+            setAPICache((prev: Map<string, Array<CachedAPIResult>>) => {
+                let newCache = structuredClone(prev);
+                newCache.set(evalElem.meta.uuid, cachedCalls);
+                return newCache;
+            });
+        }
+
     } catch (error)
     {
         let message = `Error evaluating element ${evalElem.uuid ?? "unknown"}:\n`;

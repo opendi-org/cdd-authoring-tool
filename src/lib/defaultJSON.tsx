@@ -61,6 +61,7 @@ export function defaultDiagramElementJSON(
 export function defaultEvaluatableElementJSON(
     evaluatableAsset=uuidv4(),
     functionName="(None)",
+    apiCacheSize=2,
     inputs:string[]=[],
     outputs:string[]=[]
 ): any {
@@ -71,6 +72,7 @@ export function defaultEvaluatableElementJSON(
         },
         evaluatableAsset,
         functionName,
+        apiCacheSize,
         inputs,
         outputs
     }
@@ -123,7 +125,12 @@ export function defaultScriptJSON(): any
  * Generate schema-compliant JSON for a new evaluatable asset of type APICall
  * @returns JSON for a new evaluatable asset, prepopulated with a basic API call
  */
-export function defaultAPICallJSON(): any
+export function defaultAPICallJSON(
+    endpointURI="https://jsonplaceholder.typicode.com/posts",
+    restMethod="GET",
+    defaultPayload={},
+    defaultURIExtension=""
+): any
 {
     return {
         meta: {
@@ -132,10 +139,10 @@ export function defaultAPICallJSON(): any
         },
         evalType: "APICall",
         content: {
-            endpointURI: "https://jsonplaceholder.typicode.com/posts",
-            restMethod: "GET",
-            defaultPayload: {},
-            defaultURIExtension: ""
+            endpointURI,
+            restMethod,
+            defaultPayload,
+            defaultURIExtension
         }
     }
 }
