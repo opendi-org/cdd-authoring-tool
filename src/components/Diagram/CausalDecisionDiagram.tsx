@@ -1,8 +1,8 @@
 import React, { useState, useMemo, useEffect } from "react";
 import Xarrow, { useXarrow, Xwrapper } from "react-xarrows";
 import DiagramElement from "./DiagramElement";
-import { evaluateModel } from "../../lib/Diagram/evaluateModel"
-import { getIODataMap, getFunctionMap, getControlsMap, getDiagramElementMap, getDiaElemAssociatedDepsMap } from "../../lib/modelPreprocessing";
+import { CachedAPIResult, evaluateModel } from "../../lib/Diagram/evaluateModel"
+import { getIODataMap, getFunctionMap, getControlsMap, getDiagramElementMap, getDiaElemAssociatedDepsMap, getEvaluatableAssetMap } from "../../lib/modelPreprocessing";
 import { causalTypeColors } from "../../lib/Diagram/cddTypes";
 import { getExpandedPathsForSelectedDiagramElements } from "../../lib/rightMenu/JSONEditorPathExpansion";
 import ElementCRUDPanel from "../ElementCRUDPanel";
@@ -45,8 +45,19 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
         })
     }
 
+    //Evaluatable Assets: Get basic map of evaluatable asset JSON data
+    const evalAssetMap = useMemo(() => getEvaluatableAssetMap(model), [model])
+
     //Evaluatable Assets: Import functions from their Base64-encoded string values
     const functionMap = useMemo(() => getFunctionMap(model), [model]);
+
+    // Cache API Call results here, so the model doesn't absolutely spam all of its APIs all the time
+    // Key: UUID of the Eval Element that triggers the API call
+    // Value: Array of API Cache Results, which include the full URI for the call, a stringified version of the request body JSON, and
+    // a stringified version of the result JSON
+    // Each Evaluatable Element keeps one cached result for now.. This map might get huge if you have a lot
+    // of API stuff going on
+    const [apiCache, setAPICache] = useState<Map<string, Array<CachedAPIResult>>>(new Map());
 
     //InitialIOValues is IMMUTABLE.
     //Used to check whether incoming model JSON has an edited IO values list.
@@ -67,6 +78,7 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
         {
             setInitialIOValues(incomingIOMap);
             setIOValues(incomingIOMap);
+            setAPICache(new Map());
         }
         else
         {
@@ -86,11 +98,34 @@ const CausalDecisionDiagram: React.FC<CausalDecisionDiagramProps> = ({
     //Holds the results of evaluation runs.
     //Whenever I/O values or the underlying model (etc) change, re-evaluate the model.
     //Displays will prefer to use THIS I/O map when setting their current values.
-    const computedIOValues = useMemo(() => {
-        let computedValues: Map<string, any> = new Map<string, any>();
-        computedValues = evaluateModel(model, functionMap, IOValues, selectedRunnableModelIndices);
-        return computedValues;
-    }, [model, functionMap, IOValues, selectedRunnableModelIndices]);
+    const [computedIOValues, setComputedIOValues] = useState<Map<string, any>>(new Map());
+
+    //Initiate an evaluation run. This needs to await evaluateModel in case there are API
+    //calls. This causes a delay, during which this useEffect may be activated again.
+    //If that happens, results of the now-outdated evaluation run are discarded.
+    useEffect(() => {
+        let componentHasBeenUnmounted = false;
+
+        const runEvaluation = async () => {
+            const result = await evaluateModel(
+                model, functionMap, evalAssetMap, IOValues, apiCache, setAPICache, selectedRunnableModelIndices
+            );
+
+            if (!componentHasBeenUnmounted)
+            {
+                setComputedIOValues(result);
+            }
+        };
+
+        runEvaluation();
+
+        // UseEffect cleanup function. If this useEffect is re-triggered before runEvaluation has finished,
+        // react will run this function, setting this flag to true, so computedIOValues does not
+        // get set to now-outdated values
+        return () => {
+            componentHasBeenUnmounted = true;
+        }
+    }, [model, functionMap, evalAssetMap, IOValues, selectedRunnableModelIndices])
 
     //Maps diagram element UUIDs to their list of associated I/O values. Associated via their control.
     const controlsMap = useMemo(() => getControlsMap(model), [model]);

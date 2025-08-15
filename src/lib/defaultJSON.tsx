@@ -61,6 +61,7 @@ export function defaultDiagramElementJSON(
 export function defaultEvaluatableElementJSON(
     evaluatableAsset=uuidv4(),
     functionName="(None)",
+    apiCacheSize=2,
     inputs:string[]=[],
     outputs:string[]=[]
 ): any {
@@ -71,6 +72,7 @@ export function defaultEvaluatableElementJSON(
         },
         evaluatableAsset,
         functionName,
+        apiCacheSize,
         inputs,
         outputs
     }
@@ -97,7 +99,7 @@ export function defaultControlJSON(
 }
 
 /**
- * Generate schema-compliant JSON for a new evaluatable asset
+ * Generate schema-compliant JSON for a new evaluatable asset of type Script
  * @returns JSON for a new evaluatable asset, prepopulated as a script with the default JavaScript content
  */
 export function defaultScriptJSON(): any
@@ -115,6 +117,32 @@ export function defaultScriptJSON(): any
         content: {
             language: "javascript",
             script: baseScript
+        }
+    }
+}
+
+/**
+ * Generate schema-compliant JSON for a new evaluatable asset of type APICall
+ * @returns JSON for a new evaluatable asset, prepopulated with a basic API call
+ */
+export function defaultAPICallJSON(
+    endpointURI="https://jsonplaceholder.typicode.com/posts",
+    restMethod="GET",
+    defaultPayload={},
+    defaultURIExtension=""
+): any
+{
+    return {
+        meta: {
+            uuid: uuidv4(),
+            name: "New API Call"
+        },
+        evalType: "APICall",
+        content: {
+            endpointURI,
+            restMethod,
+            defaultPayload,
+            defaultURIExtension
         }
     }
 }
