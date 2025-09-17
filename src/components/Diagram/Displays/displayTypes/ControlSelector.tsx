@@ -54,11 +54,6 @@ const ControlSelector: React.FC<CommonDisplayProps> = ({
         [0]
     );
 
-    if(Array.isArray(optionValues) && !optionValues.includes(selectedValue) && optionValues.length > 0)
-    {
-        setSingleValue(optionValues[0]);
-    }
-
     const selectedIdx = Math.max(0, optionValues.indexOf(selectedValue));
 
     let optionIdx = 0;

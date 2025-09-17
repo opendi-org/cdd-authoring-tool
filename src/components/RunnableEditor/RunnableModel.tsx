@@ -135,6 +135,9 @@ const RunnableModel: React.FC<RunnableModelProps> = ({
 
 
     const evalElementsList = thisModel.elements.map((runnableElement: any) => {
+
+        const elementAssetType = evalAssetMap.get(runnableElement.evaluatableAsset)?.evalType ?? ""
+
         return (
             <div className="eval-element-info">
                 <h3>{cleanComponentDisplay(runnableElement.meta, "Element")} <button className="json-link" onClick={() => expandNonIOComponentInJSON(getExpandedPathForEvaluatableElement(runnableElement.meta?.uuid, model))}>(Reveal in JSON)</button></h3>
@@ -142,12 +145,20 @@ const RunnableModel: React.FC<RunnableModelProps> = ({
                     <p>
                         <b>Evaluatable Asset Used: </b>{generateEvalAssetsOptionsForElement(runnableElement.meta.uuid, runnableElement.evaluatableAsset)}
                     </p>
-                    <p>
-                        <b>Function: </b>{generateFunctionNameOptionsForElement(runnableElement.meta.uuid, runnableElement.evaluatableAsset, runnableElement.functionName)}
-                    </p>
+                    {elementAssetType == "Script" && (
+                        <p>
+                            <b>Function: </b>{generateFunctionNameOptionsForElement(runnableElement.meta.uuid, runnableElement.evaluatableAsset, runnableElement.functionName)}
+                        </p>
+                    )}
+                    {elementAssetType == "APICall" && (
+                        <p>
+                            <b>Endpoint URI: </b>{evalAssetMap.get(runnableElement.evaluatableAsset)?.content?.endpointURI ?? "(none)"}
+                        </p>
+                    )}
                     {runnableElement.meta.summary && (<div className="eval-element-summary">
                         <ReactMarkdown children={runnableElement.meta.summary}/>
                     </div>)}
+
                 </div>
                 <div className="eval-io">
                     <div className="eval-io-list">

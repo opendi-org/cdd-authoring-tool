@@ -6,7 +6,7 @@ import ReactMarkdown from "react-markdown";
 
 import Editor from "@monaco-editor/react"
 import { getActiveIOValues, getEvaluatableAssetMap, getIOMap } from "../../lib/modelPreprocessing";
-import { addControlToModel, addDisplayToControl, addIOsToControl, addIOToModel, addScriptToModel, deleteControl, deleteDisplayFromControl, deleteEvaluatableAssetFromModel, deleteIOFromModel, moveIOsInControl, removeIOsFromControl, updateScript } from "../../lib/RunnableModelEditor/runnableCRUD";
+import { addAPICallToModel, addControlToModel, addDisplayToControl, addIOsToControl, addIOToModel, addScriptToModel, deleteControl, deleteDisplayFromControl, deleteEvaluatableAssetFromModel, deleteIOFromModel, moveIOsInControl, removeIOsFromControl, updateScript } from "../../lib/RunnableModelEditor/runnableCRUD";
 import { undefinedIOJSON } from "../../lib/defaultJSON";
 import { getExpandedPathForControl, getExpandedPathForEvaluatableAsset, getExpandedPathsForSelectedIOValues } from "../../lib/rightMenu/JSONEditorPathExpansion";
 import { RIGHT_MENU_TABS } from "../../lib/rightMenu/menuTabIDs";
@@ -160,21 +160,26 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
                 setEditorCode(atob(evalAsset.content.script));
                 setEditorEvalAssetUUID(evalAsset.meta.uuid);
             }
+            const evalType = evalAsset.evalType ?? "Unknown";
             return (
                 <div key={evalAsset.meta.uuid} className="eval-asset-info">
                     <h3>{cleanComponentDisplay(evalAsset.meta, "Evaluatable Asset")} <button className="json-link" onClick={() => expandNonIOComponentInJSON(getExpandedPathForEvaluatableAsset(evalAsset.meta?.uuid, model))}>(Reveal in JSON)</button></h3>
-                    <p><b>Type: </b>{evalAsset.evalType}</p>
+                    <p><b>Type: </b>{evalType}</p>
                     {evalAsset.meta.summary && <ReactMarkdown children={evalAsset.meta.summary}/>}
+                    {(evalType == "APICall" && <>
+                        <p><b>URI: </b>{evalAsset.content.endpointURI}</p>
+                        <p><b>Method: </b>{evalAsset.content.restMethod}</p>
+                    </>)}
                     <div>
-                        <button
+                        {(evalType == "Script" && <button
                             onClick={openEditor}
                         >
-                            {`Edit ${evalAsset.evalType}`}
-                        </button>
+                            {`Edit ${evalType}`}
+                        </button>)}
                         <button
                             onClick={() => setModel(deleteEvaluatableAssetFromModel(model, evalAsset.meta))}
                         >
-                            {`Delete ${evalAsset.evalType}`}
+                            {`Delete ${evalType}`}
                         </button>
                     </div>
                 </div>
@@ -402,6 +407,11 @@ const RunnableModelEditor: React.FC<RunnableModelEditorProps> = ({
                             onClick={() => setModel(addScriptToModel(model))}
                         >
                             Add New Script
+                        </button>
+                        <button
+                            onClick={() => setModel(addAPICallToModel(model))}
+                        >
+                            Add New API Call
                         </button>
                     </div>
                 </div>

@@ -74,6 +74,7 @@
         .model-options-list {
             overflow-y: auto;
             border: var(--runnable-editor-border);
+            min-height: 6em;
 
             .model-option {
                 padding-top: 0px;

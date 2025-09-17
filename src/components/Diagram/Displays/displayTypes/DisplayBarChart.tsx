@@ -59,9 +59,9 @@ const DisplayBarChart: React.FC<CommonDisplayProps> = ({
                 width={width}
                 height={200}
                 data={data}
-                minY={displayJSON.content.minY}
-                maxY={displayJSON.content.maxY}
-                stepHeight={displayJSON.content.stepHeight ?? 1}
+                minY={data.minY ?? displayJSON.content.minY} //This is sneaky, but we can also provide min/max via data object
+                maxY={data.maxY ?? displayJSON.content.maxY}
+                stepHeight={data.stepHeight ?? displayJSON.content.stepHeight ?? 1}
             />
         </div>
     )

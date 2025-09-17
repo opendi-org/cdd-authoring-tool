@@ -37,7 +37,7 @@ const ControlText: React.FC<CommonDisplayProps> = ({
     // This display labels itself with its name
     const label = displayJSON.meta.name ?? "";
 
-    const textValue = (
+    const textValue = String(
         computedIOValues.get(String(displayIOValuesList[0])) ??
         displayJSON.content.controlParameters?.value ??
         ""

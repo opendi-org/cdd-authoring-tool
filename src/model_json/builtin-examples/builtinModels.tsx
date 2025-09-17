@@ -1,4 +1,5 @@
 import ExampleCoffee from  "./coffee.json" assert { type: "json" };
+import ExamplePotatoPacking from "./Sweet_Potato_Packing.json" assert { type: "json" };
 import ExampleCoffeeNonInteractive from "./coffee_noninteractive.json" assert { type: "json" };
 import ExampleBasicAdder from "./Range_Demo_Basic_Adder.json" assert { type: "json" };
 import ExampleMultistepAdder from "./Range_Demo_Multistep_Adder.json" assert { type: "json" };
@@ -27,6 +28,7 @@ export type BuiltInModelRecord = {
 export const BuiltInModels: Record<string, BuiltInModelRecord> = {};
 [
     ExampleCoffee,
+    ExamplePotatoPacking,
     ExampleCoffeeNonInteractive,
     ExampleBasicAdder,
     ExampleMultistepAdder,
