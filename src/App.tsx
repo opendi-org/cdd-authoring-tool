@@ -100,8 +100,7 @@ function App() {
     const [leftEditorState, setLeftEditorState] = useState("cdd");
 
     return (
-        <div style={{ paddingRight:"0.75%" }}>
-            <h2 className="title-header">OpenDI Causal Decision Model Authoring Tool</h2>
+        <div>
             <div className="authoring-tool-container">
                 <div className="left">
                     {/* Runnable Model Editor */}
@@ -168,6 +167,10 @@ function App() {
                 </div>
             </div>
             <div className="instructions">
+                <div className="header-section">
+                    <img src={`${import.meta.env['BASE_URL']}/img/opendi-logo.png`} alt="OpenDI Logo" className="logo" />
+                    <h1 className="title-header">OpenDI Causal Decision Model Authoring Tool</h1>
+                </div>
                 <p>
                     This tool allows you to create and edit OpenDI standards-compliant
                     Causal Decision Diagrams, using a graphical view and JSON editor.
@@ -211,6 +214,52 @@ function App() {
                     </li>
                 </ul>
             </div>
+            <footer className="footer">
+                <div className="footer-content">
+                    <div className="footer-links">
+                        <div>
+                            <h3>Community</h3>
+                            <ul>
+                                <li><a href="https://discord.gg/FtAX3JStJz" target="_blank">Discord</a></li>
+                                <li><a href="https://github.com/opendi-org" target="_blank">GitHub</a></li>
+                                <li><a href="https://quantellia.com/" target="_blank">Quantellia</a></li>
+                                <li><a href="https://www.cmodel.io" target="_blank">CModel Data, Inc</a></li>
+                                <li><a href="https://www.ncsu.edu/" target="_blank">NC State University</a></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3>Resources</h3>
+                            <ul>
+                                <li><a href="http://opendi.org/" target="_blank">Blog</a></li>
+                                <li><a href="https://www.scoop.it/topic/decision-intelligence/" target="_blank">Decision Intelligence News</a></li>
+                                <li><a href="http://opendi.org/" target="_blank">OpenDI Glossary</a></li>
+                                <li><a href="https://quantellia.com/ai-and-di-workshops/" target="_blank">DI Webinars</a></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3>Follow Us</h3>
+                            <ul>
+                                <li><a href="https://www.linkedin.com/company/opendi-org/" target="_blank">LinkedIn</a></li>
+                                <li><a href="https://www.facebook.com/people/OpenDi/100095177432725/" target="_blank">Facebook</a></li>
+                                <li><a href="https://www.youtube.com/channel/UC4Thj0JegsJ3csqb-iEPI5A" target="_blank">YouTube</a></li>
+                                <li><a href="https://bsky.app/profile/opendi.bsky.social" target="_blank">BlueSky</a></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3>OpenDI</h3>
+                            <ul>
+                                <li><a href="http://opendi.org/" target="_blank">Main Site</a></li>
+                                <li><a href="http://opendi.org/roles-user-stories" target="_blank">Roles and User Stories</a></li>
+                                <li><a href="http://opendi.org/api-specification" target="_blank">API Specification</a></li>
+                                <li><a href="http://opendi.org/cdd-authoring-tool" target="_blank">CDM Authoring Tool</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div className="footer-copyright">
+                        &copy; 2025-26 OpenDI. All rights reserved.
+                    </div>
+                </div>
+            </footer>
         </div>
     )
 };

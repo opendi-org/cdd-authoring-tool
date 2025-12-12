@@ -1,11 +1,21 @@
 
-@import url('https://fonts.googleapis.com/css?family=Roboto');
+@import url('https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Roboto');
 
-.title-header {
-    font-family: "Roboto", Arial, Helvetica, sans-serif;
-    margin-top: 0.5vh;
-    margin-bottom: 0.5vh;
-    padding-inline: 0.5%;
+
+:root {
+    --ifm-color-primary: #2469b6;
+    --ifm-color-primary-dark: #205fa4;
+    --ifm-color-primary-darker: #1f599b;
+    --ifm-color-primary-darkest: #194a7f;
+    --ifm-color-primary-light: #2874c8;
+    --ifm-color-primary-lighter: #2979d1;
+    --ifm-color-primary-lightest: #428ada;
+
+    --ifm-background-color: #fbfdff;
+    --footer-color: #063e5f;
+
+    --font-family-base: "Arimo", "Roboto", Arial, Helvetica, sans-serif;
+    --font-weight-base: 400;
 }
 
 .authoring-tool-container {
@@ -28,6 +38,7 @@
     height: 100%;
     position: relative;
     background-color: #BBBBBB;
+    font-family: "Roboto", Arial, Helvetica, sans-serif;
 }
 
 
@@ -90,13 +101,80 @@
 }
 
 .instructions {
-    font-family: "Roboto", Arial, Helvetica, sans-serif;
+    font: 100% / 1.65 var(--font-family-base);
+    font-weight: var(--font-weight-base);
     padding:0.5%;
+
+    h1, h2, h3, h4, h5, h6 {
+        color: var(--ifm-color-primary-darkest);
+    }
+
+    a:link, a:visited {
+        color: var(--ifm-color-primary);
+        text-decoration: none;
+    }
+    a:hover {
+        text-decoration: underline;
+    }
+}
+
+.header-section {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+}
+
+.logo {
+    height: 5em;
+}
+
+.footer {
+    font: 100% / 1.65 var(--font-family-base);
+    font-weight: var(--font-weight-base);
+    background-color: var(--footer-color);
+    color: white;
+    text-align: center;
+
+    h1, h2, h3, h4, h5, h6{
+        color: white;
+    }
+
+    a:link, a:visited {
+        color: white;
+        text-decoration: none;
+        transition: color 0.1s ease;
+    }
+
+    a:hover {
+        color: #a0cdff;
+        text-decoration: underline;
+    }
+}
+
+.footer-content {
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.footer-links {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    text-align: left;
+
+    width: 80%;
+    margin: 0 auto;
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
 }
 
 body {
-    font-family: "Roboto", Arial, Helvetica, sans-serif;
-    background-color: #e2e9eb;
+    background-color: var(--ifm-background-color);
+    margin: 0;
 }
 
 .hoverable:hover {
@@ -418,13 +496,8 @@ body {
 }
 
 /* Make link colors stand out better against the blue background */
-.info-menu a:link {
+.info-menu a:link, a:visited {
     color: #0099ff
-}
-
-/* Make link colors stand out better against the blue background */
-.info-menu a:visited {
-    color: #c813ff
 }
 
 .info-menu p {
