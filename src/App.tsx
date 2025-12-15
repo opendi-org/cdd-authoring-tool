@@ -230,9 +230,9 @@ function App() {
                         <div>
                             <h3>Resources</h3>
                             <ul>
-                                <li><a href="http://opendi.org/" target="_blank">Blog</a></li>
+                                <li><a href="http://opendi.org/blog" target="_blank">Blog</a></li>
                                 <li><a href="https://www.scoop.it/topic/decision-intelligence/" target="_blank">Decision Intelligence News</a></li>
-                                <li><a href="http://opendi.org/" target="_blank">OpenDI Glossary</a></li>
+                                <li><a href="http://opendi.org/glossary" target="_blank">OpenDI Glossary</a></li>
                                 <li><a href="https://quantellia.com/ai-and-di-workshops/" target="_blank">Decision Intelligence Webinars</a></li>
                             </ul>
                         </div>
