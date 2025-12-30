@@ -8,7 +8,7 @@ The Containerized Authoring Demo provides more complete functionality, including
 
 ## Live Test
 You can try this tool out yourself!  
-Visit https://opendi.org/cdd-authoring-tool/  
+Visit https://opendi-org.github.io/cdd-authoring-tool/  
 **See warning below.**
 
 ### Warning
