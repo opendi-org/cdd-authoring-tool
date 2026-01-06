@@ -248,10 +248,10 @@ function App() {
                         <div>
                             <h3>OpenDI</h3>
                             <ul>
-                                <li><a href="http://opendi.org/" target="_blank">Main Site</a></li>
-                                <li><a href="http://opendi.org/roles-user-stories" target="_blank">Roles and User Stories</a></li>
-                                <li><a href="http://opendi.org/api-specification" target="_blank">API Specification</a></li>
-                                <li><a href="http://opendi.org/cdd-authoring-tool" target="_blank">CDM Authoring Tool</a></li>
+                                <li><a href="https://opendi.org/" target="_blank">Main Site</a></li>
+                                <li><a href="https://opendi-org.github.io/roles-user-stories/" target="_blank">Roles and User Stories</a></li>
+                                <li><a href="https://opendi-org.github.io/api-specification/" target="_blank">API Specification</a></li>
+                                <li><a href="https://opendi-org.github.io/cdd-authoring-tool/" target="_blank">CDM Authoring Tool</a></li>
                             </ul>
                         </div>
                     </div>
